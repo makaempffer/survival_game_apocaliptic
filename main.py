@@ -39,19 +39,32 @@ class Block(pg.sprite.Sprite):
         self.size = 10
         self.rect = pg.Rect(posX * self.size, posY * self.size, 10, 10)
         self.value = value
-        self.type = "./assets/dirt.png"
+        self.type = "./assets/tree.png"
         self.image = pg.image.load("./assets/dirt.png")
         self.getImage()
 
     def getImage(self):
-        if self.value <= 0.2:
+        #getting and setting the image for the block according to the perlin value
+        if self.value >= 0.4 and self.value <= 1:
+            self.type = "./assets/water.png"
+        elif self.value >= 0.3 and self.value <= 0.4: 
             self.type = "./assets/sand.png"
-        if self.value >= 0.2 and self.value <= 0.4:
+        elif self.value >= -0.1 and self.value <= 0.3: 
             self.type = "./assets/dirt.png"
-        if self.value >= 0.4 and self.value <= 0.6:
+        else:
+            self.type = "./assets/tree.png"
+
+        """
+        if self.value <= 0:
+            self.type = "./assets/sand.png"
+        if self.value <= 0.3 and self.value >= 0:
+            self.type = "./assets/dirt.png"
+        if self.value <= 0.4 and self.value >= 0.3:
             self.type = "./assets/water.png"
         if self.value >= 0.6 and self.value <= 1:
             self.type = "./assets/tree.png"
+        """    
+
         self.image = pg.image.load(str(self.type))
 
             
@@ -69,7 +82,7 @@ class World:
         self.rows = 0
 
     def createMap(self):
-        noise = PerlinNoise(octaves=10, seed=1)
+        noise = PerlinNoise(octaves=7, seed=1)
         xpix, ypix = HEIGHT//10, WIDTH//10
         self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
         arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
