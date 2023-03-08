@@ -4,7 +4,6 @@ import os
 import sys
 import pygame as pg
 from perlin_noise import PerlinNoise
-from enum import Enum
 FPS = 60
 WIDTH, HEIGHT = 1000, 600
 def mapFromTo(x_input, in_range_start, in_range_start_end, out_range_start, out_range_end):
@@ -39,20 +38,20 @@ class Block(pg.sprite.Sprite):
         self.size = 10
         self.rect = pg.Rect(posX * self.size, posY * self.size, 10, 10)
         self.value = value
-        self.type = "./assets/tree.png"
-        self.image = pg.image.load("./assets/dirt.png")
+        self.path = "./assets/tree.png"
+        self.image = pg.image.load("./assets/water.png")
         self.getImage()
 
     def getImage(self):
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
-            self.type = "./assets/water.png"
-        elif self.value >= 0.3 and self.value <= 0.4: 
-            self.type = "./assets/sand.png"
-        elif self.value >= -0.1 and self.value <= 0.3: 
-            self.type = "./assets/dirt.png"
-        else:
-            self.type = "./assets/tree.png"
+            self.path = "./assets/water.png"
+        elif self.value >= 0.30 and self.value <= 0.4: 
+            self.path = "./assets/sand.png"
+        elif self.value >= -0.2 and self.value <= 0.3: 
+            self.path = "./assets/dirt.png"
+        elif self.value >= -0.2 and self.value <= -1:
+            self.path = "./assets/tree.png"
 
         """
         if self.value <= 0:
@@ -65,7 +64,7 @@ class Block(pg.sprite.Sprite):
             self.type = "./assets/tree.png"
         """    
 
-        self.image = pg.image.load(str(self.type))
+        self.image = pg.image.load(str(self.path))
 
             
 
