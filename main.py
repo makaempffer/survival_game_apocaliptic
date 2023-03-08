@@ -6,7 +6,7 @@ import pygame as pg
 from perlin_noise import PerlinNoise
 from enum import Enum
 FPS = 60
-WIDTH, HEIGHT = 600, 600
+WIDTH, HEIGHT = 1000, 600
 def mapFromTo(x_input, in_range_start, in_range_start_end, out_range_start, out_range_end):
    y=(x_input - in_range_start) / (in_range_start_end-in_range_start) * (out_range_end-out_range_start) + out_range_start
    return y
@@ -36,7 +36,8 @@ class Block(pg.sprite.Sprite):
         super().__init__()
         self.posX = posX    
         self.posY = posY
-        self.rect = pg.Rect(posX * 10, posY * 10, 10, 10)
+        self.size = 10
+        self.rect = pg.Rect(posX * self.size, posY * self.size, 10, 10)
         self.value = value
         self.type = "./assets/dirt.png"
         self.image = pg.image.load("./assets/dirt.png")
@@ -45,11 +46,11 @@ class Block(pg.sprite.Sprite):
     def getImage(self):
         if self.value <= 0.2:
             self.type = "./assets/sand.png"
-        elif self.value <= 0.4:
+        if self.value >= 0.2 and self.value <= 0.4:
+            self.type = "./assets/dirt.png"
+        if self.value >= 0.4 and self.value <= 0.6:
             self.type = "./assets/water.png"
-        elif self.value <= 0.6:
-            self.type = "./assets/water.png"
-        elif self.value <= 1:
+        if self.value >= 0.6 and self.value <= 1:
             self.type = "./assets/tree.png"
         self.image = pg.image.load(str(self.type))
 
@@ -64,11 +65,13 @@ class World:
         self.createMap()
         self.mapData = []
         self.view()
+        self.cols = 0
+        self.rows = 0
 
     def createMap(self):
         noise = PerlinNoise(octaves=10, seed=1)
-        xpix, ypix = WIDTH//10, HEIGHT//10
-        rows, cols = (self.sizeX//10, self.sizeY//10)
+        xpix, ypix = HEIGHT//10, WIDTH//10
+        self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
         arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
         self.map = arr
     
