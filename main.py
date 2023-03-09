@@ -36,10 +36,11 @@ class BlockManager:
         print("[BLOCK-M] - BLOCK GROUP FILLED")
 
 class PopMenu:
-    def __init__(self, mapdata, group, screen):
+    def __init__(self, mapdata, blockGroup, npcGroup, screen):
         self.screen = screen
         self.mapData = mapdata
-        self.group = group
+        self.group = blockGroup
+        self.npcGroup = npcGroup
         self.selected = None
         self.opened = False
         self.interacting = False
@@ -50,41 +51,67 @@ class PopMenu:
         self.optionRects = []
         self.selectedAction = None
         self.blockIndex = None
+        self.npcTarget = None
         
+    
+    def getTargetNpc(self):
+        mouseX, mouseY = pg.mouse.get_pos()
+        options = []
+        detected = False
+        
+        for index, npc in enumerate(self.npcGroup):
+            if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
+                self.npcTarget = npc
+                detected = True
+                break
+        if detected == False:
+            self.npcTarget = None
+        
+        if self.npcTarget:
+            if self.npcTarget.type == "zombie":
+                options = ["Attack", "Identify"]
+
+        return options
         
 
-    def getCurrentBlock(self):
+    def getMenuOptions(self):
         mouseX, mouseY = pg.mouse.get_pos()
+        options = []
         #print(mouseX//10, mouseY//10)
         for index, block in enumerate(self.mapData):
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
                 self.selected = block[3]
                 self.posX, self.posY = mouseX, mouseY
                 self.blockIndex = index
+            
+        for index, npc in enumerate(self.npcGroup):
+            if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
+                self.npcTarget = npc
+                break
 
         if self.selected == "DIRT":
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
-            return options
-        if self.selected == "TREE":
+            
+        elif self.selected == "TREE":
             options = ["Cut Tree", "Inspect"]
             self.options = options
-            return options
-        if self.selected == "WATER":
+            
+        elif self.selected == "WATER":
             options = ["Drink", "Pour to Container", "Inspect"]
             self.options = options
-            return options
-        if self.selected == "SAND":
+            
+        elif self.selected == "SAND":
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
-            return options
         
-        else:
-            return ["None"]
+        options += self.getTargetNpc()
+        
+        return options
 
     def setupMenu(self):
         if self.opened == False:
-            options = self.getCurrentBlock()
+            options = self.getMenuOptions()
             self.opened = True
             self.interacting = True
         else:
@@ -292,7 +319,7 @@ class Game:
 
     def newGame(self):
         self.player = Player()
-        self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.screen)
+        self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.npcManager.npcGroup, self.screen)
         self.npcManager.setupNpc()
         
 
