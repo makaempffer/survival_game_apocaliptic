@@ -116,9 +116,8 @@ class PopMenu:
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
             self.posX = self.posX - menuWidth
-            print(self.posX)
             self.xCorrection = True
-            #if abs(WIDTH - self.posX) >= menuWidth:
+
 
         if (HEIGHT - self.posY) < menuOptHeight*len(options) and self.yCorrection == False:
             self.posY -= menuOptHeight*len(options)
@@ -131,7 +130,6 @@ class PopMenu:
             self.optionRects.append(rect)
             text = font.render(item, True, (255, 255, 255))
             x, y = self.posX, self.posY + (index*menuOptHeight)
-            #surfaceMenu.blit(text, rect)
             self.screen.blit(text, rect)
         
             
