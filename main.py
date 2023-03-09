@@ -33,6 +33,7 @@ class PopMenu:
     def __init__(self, mapdata, group):
         self.mapData = mapdata
         self.group = group
+        self.selected = None
 
     def getBlockOptions(self):
         mouseX, mouseY = pg.mouse.get_pos()
@@ -40,6 +41,7 @@ class PopMenu:
         for block in self.mapData:
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
                 print(block[3], block[2])
+                self.selected = block[3], block[2]
 
     def update(self):
         self.getBlockOptions()
@@ -64,13 +66,13 @@ class Block(pg.sprite.Sprite):
         if self.value >= 0.4 and self.value <= 1:
             self.path = "./assets/water.png"
             self.type = "WATER"
-        if self.value >= 0.30 and self.value <= 0.4: 
+        if self.value >= 0.3 and self.value <= 0.4: 
             self.path = "./assets/sand.png"
             self.type = "SAND"
         if self.value >= -0.2 and self.value <= 0.3: 
             self.path = "./assets/dirt.png"
             self.type = "DIRT"
-        if self.value >= -0.2 and self.value <= -0.9:
+        if self.value >= -1 and self.value <= -0.2:
             self.path = "./assets/tree.png"
             self.type = "TREE"
 
