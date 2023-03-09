@@ -82,7 +82,6 @@ class PopMenu:
     def setupMenu(self):
         if self.opened == False:
             options = self.getCurrentBlock()
-            print(options)
             self.opened = True
             self.interacting = True
         else:
@@ -142,7 +141,6 @@ class PopMenu:
                 if mouseX >= rect.x and mouseX <= rect.x + 100: #100 is menuwidth
                     if mouseY >= rect.y and mouseY <= rect.y + 20: #20 is option height
                         self.selectedAction = index
-                        print(index)
                         return index
                         
 
