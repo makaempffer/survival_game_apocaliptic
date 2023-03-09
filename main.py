@@ -24,9 +24,25 @@ class BlockManager:
 
     def fillGroup(self):
         for x, row in enumerate(self.mapData):
-            self.group.add(Block(self.mapData[x][0], self.mapData[x][1], self.mapData[x][2]))
+            block = Block(self.mapData[x][0], self.mapData[x][1], self.mapData[x][2])
+            self.group.add(block)
+            self.mapData[x].append(block.type)
         print("[BLOCK-M] - BLOCK GROUP FILLED")
 
+class PopMenu:
+    def __init__(self, mapdata, group):
+        self.mapData = mapdata
+        self.group = group
+
+    def getBlockOptions(self):
+        mouseX, mouseY = pg.mouse.get_pos()
+        #print(mouseX//10, mouseY//10)
+        for block in self.mapData:
+            if mouseX//10 == block[0] and mouseY//10 == block[1]:
+                print(block[3], block[2])
+
+    def update(self):
+        self.getBlockOptions()
 
 
 
@@ -40,18 +56,23 @@ class Block(pg.sprite.Sprite):
         self.value = value
         self.path = "./assets/tree.png"
         self.image = pg.image.load("./assets/water.png")
+        self.type = None
         self.getImage()
 
     def getImage(self):
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
             self.path = "./assets/water.png"
-        elif self.value >= 0.30 and self.value <= 0.4: 
+            self.type = "WATER"
+        if self.value >= 0.30 and self.value <= 0.4: 
             self.path = "./assets/sand.png"
-        elif self.value >= -0.2 and self.value <= 0.3: 
+            self.type = "SAND"
+        if self.value >= -0.2 and self.value <= 0.3: 
             self.path = "./assets/dirt.png"
-        elif self.value >= -0.2 and self.value <= -1:
+            self.type = "DIRT"
+        if self.value >= -0.2 and self.value <= -0.9:
             self.path = "./assets/tree.png"
+            self.type = "TREE"
 
         """
         if self.value <= 0:
@@ -111,13 +132,16 @@ class Game:
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.world = World(WIDTH, HEIGHT)
         self.player = None
+        self.popMenu = None
         self.blockManager = BlockManager(self.screen, self.world.mapData)
         self.isRunning = True
         self.clock = pg.time.Clock()
         self.delta_time = 1
+        self.newGame()
 
     def newGame(self):
         self.player = Player()
+        self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group)
 
 
 
@@ -127,6 +151,7 @@ class Game:
 
     def update(self):
         self.updatePlayerPos()
+        self.popMenu.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
         pg.display.flip()
