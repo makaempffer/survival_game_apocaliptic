@@ -34,17 +34,47 @@ class PopMenu:
         self.mapData = mapdata
         self.group = group
         self.selected = None
+        self.opened = False
+        self.interacting = False
+        
 
-    def getBlockOptions(self):
+    def getCurrentBlock(self):
         mouseX, mouseY = pg.mouse.get_pos()
         #print(mouseX//10, mouseY//10)
         for block in self.mapData:
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
-                print(block[3], block[2])
-                self.selected = block[3], block[2]
+                self.selected = block[3]
+        if self.selected == "DIRT":
+            options = ["Walk", "Inspect", "Dig"]
+            return options
+        if self.selected == "TREE":
+            options = ["Cut Tree", "Inspect"]
+            return options
+        if self.selected == "WATER":
+            options = ["Drink", "Pour to Container", "Inspect"]
+            return options
+        if self.selected == "SAND":
+            options = ["Walk", "Inspect", "Dig"]
+            return options
+        
+        else:
+            return ["None"]
+
+    def setupMenu(self):
+        if self.opened == False:
+            options = self.getCurrentBlock()
+            print(options)
+            self.opened = True
+            self.interacting = True
+        
+    def interactionUpdate(self):
+        if self.interacting == False:
+            self.opened = False
+        if self.interacting == True:
+            self.opened = True
 
     def update(self):
-        self.getBlockOptions()
+        self.interactionUpdate()
 
 
 
@@ -170,6 +200,12 @@ class Game:
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 pg.quit()
                 sys.exit()
+            
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
+                self.popMenu.setupMenu()
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
+                self.popMenu.interacting = False
+                
 
     def run(self):
         while self.isRunning:
