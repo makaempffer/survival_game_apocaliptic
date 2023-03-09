@@ -30,12 +30,18 @@ class BlockManager:
         print("[BLOCK-M] - BLOCK GROUP FILLED")
 
 class PopMenu:
-    def __init__(self, mapdata, group):
+    def __init__(self, mapdata, group, screen):
+        self.screen = screen
         self.mapData = mapdata
         self.group = group
         self.selected = None
         self.opened = False
         self.interacting = False
+        self.options = []
+        self.posX = 0
+        self.posY = 0
+        self.xCorrection, self.yCorrection = False, False
+        
         
 
     def getCurrentBlock(self):
@@ -44,17 +50,22 @@ class PopMenu:
         for block in self.mapData:
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
                 self.selected = block[3]
+                self.posX, self.posY = mouseX, mouseY
         if self.selected == "DIRT":
             options = ["Walk", "Inspect", "Dig"]
+            self.options = options
             return options
         if self.selected == "TREE":
             options = ["Cut Tree", "Inspect"]
+            self.options = options
             return options
         if self.selected == "WATER":
             options = ["Drink", "Pour to Container", "Inspect"]
+            self.options = options
             return options
         if self.selected == "SAND":
             options = ["Walk", "Inspect", "Dig"]
+            self.options = options
             return options
         
         else:
@@ -66,12 +77,38 @@ class PopMenu:
             print(options)
             self.opened = True
             self.interacting = True
+            self.showMenu(options=[])
         
     def interactionUpdate(self):
         if self.interacting == False:
             self.opened = False
         if self.interacting == True:
             self.opened = True
+        if self.opened and len(self.options) > 0:
+            self.showMenu(self.options)
+        if self.opened == False:
+            self.xCorrection = False
+            self.yCorrection = False
+
+    def showMenu(self, options):
+        menuWidth = 150
+        menuOptHeight = 50
+        surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
+        optionRects = []
+
+        if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
+            self.posX -= WIDTH - self.posX
+            if abs(WIDTH - self.posX) >= menuWidth:
+                self.xCorrection = True
+        if (HEIGHT - self.posY) < menuOptHeight*len(options) and self.yCorrection == False:
+            self.posY -= menuOptHeight*len(options)
+            if abs(HEIGHT - self.posY) >= menuOptHeight*len(options):
+                self.yCorrection = True
+        for index, item in enumerate(options):
+            
+            pg.draw.rect(surfaceMenu, (255, 100, 150), pg.Rect(self.posX, self.posY, menuWidth, menuOptHeight))
+        self.screen.blit(surfaceMenu, (self.posX, self.posY))
+        
 
     def update(self):
         self.interactionUpdate()
@@ -173,7 +210,8 @@ class Game:
 
     def newGame(self):
         self.player = Player()
-        self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group)
+        self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.screen)
+        
 
 
 
