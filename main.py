@@ -49,16 +49,19 @@ class PopMenu:
         self.xCorrection, self.yCorrection = False, False
         self.optionRects = []
         self.selectedAction = None
+        self.blockIndex = None
         
         
 
     def getCurrentBlock(self):
         mouseX, mouseY = pg.mouse.get_pos()
         #print(mouseX//10, mouseY//10)
-        for block in self.mapData:
+        for index, block in enumerate(self.mapData):
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
                 self.selected = block[3]
                 self.posX, self.posY = mouseX, mouseY
+                self.blockIndex = index
+
         if self.selected == "DIRT":
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
@@ -148,6 +151,62 @@ class PopMenu:
         self.getAction()
 
 
+class NPC(pg.sprite.Sprite):
+    def __init__(self, x, y, type):
+        super().__init__()
+        self.size = 10
+        self.posX = x
+        self.posY = y
+        self.rect = None
+        self.path = "./assets/character_player.png"
+        self.image = pg.image.load(self.path)
+        self.rect = pg.Rect(self.posX * self.size, self.posY * self.size, 10, 10)
+        self.type = type
+
+    def getType(self):
+        if self.type == "zombie":
+            self.path = "./assets/character_player.png"
+
+    def setPosition(self, x, y):
+        self.posX = x
+        self.posY = y
+    
+class NPCManager():
+    def __init__(self, screen, width=WIDTH, height=HEIGHT):
+        self.npcGroup = pg.sprite.Group()
+        self.screen = screen
+        self.map = []
+        self.sizeX, self.sizeY = width, height
+    
+    def setupNpc(self):
+        self.createSpawns()
+        self.spawn()
+
+    def spawnNpc(self,x, y,type="zombie"):
+        self.npcGroup.add(NPC(x, y, type))
+
+    def render(self):
+        self.npcGroup.draw(self.screen)
+
+    def createSpawns(self):
+        noise = PerlinNoise(octaves=7, seed=1)
+        xpix, ypix = HEIGHT//10, WIDTH//10
+        self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
+        arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
+        self.map = arr
+        print("[NPC] - NPC MAP CREATED")
+    
+    def spawn(self):
+        if len(self.map) > 1:
+            for x, row in enumerate(self.map):
+                for y, col in enumerate(row):
+                    if self.map[x][y] >= -0.4 and self.map[x][y] <= -0.3:
+                        choice = random.randrange(0, 10)
+                        if choice > 8:
+                            self.spawnNpc(x, y, "zombie") 
+            print("[NPC] - NPC SPAWN DONE")
+
+
 
 class Block(pg.sprite.Sprite):
     def __init__(self, posX, posY, value):
@@ -160,6 +219,7 @@ class Block(pg.sprite.Sprite):
         self.path = "./assets/tree.png"
         self.image = pg.image.load("./assets/water.png")
         self.type = None
+        self.data = []
         self.getImage()
 
     def getImage(self):
@@ -177,22 +237,9 @@ class Block(pg.sprite.Sprite):
             self.path = "./assets/tree.png"
             self.type = "TREE"
 
-        """
-        if self.value <= 0:
-            self.type = "./assets/sand.png"
-        if self.value <= 0.3 and self.value >= 0:
-            self.type = "./assets/dirt.png"
-        if self.value <= 0.4 and self.value >= 0.3:
-            self.type = "./assets/water.png"
-        if self.value >= 0.6 and self.value <= 1:
-            self.type = "./assets/tree.png"
-        """    
-
         self.image = pg.image.load(str(self.path))
 
             
-
-
 class World:
     def __init__(self, sizeX, sizeY):
         self.map = []
@@ -237,6 +284,7 @@ class Game:
         self.player = None
         self.popMenu = None
         self.blockManager = BlockManager(self.screen, self.world.mapData)
+        self.npcManager = NPCManager(self.screen)
         self.isRunning = True
         self.clock = pg.time.Clock()
         self.delta_time = 1
@@ -245,6 +293,7 @@ class Game:
     def newGame(self):
         self.player = Player()
         self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.screen)
+        self.npcManager.setupNpc()
         
 
 
@@ -264,6 +313,7 @@ class Game:
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.blockManager.render()
+        self.npcManager.render()
 
         
 
