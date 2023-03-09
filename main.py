@@ -101,7 +101,7 @@ class PopMenu:
             self.optionRects = []
             
     def getAction(self):
-        if self.selectedAction:
+        if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
             print(selectedAction)
             self.selectedAction = None
@@ -114,13 +114,12 @@ class PopMenu:
         menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
         surfaceMenu.fill((50, 50, 50))
-        
-        optionRects = []
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
             self.posX -= WIDTH - self.posX
             if abs(WIDTH - self.posX) >= menuWidth:
                 self.xCorrection = True
+
         if (HEIGHT - self.posY) < menuOptHeight*len(options) and self.yCorrection == False:
             self.posY -= menuOptHeight*len(options)
             if abs(HEIGHT - self.posY) >= menuOptHeight*len(options):
