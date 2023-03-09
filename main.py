@@ -115,9 +115,10 @@ class PopMenu:
         surfaceMenu.fill((50, 50, 50))
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
-            self.posX -= WIDTH - self.posX
-            if abs(WIDTH - self.posX) >= menuWidth:
-                self.xCorrection = True
+            self.posX = self.posX - menuWidth
+            print(self.posX)
+            self.xCorrection = True
+            #if abs(WIDTH - self.posX) >= menuWidth:
 
         if (HEIGHT - self.posY) < menuOptHeight*len(options) and self.yCorrection == False:
             self.posY -= menuOptHeight*len(options)
