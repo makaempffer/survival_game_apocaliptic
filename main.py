@@ -6,6 +6,12 @@ import pygame as pg
 from perlin_noise import PerlinNoise
 FPS = 60
 WIDTH, HEIGHT = 1000, 600
+
+pg.font.init()
+font = pg.font.Font('freesansbold.ttf', 12)
+
+
+
 def mapFromTo(x_input, in_range_start, in_range_start_end, out_range_start, out_range_end):
    y=(x_input - in_range_start) / (in_range_start_end-in_range_start) * (out_range_end-out_range_start) + out_range_start
    return y
@@ -41,6 +47,8 @@ class PopMenu:
         self.posX = 0
         self.posY = 0
         self.xCorrection, self.yCorrection = False, False
+        self.optionRects = []
+        self.selectedAction = None
         
         
 
@@ -77,6 +85,7 @@ class PopMenu:
             print(options)
             self.opened = True
             self.interacting = True
+        else:
             self.showMenu(options=[])
         
     def interactionUpdate(self):
@@ -89,11 +98,23 @@ class PopMenu:
         if self.opened == False:
             self.xCorrection = False
             self.yCorrection = False
+            self.optionRects = []
+            
+    def getAction(self):
+        if self.selectedAction:
+            selectedAction = self.options[self.selectedAction]
+            print(selectedAction)
+            self.selectedAction = None
+            return selectedAction
+
+
 
     def showMenu(self, options):
-        menuWidth = 150
-        menuOptHeight = 50
+        menuWidth = 100
+        menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
+        surfaceMenu.fill((50, 50, 50))
+        
         optionRects = []
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
@@ -104,14 +125,31 @@ class PopMenu:
             self.posY -= menuOptHeight*len(options)
             if abs(HEIGHT - self.posY) >= menuOptHeight*len(options):
                 self.yCorrection = True
-        for index, item in enumerate(options):
-            
-            pg.draw.rect(surfaceMenu, (255, 100, 150), pg.Rect(self.posX, self.posY, menuWidth, menuOptHeight))
-        self.screen.blit(surfaceMenu, (self.posX, self.posY))
         
+        self.screen.blit(surfaceMenu, (self.posX, self.posY))
+        for index, item in enumerate(options):
+            rect = pg.Rect(self.posX, self.posY + (index*menuOptHeight), menuWidth, menuOptHeight)
+            self.optionRects.append(rect)
+            text = font.render(item, True, (255, 255, 255))
+            x, y = self.posX, self.posY + (index*menuOptHeight)
+            #surfaceMenu.blit(text, rect)
+            self.screen.blit(text, rect)
+        
+            
+    def getSelectedOption(self, event):
+        mouseX, mouseY = pg.mouse.get_pos()
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
+            for index, rect in enumerate(self.optionRects):
+                if mouseX >= rect.x and mouseX <= rect.x + 100: #100 is menuwidth
+                    if mouseY >= rect.y and mouseY <= rect.y + 20: #20 is option height
+                        self.selectedAction = index
+                        print(index)
+                        return index
+                        
 
     def update(self):
         self.interactionUpdate()
+        self.getAction()
 
 
 
@@ -241,6 +279,7 @@ class Game:
             
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
                 self.popMenu.setupMenu()
+            self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
                 
