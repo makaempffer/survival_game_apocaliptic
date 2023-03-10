@@ -132,7 +132,7 @@ class PopMenu:
     def getAction(self):
         if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
-            print(selectedAction)
+            print(selectedAction) 
             self.selectedAction = None
             return selectedAction
 
@@ -156,7 +156,7 @@ class PopMenu:
         
         self.screen.blit(surfaceMenu, (self.posX, self.posY))
         for index, item in enumerate(options):
-            rect = pg.Rect(self.posX, self.posY + (index*menuOptHeight), menuWidth, menuOptHeight)
+            rect = pg.Rect(self.posX + 5, self.posY + (index*menuOptHeight), menuWidth, menuOptHeight)
             self.optionRects.append(rect)
             text = font.render(item, True, (255, 255, 255))
             x, y = self.posX, self.posY + (index*menuOptHeight)
@@ -189,6 +189,8 @@ class NPC(pg.sprite.Sprite):
         self.image = pg.image.load(self.path)
         self.rect = pg.Rect(self.posX * self.size, self.posY * self.size, 10, 10)
         self.type = type
+        self.didMove = False
+        self.getType()
 
     def getType(self):
         if self.type == "zombie":
@@ -198,6 +200,23 @@ class NPC(pg.sprite.Sprite):
         self.posX = x
         self.posY = y
     
+    def update(self):
+        self.move()
+    
+    def move(self):
+        neighbors = self.getNeighbors()
+        self.rect.x = neighbors[0]
+        #self.rect.y = neighbors[2]
+    
+    def getNeighbors(self):
+        left = self.rect.x - 10
+        right = self.rect.x + 10
+        top = self.rect.y - 10
+        bottom = self.rect.y + 10
+        return [left, right, top, bottom]
+    
+
+    
 class NPCManager():
     def __init__(self, screen, width=WIDTH, height=HEIGHT):
         self.npcGroup = pg.sprite.Group()
@@ -205,6 +224,9 @@ class NPCManager():
         self.map = []
         self.sizeX, self.sizeY = width, height
     
+    def npcEvent(self):
+        self.npcGroup.move()
+
     def setupNpc(self):
         self.createSpawns()
         self.spawn()
@@ -355,6 +377,7 @@ class Game:
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
+                self.npcManager.npcGroup.update()
                 
 
     def run(self):
