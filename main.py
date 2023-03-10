@@ -182,14 +182,16 @@ class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, type):
         super().__init__()
         self.size = 10
-        self.posX = x
-        self.posY = y
         self.rect = None
         self.path = "./assets/character_player.png"
         self.image = pg.image.load(self.path)
-        self.rect = pg.Rect(self.posX * self.size, self.posY * self.size, 10, 10)
+        self.rect = pg.Rect(x * self.size, y * self.size, 10, 10)
         self.type = type
         self.didMove = False
+        self.isMoving = False
+        self.stopAction = False
+        self.recalculate = True
+        self.target = []
         self.getType()
 
     def getType(self):
@@ -197,16 +199,62 @@ class NPC(pg.sprite.Sprite):
             self.path = "./assets/character_player.png"
 
     def setPosition(self, x, y):
-        self.posX = x
-        self.posY = y
+        self.rect.x = x
+        self.rect.y = y
     
     def update(self):
         self.move()
     
     def move(self):
-        neighbors = self.getNeighbors()
-        self.rect.x = neighbors[0]
+        targetLocation = None
+        if self.recalculate == True:
+            targetLocation = self.getMoveLocation()
+            self.recalculate = False
+        else:
+            targetLocation = self.target 
+        if self.isMoving:
+            if targetLocation and self.isMoving:
+                distX = (self.rect.x - targetLocation[0])
+                distY = (self.rect.y - targetLocation[1])
+                print(distX, distY)
+                if distX > 0:
+                    self.setPosition(self.rect.x - 10, self.rect.y)
+                if distX < 0:
+                    self.setPosition(self.rect.x + 10, self.rect.y)
+                if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
+                    targetLocation = None
+                    self.isMoving = False
+
+                
+                if distY > 0: 
+                    self.setPosition(self.rect.x, self.rect.y - 10)
+                if distY < 0: 
+                    self.setPosition(self.rect.x, self.rect.y + 10)
+            
+        #neighbors = self.getNeighbors()
+        #self.rect.x = neighbors[0]
+        #self.getMoveLocation()
         #self.rect.y = neighbors[2]
+
+    def getMoveLocation(self):
+        if self.recalculate:
+            possibleMovements = []
+            
+            gridX, gridY = self.rect.x, self.rect.y
+            left = [gridX - 0, gridX - 10, gridX - 20, gridX - 30, gridX - 40]
+            right = [gridX + 0, gridX + 10, gridX + 20, gridX + 30, gridX + 40]
+            up = [gridY - 0, gridY - 10, gridY - 20, gridY - 30, gridY - 40]
+            bottom = [gridY + 0, gridY + 10, gridY + 20, gridY + 30, gridY + 40]
+            xMoves = [left, right]
+            yMoves = [up, bottom]
+            xMovement = random.choice(xMoves)
+            yMovement = random.choice(yMoves)
+            moveChoiceX = random.choice(xMovement)
+            moveChoiceY = random.choice(yMovement)
+            self.isMoving = True
+            self.target = [moveChoiceX, moveChoiceY]
+            return [moveChoiceX, moveChoiceY]
+
     
     def getNeighbors(self):
         left = self.rect.x - 10
