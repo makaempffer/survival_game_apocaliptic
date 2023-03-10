@@ -192,18 +192,39 @@ class NPC(pg.sprite.Sprite):
         self.stopAction = False
         self.recalculate = True
         self.target = []
+        self.resetTime = random.randint(500, 3000)
+        self.counter = 0
+        self.actionCooldown = random.randint(100, 1000)
+        self.doAction = True
         self.getType()
 
     def getType(self):
         if self.type == "zombie":
-            self.path = "./assets/character_player.png"
+            self.path = "./assets/zombie.png"
+            self.image = pg.image.load(self.path)
 
     def setPosition(self, x, y):
         self.rect.x = x
         self.rect.y = y
     
+    def moveEventFunction(self):
+        self.counter += 1
+        if self.counter == self.resetTime:
+            self.recalculate = True
+            self.counter = 0
+        
+        if self.counter == self.actionCooldown:
+            self.doAction = True
+        if self.counter != self.actionCooldown:
+            self.doAction = False
+
+        
+
     def update(self):
-        self.move()
+        self.moveEventFunction()
+        if self.doAction:
+            self.move()
+        
     
     def move(self):
         targetLocation = None
@@ -425,7 +446,8 @@ class Game:
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
-                self.npcManager.npcGroup.update()
+        self.npcManager.npcGroup.update()
+            
                 
 
     def run(self):
