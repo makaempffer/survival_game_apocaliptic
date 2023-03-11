@@ -1,6 +1,4 @@
 import random
-import time
-import os
 import sys
 import pygame as pg
 from perlin_noise import PerlinNoise
@@ -8,8 +6,8 @@ FPS = 60
 WIDTH, HEIGHT = 1000, 600
 
 pg.font.init()
-font = pg.font.Font('freesansbold.ttf', 12)
-
+#font = pg.font.Font('freesansbold.ttf', 12) #default use font
+font = pg.font.Font('RobotoMono-VariableFont_wght.ttf', 14)
 
 
 def mapFromTo(x_input, in_range_start, in_range_start_end, out_range_start, out_range_end):
@@ -134,7 +132,7 @@ class PopMenu:
     def getAction(self):
         if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
-            print(selectedAction) 
+            #print(selectedAction) 
             self.selectedAction = None
             return selectedAction
 
@@ -313,7 +311,7 @@ class NPCManager():
         self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
         arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
         self.map = arr
-        print("[NPC] - NPC MAP CREATED")
+        print("[NPC-M] - NPC MAP CREATED")
     
     def spawn(self):
         if len(self.map) > 1:
@@ -323,7 +321,7 @@ class NPCManager():
                         choice = random.randrange(0, 10)
                         if choice > 8:
                             self.spawnNpc(x, y, "zombie") 
-            print("[NPC] - NPC SPAWN DONE")
+            print("[NPC-M] - NPC SPAWN DONE")
 
 
 
@@ -413,55 +411,70 @@ class Player(pg.sprite.Sprite):
         self.rect = pg.Rect(self.posX, self.posY, 10, 10)
         self.image = pg.image.load("./assets/character_player.png")
         self.lastCommand = ""
+        self.counter = 0
+        self.cooldown = 200
+        self.doAction = True
 
     
     def update(self):
+        self.counter += 1
         self.movement()
     
     def movement(self):
+        if self.counter == self.cooldown:
+            self.doAction = True
+            self.counter = 0
         
-        action = self.menu.getAction()
-        if action != None:
-            
-            self.lastCommand = action
-            
-        if self.lastCommand:
-            print("Action:", action, "Last Command:", self.lastCommand)
-            if self.lastCommand == "Walk":
-                targetLocation = self.menu.startingPoint
-                targetLocation[0] = (targetLocation[0] // 10) * 10
-                targetLocation[1] = (targetLocation[1] // 10) * 10
-                print("Starting point:", self.menu.startingPoint)
-                print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
-
+        if self.doAction:
+        
+            action = self.menu.getAction()
+            if action != None:
                 
-
-                if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
-                    targetLocation = None
-                    self.lastCommand = None
-                    return
-                if targetLocation:
-                    distX = (self.rect.x - targetLocation[0])
-                    distY = (self.rect.y - targetLocation[1])
+                self.lastCommand = action
+                
+            if self.lastCommand:
+                #print("Action:", action, "Last Command:", self.lastCommand)
+                if self.lastCommand == "Walk":
+                    targetLocation = self.menu.startingPoint
+                    targetLocation[0] = (targetLocation[0] // 10) * 10
+                    targetLocation[1] = (targetLocation[1] // 10) * 10
+                    #print("Starting point:", self.menu.startingPoint)
+                    #print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
 
                     
-                    if distX > 0:
-                        self.rect.x, self.rect.y = self.rect.x - 10, self.rect.y
-                        #self.setPosition(self.rect.x - 10, self.rect.y)
-                    if distX < 0:
-                        self.rect.x, self.rect.y = self.rect.x + 10, self.rect.y
-                        #self.setPosition(self.rect.x + 10, self.rect.y)
-        
-                    if distY > 0: 
-                        self.rect.x, self.rect.y = self.rect.x, self.rect.y - 10
-                        #self.setPosition(self.rect.x, self.rect.y - 10)
-                    if distY < 0: 
-                        self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
-                        #self.setPosition(self.rect.x, self.rect.y + 10)
+
+                    if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
+                        targetLocation = None
+                        self.lastCommand = None
+                        
+                        return
+                    
+                    if targetLocation:
+                        distX = (self.rect.x - targetLocation[0])
+                        distY = (self.rect.y - targetLocation[1])
+
+                        
+                        if distX > 0:
+                            self.rect.x, self.rect.y = self.rect.x - 10, self.rect.y
+                            #self.setPosition(self.rect.x - 10, self.rect.y)
+                        elif distX < 0:
+                            self.rect.x, self.rect.y = self.rect.x + 10, self.rect.y
+                            #self.setPosition(self.rect.x + 10, self.rect.y)
+            
+                        if distY > 0: 
+                            self.rect.x, self.rect.y = self.rect.x, self.rect.y - 10
+                            #self.setPosition(self.rect.x, self.rect.y - 10)
+                        elif distY < 0: 
+                            self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
+                            #self.setPosition(self.rect.x, self.rect.y + 10)
+                        self.doAction = False   
+         
 
 class Game:
     def __init__(self):
         pg.init()
+        self.programIcon = pg.image.load('./assets/character_player.png') 
+        pg.display.set_icon(self.programIcon)
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.world = World(WIDTH, HEIGHT)
         self.popMenu = None
