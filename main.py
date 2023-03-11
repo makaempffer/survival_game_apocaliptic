@@ -45,6 +45,7 @@ class PopMenu:
         self.opened = False
         self.interacting = False
         self.options = []
+        self.startingPoint = []
         self.posX = 0
         self.posY = 0
         self.xCorrection, self.yCorrection = False, False
@@ -143,6 +144,7 @@ class PopMenu:
         menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
         surfaceMenu.fill((50, 50, 50))
+        self.startingPoint = [self.posX, self.posY]
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
             self.posX = self.posX - menuWidth
@@ -237,7 +239,7 @@ class NPC(pg.sprite.Sprite):
             if targetLocation and self.isMoving:
                 distX = (self.rect.x - targetLocation[0])
                 distY = (self.rect.y - targetLocation[1])
-                print(distX, distY)
+
                 if distX > 0:
                     self.setPosition(self.rect.x - 10, self.rect.y)
                 if distX < 0:
@@ -386,42 +388,98 @@ class World:
 
             
 
-        
+class PlayerManager:
+    def __init__(self, screen, menu):
+        self.group = pg.sprite.Group()
+        self.screen = screen
+        self.menu = menu
+        self.createPlayer()
+    
+    def createPlayer(self):
+        player = Player(self.menu)
+        self.group.add(player)
+    
+    def update(self):
+        self.group.update()
 
-class Player:
-    def __init__(self):
-        self.hp = 10
-        self.posX = random.randint(0, WIDTH//10)
-        self.posY = random.randint(0, HEIGHT//10)
+    def render(self):
+        self.group.draw(self.screen)
+
+class Player(pg.sprite.Sprite):
+    def __init__(self, menu):
+        super().__init__()
+        self.posX = 400
+        self.posY = 400
+        self.menu = menu
+        self.rect = pg.Rect(self.posX, self.posY, 10, 10)
+        self.image = pg.image.load("./assets/character_player.png")
+        self.lastCommand = ""
+
+    
+    def update(self):
+        self.movement()
+    
+    def movement(self):
+        
+        action = self.menu.getAction()
+        if action != None:
+            
+            self.lastCommand = action
+            
+        if self.lastCommand:
+            print("Action:", action, "Last Command:", self.lastCommand)
+            if self.lastCommand == "Walk":
+                targetLocation = self.menu.startingPoint
+                print("Starting point:", self.menu.startingPoint)
+                print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
+
+                
+
+                if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
+                    targetLocation = None
+                    self.lastCommand = None
+                    return
+                if targetLocation:
+                    distX = (self.rect.x - (targetLocation[0] // 10) * 10)
+                    distY = (self.rect.y - (targetLocation[1] // 10) * 10)
+
+                    
+                    if distX > 0:
+                        self.rect.x, self.rect.y = self.rect.x - 10, self.rect.y
+                        #self.setPosition(self.rect.x - 10, self.rect.y)
+                    if distX < 0:
+                        self.rect.x, self.rect.y = self.rect.x + 10, self.rect.y
+                        #self.setPosition(self.rect.x + 10, self.rect.y)
+        
+                    if distY > 0: 
+                        self.rect.x, self.rect.y = self.rect.x, self.rect.y - 10
+                        #self.setPosition(self.rect.x, self.rect.y - 10)
+                    if distY < 0: 
+                        self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
+                        #self.setPosition(self.rect.x, self.rect.y + 10)
 
 class Game:
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.world = World(WIDTH, HEIGHT)
-        self.player = None
         self.popMenu = None
         self.blockManager = BlockManager(self.screen, self.world.mapData)
         self.npcManager = NPCManager(self.screen)
         self.isRunning = True
         self.clock = pg.time.Clock()
         self.delta_time = 1
+        self.playerManager = None
         self.newGame()
 
     def newGame(self):
-        self.player = Player()
         self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.npcManager.npcGroup, self.screen)
+        self.playerManager = PlayerManager(self.screen, self.popMenu)
         self.npcManager.setupNpc()
         
 
-
-
-    def updatePlayerPos(self):
-        return
-        self.world.map[self.player.posX][self.player.posY] = self.player
-
     def update(self):
-        self.updatePlayerPos()
+        self.playerManager.update()
         self.popMenu.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
@@ -431,6 +489,7 @@ class Game:
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.blockManager.render()
+        self.playerManager.render()
         self.npcManager.render()
 
         
