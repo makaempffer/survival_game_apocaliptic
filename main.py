@@ -77,6 +77,7 @@ class PopMenu:
 
     def getMenuOptions(self):
         mouseX, mouseY = pg.mouse.get_pos()
+        self.startingPoint = [mouseX, mouseY]
         options = []
         #print(mouseX//10, mouseY//10)
         for index, block in enumerate(self.mapData):
@@ -144,12 +145,11 @@ class PopMenu:
         menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
         surfaceMenu.fill((50, 50, 50))
-        self.startingPoint = [self.posX, self.posY]
+        
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
             self.posX = self.posX - menuWidth
             self.xCorrection = True
-
 
         if (HEIGHT - self.posY) < menuOptHeight*len(options) and self.yCorrection == False:
             self.posY -= menuOptHeight*len(options)
@@ -164,7 +164,6 @@ class PopMenu:
             x, y = self.posX, self.posY + (index*menuOptHeight)
             self.screen.blit(text, rect)
         
-            
     def getSelectedOption(self, event):
         mouseX, mouseY = pg.mouse.get_pos()
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
@@ -430,6 +429,8 @@ class Player(pg.sprite.Sprite):
             print("Action:", action, "Last Command:", self.lastCommand)
             if self.lastCommand == "Walk":
                 targetLocation = self.menu.startingPoint
+                targetLocation[0] = (targetLocation[0] // 10) * 10
+                targetLocation[1] = (targetLocation[1] // 10) * 10
                 print("Starting point:", self.menu.startingPoint)
                 print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
 
@@ -440,8 +441,8 @@ class Player(pg.sprite.Sprite):
                     self.lastCommand = None
                     return
                 if targetLocation:
-                    distX = (self.rect.x - (targetLocation[0] // 10) * 10)
-                    distY = (self.rect.y - (targetLocation[1] // 10) * 10)
+                    distX = (self.rect.x - targetLocation[0])
+                    distY = (self.rect.y - targetLocation[1])
 
                     
                     if distX > 0:
