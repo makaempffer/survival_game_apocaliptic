@@ -405,6 +405,7 @@ class PlayerManager:
     def render(self):
         self.group.draw(self.screen)
 
+
 class Player(pg.sprite.Sprite):
     def __init__(self, menu):
         super().__init__()
@@ -417,13 +418,30 @@ class Player(pg.sprite.Sprite):
         self.counter = 0
         self.cooldown = 200
         self.doAction = True
-
+        self.isWalking = False
+        self.walkSound = pg.mixer.Sound('./sounds/walk.mp3')
+        self.triggered = False
+        
     
+    def walk(self, target):
+        
+        if self.isWalking == True and self.triggered == False:
+            self.walkSound.set_volume(0.2)
+            self.walkSound.play(5, 0, 4000)
+            
+            self.triggered = True
+        
+        if target == None:
+            self.walkSound.fadeout(2000)
+            self.triggered = False
+
     def update(self):
         self.counter += 1
         self.movement()
     
     def movement(self):
+        
+        
         if self.counter == self.cooldown:
             self.doAction = True
             self.counter = 0
@@ -434,10 +452,11 @@ class Player(pg.sprite.Sprite):
             if action != None:
                 
                 self.lastCommand = action
-                
+                self.isWalking = True
             if self.lastCommand:
                 #print("Action:", action, "Last Command:", self.lastCommand)
                 if self.lastCommand == "Walk" and self.menu.savedLocation:
+                    
 
                     targetLocation = self.menu.savedLocation
 
@@ -451,10 +470,13 @@ class Player(pg.sprite.Sprite):
                     if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
                         targetLocation = None
                         self.lastCommand = None
-                        
+                        self.isWalking = False
+                        self.walk(targetLocation)
                         return
-                    
+                        
+                    self.walk(targetLocation)
                     if targetLocation:
+                        
                         distX = (self.rect.x - targetLocation[0])
                         distY = (self.rect.y - targetLocation[1])
 
