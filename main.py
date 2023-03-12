@@ -51,6 +51,7 @@ class PopMenu:
         self.selectedAction = None
         self.blockIndex = None
         self.npcTarget = None
+        self.savedLocation = []
         
     
     def getTargetNpc(self):
@@ -63,6 +64,7 @@ class PopMenu:
                 self.npcTarget = npc
                 detected = True
                 break
+
         if detected == False:
             self.npcTarget = None
         
@@ -132,8 +134,9 @@ class PopMenu:
     def getAction(self):
         if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
-            #print(selectedAction) 
             self.selectedAction = None
+            if selectedAction == "Walk":
+                self.savedLocation = self.startingPoint
             return selectedAction
 
 
@@ -434,8 +437,10 @@ class Player(pg.sprite.Sprite):
                 
             if self.lastCommand:
                 #print("Action:", action, "Last Command:", self.lastCommand)
-                if self.lastCommand == "Walk":
-                    targetLocation = self.menu.startingPoint
+                if self.lastCommand == "Walk" and self.menu.savedLocation:
+
+                    targetLocation = self.menu.savedLocation
+
                     targetLocation[0] = (targetLocation[0] // 10) * 10
                     targetLocation[1] = (targetLocation[1] // 10) * 10
                     #print("Starting point:", self.menu.startingPoint)
