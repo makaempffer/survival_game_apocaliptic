@@ -20,6 +20,7 @@ class PopMenu:
         self.blockIndex = None
         self.npcTarget = None
         self.savedLocation = []
+        self.previous_action = None
         
     
     def getTargetNpc(self):
@@ -102,6 +103,7 @@ class PopMenu:
     def getAction(self):
         if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
+            self.previous_action = selectedAction
             self.selectedAction = None
             if selectedAction == "Walk":
                 self.savedLocation = self.startingPoint

@@ -22,7 +22,7 @@ class Player(pg.sprite.Sprite):
         
         if self.isWalking == True and self.triggered == False:
             self.walkSound.set_volume(0.2)
-            self.walkSound.play(5, 0, 4000)
+            self.walkSound.play(5, 0, 3000)
             
             self.triggered = True
         
