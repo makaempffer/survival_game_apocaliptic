@@ -8,9 +8,11 @@ class CombatManager:
         self.combat_system = combatSystem
         self.npc_group = npc_group
         self.player_group = player_group
+        self.closest_ref = None
 
     def get_player_vs_npc(self, player= None):
         player_ref = player
+        closest_possible = 10000
         for player in self.player_group:
             player_ref = player
             player_x = player.rect.x
@@ -22,10 +24,14 @@ class CombatManager:
             avg_dist = (dist_x + dist_y) / 2
 
             if avg_dist < player_ref.vision_distance:
+                if  avg_dist < closest_possible:
+                    closest_possible = avg_dist
+                    self.closest_ref = npc
+
+            if npc and self.closest_ref:
+                pg.draw.rect(self.screen, (230, 20, 20), self.closest_ref.rect)
                 pg.draw.rect(self.screen, (20, 230, 20), npc.rect)
-                print(avg_dist)
-                print(dist_x)
-                print(dist_y)
+
     
     def update(self):
         self.get_player_vs_npc()
