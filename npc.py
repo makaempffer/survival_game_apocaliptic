@@ -19,6 +19,8 @@ class NPC(pg.sprite.Sprite):
         self.counter = 0
         self.actionCooldown = randint(100, 1000)
         self.doAction = True
+        self.combat_triggered = False
+        self.vision_distance = 30
         self.getType()
 
     def getType(self):

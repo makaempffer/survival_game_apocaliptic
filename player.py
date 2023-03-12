@@ -1,4 +1,3 @@
-
 import pygame as pg
 class Player(pg.sprite.Sprite):
     def __init__(self, menu):
@@ -10,13 +9,15 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/character_player.png")
         self.lastCommand = ""
         self.counter = 0
-        self.cooldown = 200
+        self.cooldown = 20
         self.doAction = True
         self.isWalking = False
         self.walkSound = pg.mixer.Sound('./sounds/walk.mp3')
         self.triggered = False
-        
-    
+        self.combat_triggered = False
+        self.vision_distance = 50
+
+
     def walk(self, target):
         
         if self.isWalking == True and self.triggered == False:
@@ -89,3 +90,5 @@ class Player(pg.sprite.Sprite):
                             self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
                             #self.setPosition(self.rect.x, self.rect.y + 10)
                         self.doAction = False   
+
+        

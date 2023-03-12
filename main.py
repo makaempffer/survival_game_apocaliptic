@@ -1,15 +1,14 @@
-import random
 import sys
 import pygame as pg
 
-from player import *
-from pop_menu import PopMenu
 from settings import *
 from functions import *
+from world import World
+from pop_menu import PopMenu
 from npc_manager import NPCManager
 from block_manager import BlockManager
 from player_manager import PlayerManager
-from world import World
+from combat_manager import CombatManager
          
 
 class Game:
@@ -22,25 +21,29 @@ class Game:
         self.popMenu = None
         self.blockManager = BlockManager(self.screen, self.world.mapData)
         self.npcManager = NPCManager(self.screen)
+        self.combat_manager: CombatManager
         self.isRunning = True
         self.clock = pg.time.Clock()
         self.delta_time = 1
         self.playerManager = None
         self.newGame()
 
+
     def newGame(self):
         self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.npcManager.npcGroup, self.screen)
         self.playerManager = PlayerManager(self.screen, self.popMenu)
         self.npcManager.setupNpc()
-        
+        self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group)
 
+        
     def update(self):
         self.playerManager.update()
         self.popMenu.update()
+        self.combat_manager.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
-        pg.display.flip()
-        
+        pg.display.flip()      
+
 
     def draw(self):
         self.screen.fill((0, 0, 0))
@@ -48,7 +51,6 @@ class Game:
         self.playerManager.render()
         self.npcManager.render()
 
-        
 
     def check_events(self):
         for event in pg.event.get():
@@ -63,7 +65,6 @@ class Game:
                 self.popMenu.interacting = False
         self.npcManager.npcGroup.update()
             
-                
 
     def run(self):
         while self.isRunning:
