@@ -132,8 +132,7 @@ class Health:
             if target.body_avg >= 1:
                 target.receive_damage(amount)
 
-                
-
+            
     def update(self, owner):
         self.check_alive(owner)
 

@@ -9,6 +9,7 @@ from npc_manager import NPCManager
 from block_manager import BlockManager
 from player_manager import PlayerManager
 from combat_manager import CombatManager
+from health_manager import HealthManager
          
 
 class Game:
@@ -34,11 +35,14 @@ class Game:
         self.playerManager = PlayerManager(self.screen, self.popMenu)
         self.npcManager.setupNpc()
         self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
-        
+        self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
+
+
     def update(self):
         self.playerManager.update()
         self.popMenu.update()
         self.combat_manager.update()
+        self.health_manager.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
         pg.display.flip()      

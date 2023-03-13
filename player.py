@@ -11,7 +11,7 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/character_player.png")
         self.lastCommand = ""
         self.counter = 0
-        self.cooldown = 20
+        self.cooldown = 100
         self.doAction = True
         self.isWalking = False
         self.walkSound = pg.mixer.Sound('./sounds/walk.mp3')
