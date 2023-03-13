@@ -21,6 +21,7 @@ class PopMenu:
         self.npcTarget = None
         self.savedLocation = []
         self.previous_action = None
+        self.selected_target = None
         
     
     def getTargetNpc(self):
@@ -31,6 +32,7 @@ class PopMenu:
         for index, npc in enumerate(self.npcGroup):
             if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
                 self.npcTarget = npc
+                self.selected_target = npc
                 detected = True
                 break
 
@@ -65,7 +67,7 @@ class PopMenu:
             self.options = options
             
         elif self.selected == "TREE":
-            options = ["Cut Tree", "Inspect"]
+            options = ["Walk", "Cut Tree", "Inspect"]
             self.options = options
             
         elif self.selected == "WATER":
