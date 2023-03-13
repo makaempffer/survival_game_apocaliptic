@@ -7,6 +7,9 @@ class NPCManager():
         self.screen = screen
         self.map = []
         self.sizeX, self.sizeY = width, height
+
+    def get_npcs(self):
+        for npc in self.npcGroup: return npc
     
     def npcEvent(self):
         self.npcGroup.move()

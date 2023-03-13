@@ -14,5 +14,8 @@ class PlayerManager:
     def update(self):
         self.group.update()
 
+    def get_player(self):
+        for player in self.group : return player
+
     def render(self):
         self.group.draw(self.screen)

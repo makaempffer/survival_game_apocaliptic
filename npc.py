@@ -1,9 +1,11 @@
 from settings import *
 from random import randint, choice
+from health import Health
 
-class NPC(pg.sprite.Sprite):
+class NPC(Health, pg.sprite.Sprite):
     def __init__(self, x, y, type):
-        super().__init__()
+        super().__init__(type)
+        super(pg.sprite.Sprite).__init__()
         self.size = 10
         self.rect = None
         self.path = "./assets/character_player.png"
@@ -47,7 +49,7 @@ class NPC(pg.sprite.Sprite):
 
     def update(self):
         self.moveEventFunction()
-        if self.doAction:
+        if self.doAction and not self.combat_triggered:
             self.move()
         
     
