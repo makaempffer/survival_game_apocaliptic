@@ -39,6 +39,7 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.counter += 1
         self.behavior_controller()
+        self.health.update(self)
         
     
     def movement(self):

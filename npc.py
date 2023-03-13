@@ -24,6 +24,10 @@ class NPC(pg.sprite.Sprite):
         self.combat_triggered = False
         self.vision_distance = 30
         self.getType()
+    
+
+        
+            
 
     def getType(self):
         if self.type == "zombie":
@@ -48,6 +52,7 @@ class NPC(pg.sprite.Sprite):
         
 
     def update(self):
+        self.health.update(self)
         self.moveEventFunction()
         if self.doAction and not self.combat_triggered:
             self.move()

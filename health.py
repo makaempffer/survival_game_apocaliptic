@@ -15,6 +15,7 @@ import random
     #[N]
 """
 class Health:
+    """Shared Health System for entities."""
     def __init__(self, type: str):
         #super().__init__()    
         self.head: int
@@ -39,6 +40,17 @@ class Health:
         self.foot_r: int
         self.body_avg: int = 0
         self.create_instance(type)
+    
+    def __del__(self):
+        del self
+        
+    
+    def check_alive(self, owner):
+        if self.body_avg <= 0:
+            owner.kill()
+            owner.health = None
+            return False
+
     
     def get_total_hp(self) -> int:
         ignored_value = "body_avg"
@@ -110,7 +122,6 @@ class Health:
 
     def receive_damage(self, damageAmount):
         body_part_hit = self.choose_random_body_part()
-        print(body_part_hit)
         self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
         self.update_current_hp()
         print("[HEALTH] - HIT: CURRENT HP -", self.body_avg)
@@ -118,6 +129,9 @@ class Health:
 
     def give_damage(self, target, amount):
         target.receive_damage(amount)
+
+    def update(self, owner):
+        self.check_alive(owner)
 
 
 
