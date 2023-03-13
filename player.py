@@ -1,7 +1,10 @@
 import pygame as pg
+from health import Health
 class Player(pg.sprite.Sprite):
     def __init__(self, menu):
-        super().__init__()
+        super().__init__("Player")
+        super(pg.sprite.Sprite).__init__()
+        self.health = Health("Player")
         self.posX = 400
         self.posY = 400
         self.menu = menu
@@ -17,6 +20,10 @@ class Player(pg.sprite.Sprite):
         self.combat_triggered = False
         self.vision_distance = 50
 
+    def behavior_controller(self):
+        #prevent player from moving when in battle
+        if self.combat_triggered == False:
+            self.movement()
 
     def walk(self, target):
         
@@ -32,7 +39,8 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.counter += 1
-        self.movement()
+        self.behavior_controller()
+        
     
     def movement(self):
         
