@@ -2,10 +2,10 @@ from settings import *
 from random import randint, choice
 from health import Health
 
-class NPC(Health, pg.sprite.Sprite):
+class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, type):
-        super().__init__(type)
-        super(pg.sprite.Sprite).__init__()
+        super().__init__()
+        self.health = Health(type)
         self.size = 10
         self.rect = None
         self.path = "./assets/character_player.png"

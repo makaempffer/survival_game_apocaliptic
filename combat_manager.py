@@ -54,7 +54,7 @@ class CombatManager:
     def run_battle(self):
         current_combat = self.combat_system.player_active_battle
         if current_combat != None:
-            current_combat[0].give_damage(current_combat[1], 10)
+            current_combat[0].health.give_damage(current_combat[1].health, 10)
             
 
         

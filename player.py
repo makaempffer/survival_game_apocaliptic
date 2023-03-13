@@ -2,8 +2,7 @@ import pygame as pg
 from health import Health
 class Player(pg.sprite.Sprite):
     def __init__(self, menu):
-        super().__init__("Player")
-        super(pg.sprite.Sprite).__init__()
+        super().__init__()
         self.health = Health("Player")
         self.posX = 400
         self.posY = 400

@@ -15,7 +15,7 @@ import random
     #[N]
 """
 class Health:
-    def __init__(self, *type: str):
+    def __init__(self, type: str):
         #super().__init__()    
         self.head: int
         self.eye_r: int
