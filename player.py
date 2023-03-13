@@ -23,10 +23,12 @@ class Player(pg.sprite.Sprite):
         #prevent player from moving when in battle
         if self.combat_triggered == False:
             self.movement()
+            print("Move code run")
+        print("Combat triggered", self.combat_triggered)
 
     def walk(self, target):
         
-        if self.isWalking == True and self.triggered == False:
+        if self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.walkSound.set_volume(0.2)
             self.walkSound.play(5, 0, 3000)
             
@@ -43,9 +45,7 @@ class Player(pg.sprite.Sprite):
         
     
     def movement(self):
-        
-        
-        if self.counter == self.cooldown:
+        if self.counter >= self.cooldown:
             self.doAction = True
             self.counter = 0
         

@@ -55,13 +55,14 @@ class CombatManager:
         current_combat = self.combat_system.player_active_battle
         if current_combat != None:
             current_combat[0].health.give_damage(current_combat[1].health, 10)
+            self.combat_system.end_combat()
+        
             
 
         
     
     def player_create_instance(self):
         npc_objective = self.menu.npcTarget
-
         if npc_objective != None:
             action = self.menu.previous_action
             player_to_npc_dist_x = (npc_objective.rect.x - self.player_ref.rect.x)**2
@@ -72,7 +73,7 @@ class CombatManager:
                 self.create_battle(self.player_ref, self.closest_ref)
                 self.player_ref.combat_triggered = True
                 npc_objective.combat_triggered = True
-            
+                print("[COMBAT-M] - COMBAT CREATED")
             else:
                 self.menu.previous_action = None
 
