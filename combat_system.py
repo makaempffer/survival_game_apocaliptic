@@ -13,14 +13,10 @@ class CombatSystem:
             player_a, player_b = self.player_active_battle
             if player_a.health.get_total_hp() <= 0:
                 player_b.combat_triggered = False
-                print("player_b win")
-                print("player b:",player_a.combat_triggered)
                 self.player_active_battle = None
 
             if player_b.health.get_total_hp() <= 0:
                 player_a.combat_triggered = False
-                print("player_a win")
-                print("player a:", player_a.combat_triggered)
                 self.player_active_battle = None
 
                 

@@ -23,8 +23,6 @@ class Player(pg.sprite.Sprite):
         #prevent player from moving when in battle
         if self.combat_triggered == False:
             self.movement()
-            print("Move code run")
-        print("Combat triggered", self.combat_triggered)
 
     def walk(self, target):
         
