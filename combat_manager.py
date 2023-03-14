@@ -33,8 +33,10 @@ class CombatManager:
         current_combat = self.combat_system.player_active_battle
         if current_combat != None:
             current_combat[0].health.give_damage(current_combat[1].health, 10)
+            print("Enemy hp: ", current_combat[1].health.body_avg)
             self.combat_system.end_combat()
-            current_combat[1].health.give_damage(current_combat[0].health, 1)
+            current_combat[1].health.give_damage(current_combat[0].health, 10)
+            print("Player hp: ",current_combat[0].health.body_avg)
             self.combat_system.end_combat()
         
             

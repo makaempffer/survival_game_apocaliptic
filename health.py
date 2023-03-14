@@ -111,9 +111,11 @@ class Health:
         self.body_avg = self.get_total_hp()
 
     def choose_random_body_part(self):
-        body_part_hit = random.choice(list(self.__dict__.items()))
-        body_part, hp = body_part_hit
-        return body_part
+        body_list = list(self.__dict__.items())
+        shuffled_list = random.sample(body_list, k=len(body_list))
+        for body_part, hp in shuffled_list:
+            if hp > 0 and body_part != "body_avg":
+                return body_part
 
     def get_body_part_hp(self, body_part: str):
         hp = self.__getattribute__(body_part)
@@ -122,11 +124,9 @@ class Health:
     def receive_damage(self, damageAmount: int):
         if self.body_avg >= 1:
             body_part_hit = self.choose_random_body_part()
-            if self.__getattribute__(body_part_hit) >= damageAmount:
+            if self.__getattribute__(body_part_hit)  > 0:
                 self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
-            else:
-                self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - self.get_body_part_hp(body_part_hit))
-            self.update_current_hp()
+                self.update_current_hp()
             #print("[HEALTH] - LAST HIT ON", body_part_hit,"TOTAL HP:", self.body_avg)
 
 
