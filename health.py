@@ -122,9 +122,12 @@ class Health:
     def receive_damage(self, damageAmount: int):
         if self.body_avg >= 1:
             body_part_hit = self.choose_random_body_part()
-            self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
+            if self.__getattribute__(body_part_hit) >= damageAmount:
+                self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
+            else:
+                self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - self.get_body_part_hp(body_part_hit))
             self.update_current_hp()
-            print("[HEALTH] - HIT: CURRENT HP -", self.body_avg)
+            #print("[HEALTH] - LAST HIT ON", body_part_hit,"TOTAL HP:", self.body_avg)
 
 
     def give_damage(self, target, amount: int):

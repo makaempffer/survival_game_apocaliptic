@@ -34,6 +34,8 @@ class CombatManager:
         if current_combat != None:
             current_combat[0].health.give_damage(current_combat[1].health, 10)
             self.combat_system.end_combat()
+            current_combat[1].health.give_damage(current_combat[0].health, 1)
+            self.combat_system.end_combat()
         
             
 
