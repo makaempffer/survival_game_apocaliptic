@@ -21,7 +21,6 @@ class CombatManager:
         if self.player_ref == None:
             for player in self.player_group:
                 self.player_ref = player
-                print("Player set")
                 return player
 
 
@@ -33,10 +32,8 @@ class CombatManager:
         current_combat = self.combat_system.player_active_battle
         if current_combat != None:
             current_combat[0].health.give_damage(current_combat[1].health, 10)
-            print("Enemy hp: ", current_combat[1].health.body_avg)
             self.combat_system.end_combat()
             current_combat[1].health.give_damage(current_combat[0].health, 10)
-            print("Player hp: ",current_combat[0].health.body_avg)
             self.combat_system.end_combat()
         
             
@@ -51,7 +48,7 @@ class CombatManager:
             player_to_npc_dist_y = (npc_objective.rect.y - self.player_ref.rect.y)**2
             dist = sqrt(player_to_npc_dist_x + player_to_npc_dist_y)
 
-            if action == "Attack" and self.combat_system.player_active_battle == None and dist < self.player_ref.vision_distance:
+            if action == "Attack" and self.combat_system.player_active_battle == None and dist < self.player_ref.vision_distance and self.player_ref.health.is_alive:
                 self.create_battle(self.player_ref, npc_objective)
                 self.player_ref.combat_triggered = True
                 npc_objective.combat_triggered = True

@@ -5,8 +5,11 @@ class CombatSystem:
         self.player_active_battle = None
 
     def create_battle_instance(self, player_a, player_b):
-        self.player_active_battle = [player_a, player_b]
-        print("[COMBAT-S] - CURRENT BATTLE :", self.player_active_battle)
+        if player_a.health.is_alive and player_b.health.is_alive:
+            self.player_active_battle = [player_a, player_b]
+            print("[COMBAT-S] - CURRENT BATTLE :", self.player_active_battle)
+        else:
+            return False
         
     def end_combat(self):
         if self.player_active_battle != None:

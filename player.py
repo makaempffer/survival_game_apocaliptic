@@ -21,17 +21,18 @@ class Player(pg.sprite.Sprite):
 
     def behavior_controller(self):
         #prevent player from moving when in battle
-        if self.combat_triggered == False:
+        if self.combat_triggered == False and self.health.is_alive:
             self.movement()
 
     def walk(self, target):
         
-        if self.isWalking == True and self.triggered == False and self.combat_triggered == False:
+        if self.health.is_alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.walkSound.set_volume(0.2)
-            self.walkSound.play(5, 0, 3000)
+            self.walkSound.play(1, 0, 2000)
             
             self.triggered = True
-        
+        if self.combat_triggered == True or self.health.is_alive == False:
+            self.walkSound.fadeout(2000)
         if target == None:
             self.walkSound.fadeout(2000)
             self.triggered = False
