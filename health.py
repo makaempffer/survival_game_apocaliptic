@@ -93,20 +93,20 @@ class Health:
             self.mouth = 60
             self.chest = 60
             self.stomach = 100
-            self.arm_r = random.randint(60, 140)
+            self.arm_r = random.randint(20, 80)
             self.bone_arm_r = 100
             self.hand_r = 100
-            self.arm_l = random.randint(60, 140)
+            self.arm_l = random.randint(60, 100)
             self.bone_arm_l = 100
             self.hand_l = 30  
             self.fingers_l = 30
             self.fingers_r = 30
-            self.leg_l = random.randint(40, 140)
+            self.leg_l = random.randint(50, 80)
             self.knee_l = 100
             self.foot_l = 100
-            self.leg_r = random.randint(40, 140)
+            self.leg_r = random.randint(30, 45)
             self.knee_r = 50 
-            self.foot_r = random.randint(40, 140)
+            self.foot_r = random.randint(40, 80)
             self.body_avg = self.get_total_hp()
 
     def update_current_hp(self):
@@ -128,7 +128,7 @@ class Health:
     def receive_damage(self, damageAmount: int):
         if self.body_avg >= 1:
             body_part_hit = self.choose_random_body_part()
-            if self.__getattribute__(body_part_hit)  > 0:
+            if self.__getattribute__(body_part_hit) > 0:
                 self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
                 self.update_current_hp()
             #print("[HEALTH] - LAST HIT ON", body_part_hit,"TOTAL HP:", self.body_avg)

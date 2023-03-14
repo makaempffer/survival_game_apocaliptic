@@ -12,6 +12,7 @@ class HealthManager:
 
     def set_players(self):
         active_combat = self.combat_ref.player_active_battle
+        
         if active_combat != None:
             self.player_a, self.player_b = active_combat
 
@@ -21,6 +22,10 @@ class HealthManager:
             self.set_players()
         if self.player_b:
             self.render_player_body(self.player_b, "Npc")
+        
+            if self.player_b.health.is_alive == False:
+                self.player_b = None
+
 
     def render_player_body(self, player, type: str = "Player"):
         self.render_player_head(player, type)
@@ -29,6 +34,7 @@ class HealthManager:
         self.render_player_legs(player, type)
         
     def get_hp_color(self, hp: float, hp_max: int = 100):
+        
         if hp > 70:
             return GREEN
         if hp <= 70 and hp > 30:
