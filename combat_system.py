@@ -24,20 +24,7 @@ class CombatSystem:
                 self.player_active_battle = None
                 print("[COMBAT-S] - COMBAT ENDED")
 
-                
-           
-
-    def stop_movement(self):
-        if self.player_active_battle != None:
-            player_a = self.player_active_battle[0]
-            player_b = self.player_active_battle[1]
-            player_a.doAction = False
-            player_b.doAction = False
             
-    def getPosibleInstances(self):
-        pass
-
-    
 
 
 

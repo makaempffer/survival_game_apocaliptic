@@ -18,6 +18,7 @@ class Health:
     """Shared Health System for entities."""
     def __init__(self, type: str):
         #super().__init__()   
+        self.attack_extremity: str = "arm_r"
         self.is_alive: bool = True 
         self.head: int
         self.eye_r: int
@@ -48,18 +49,24 @@ class Health:
     
     def check_alive(self, owner):
         if self.body_avg <= 0:
+            for attribute, value in self.__dict__.items():
+                print(attribute, ":", value)
             self.is_alive = False
             owner.kill()
             return False
 
     
-    def get_total_hp(self) -> int:
-        ignored_value = "body_avg"
-        hp_sum = 0
-        for attribute, value in self.__dict__.items():
-            if type(value) == int and attribute != ignored_value:
-                hp_sum += value
-        return hp_sum
+    def get_total_hp(self) -> float:
+        """Returns total hp"""
+        hp_summed = (
+            self.head + self.eye_r + self.eye_l 
+            + self.mouth + self.chest + self.stomach 
+            + self.arm_r + self.bone_arm_r + self.hand_r 
+            + self.fingers_r + self.arm_l + self.bone_arm_l
+            + self.hand_l + self.fingers_l + self.leg_l
+            + self.knee_l + self.foot_l + self.leg_r
+            + self.knee_r + self.foot_r )
+        return hp_summed
     
     def create_instance(self, type: str):
         """Create a Health object for instance from type"""
@@ -116,6 +123,8 @@ class Health:
         body_list = list(self.__dict__.items())
         shuffled_list = random.sample(body_list, k=len(body_list))
         for body_part, hp in shuffled_list:
+            if body_part == "attack_extremity":
+                continue
             if body_part == "is_alive":
                 continue
             if hp > 0 and body_part != "body_avg":
@@ -130,18 +139,34 @@ class Health:
             body_part_hit = self.choose_random_body_part()
             if self.__getattribute__(body_part_hit) > 0:
                 self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
+                
                 self.update_current_hp()
             #print("[HEALTH] - LAST HIT ON", body_part_hit,"TOTAL HP:", self.body_avg)
 
 
-    def give_damage(self, target, amount: int):
+    def give_damage(self, target):
         if target:
             if target.body_avg >= 1:
-                target.receive_damage(amount)
-
+                target.receive_damage(self.calculate_damage())
+                
+    
+    def calculate_damage(self):
+        attack_hp = self.__getattribute__(self.attack_extremity)
+        damage = 0
+        if self.attack_extremity == "arm_r":
+            damage = ((attack_hp * 0.05) + (self.bone_arm_r * 0.05) + (self.hand_r * 0.05) + (self.fingers_r * 0.05))
+        if self.attack_extremity == "arm_l":
+            damage = ((attack_hp * 0.05) + (self.bone_arm_l * 0.05) + (self.hand_l * 0.05) + (self.fingers_l * 0.05))
+        if self.attack_extremity == "leg_r":
+            damage = ((attack_hp * 0.08) + (self.knee_r * 0.05) + (self.foot_r * 0.05))
+        if self.attack_extremity == "leg_l":
+            damage = ((attack_hp * 0.08) + (self.knee_l * 0.05) + (self.foot_l * 0.05))
+        return damage + 1
+        
             
     def update(self, owner):
         self.check_alive(owner)
+        self.update_current_hp()
 
 
 
