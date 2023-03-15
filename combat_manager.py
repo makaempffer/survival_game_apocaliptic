@@ -34,9 +34,6 @@ class CombatManager:
             current_combat[0].health.give_damage(current_combat[1].health)
             self.combat_system.end_combat()
             current_combat[1].health.give_damage(current_combat[0].health)
-            print(current_combat[0].health.body_avg)
-            print("Player damage:",current_combat[0].health.calculate_damage())
-            print("Npc damage:",current_combat[1].health.calculate_damage())
             self.combat_system.end_combat()
         
             
