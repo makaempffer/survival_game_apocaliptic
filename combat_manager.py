@@ -23,10 +23,23 @@ class CombatManager:
                 self.player_ref = player
                 return player
 
+    def npc_agro_check(self):
+        if self.player_ref.combat_triggered == False:
+            for npc in self.npc_group:
+                player_to_npc_dist_x = (npc.rect.x - self.player_ref.rect.x)**2
+                player_to_npc_dist_y = (npc.rect.y - self.player_ref.rect.y)**2
+                dist = sqrt(player_to_npc_dist_x + player_to_npc_dist_y)
+                if dist < 15:
+                    print("[COMBAT-M] - NPC AGRO TO CLOSE PLAYER - DIST -", dist)
+                    self.create_battle(self.player_ref, npc)
+                else:
+                    self.menu.previous_action = None
 
 
     def create_battle(self, a, b):
         self.combat_system.create_battle_instance(a, b)
+        a.combat_triggered = True
+        b.combat_triggered = True
 
     def run_battle(self):
         current_combat = self.combat_system.player_active_battle
@@ -50,8 +63,6 @@ class CombatManager:
 
             if action == "Attack" and self.combat_system.player_active_battle == None and dist < self.player_ref.vision_distance and self.player_ref.health.is_alive:
                 self.create_battle(self.player_ref, npc_objective)
-                self.player_ref.combat_triggered = True
-                npc_objective.combat_triggered = True
                 print("[COMBAT-M] - COMBAT CREATED")
             else:
                 self.menu.previous_action = None
@@ -59,4 +70,5 @@ class CombatManager:
     def update(self):
         self.get_player_ref()
         self.player_create_instance()
+        self.npc_agro_check()
         self.run_battle()
