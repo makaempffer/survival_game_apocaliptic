@@ -17,12 +17,14 @@ class Player(pg.sprite.Sprite):
         self.walkSound = pg.mixer.Sound('./sounds/walk.mp3')
         self.triggered = False
         self.combat_triggered = False
-        self.vision_distance = 50
+        self.vision_distance = 30
 
     def behavior_controller(self):
         #prevent player from moving when in battle
         if self.combat_triggered == False and self.health.is_alive:
             self.movement()
+        if self.combat_triggered == True:
+            self.walkSound.stop()
 
     def walk(self, target):
         
@@ -49,6 +51,7 @@ class Player(pg.sprite.Sprite):
         if self.counter >= self.cooldown:
             self.doAction = True
             self.counter = 0
+
         
         if self.doAction:
         
@@ -60,16 +63,11 @@ class Player(pg.sprite.Sprite):
             if self.lastCommand:
                 #print("Action:", action, "Last Command:", self.lastCommand)
                 if self.lastCommand == "Walk" and self.menu.savedLocation:
-                    
-
                     targetLocation = self.menu.savedLocation
-
                     targetLocation[0] = (targetLocation[0] // 10) * 10
                     targetLocation[1] = (targetLocation[1] // 10) * 10
                     #print("Starting point:", self.menu.startingPoint)
                     #print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
-
-                    
 
                     if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
                         targetLocation = None
@@ -87,17 +85,13 @@ class Player(pg.sprite.Sprite):
                         
                         if distX > 0:
                             self.rect.x, self.rect.y = self.rect.x - 10, self.rect.y
-                            #self.setPosition(self.rect.x - 10, self.rect.y)
                         elif distX < 0:
                             self.rect.x, self.rect.y = self.rect.x + 10, self.rect.y
-                            #self.setPosition(self.rect.x + 10, self.rect.y)
             
                         if distY > 0: 
                             self.rect.x, self.rect.y = self.rect.x, self.rect.y - 10
-                            #self.setPosition(self.rect.x, self.rect.y - 10)
                         elif distY < 0: 
                             self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
-                            #self.setPosition(self.rect.x, self.rect.y + 10)
-                        self.doAction = False   
+                    self.doAction = False   
 
         
