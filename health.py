@@ -41,11 +41,22 @@ class Health:
         self.knee_r: int  
         self.foot_r: int
         self.body_avg: int = 0
+        self.attack_cooldown: int = 100
+        self.counter: int = 0
         self.create_instance(type)
     
     def __del__(self):
         del self
-        
+    
+    def count(self):
+        self.counter += 1
+    
+    def check_cooldown(self):
+        if self.counter > self.attack_cooldown:
+            self.counter = 1
+            return True
+        else:
+            return False
     
     def check_alive(self, owner):
         if self.body_avg <= 0:
@@ -114,6 +125,7 @@ class Health:
             self.leg_r = random.randint(30, 45)
             self.knee_r = 50 
             self.foot_r = random.randint(40, 80)
+            
             self.body_avg = self.get_total_hp()
 
     def update_current_hp(self):
@@ -139,7 +151,6 @@ class Health:
             body_part_hit = self.choose_random_body_part()
             if self.__getattribute__(body_part_hit) > 0:
                 self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
-                
                 self.update_current_hp()
             #print("[HEALTH] - LAST HIT ON", body_part_hit,"TOTAL HP:", self.body_avg)
 
@@ -147,7 +158,9 @@ class Health:
     def give_damage(self, target):
         if target:
             if target.body_avg >= 1:
-                target.receive_damage(self.calculate_damage())
+                if self.check_cooldown():
+                    print(target, "attacked")
+                    target.receive_damage(self.calculate_damage())
                 
     
     def calculate_damage(self):
@@ -165,6 +178,7 @@ class Health:
         
             
     def update(self, owner):
+        self.count()
         self.check_alive(owner)
         self.update_current_hp()
 

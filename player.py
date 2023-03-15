@@ -39,6 +39,8 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.counter += 1
+        if self.counter > self.cooldown:
+            self.counter = 0
         self.behavior_controller()
         self.health.update(self)
         
