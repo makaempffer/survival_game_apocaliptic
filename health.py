@@ -159,7 +159,6 @@ class Health:
         if target:
             if target.body_avg >= 1:
                 if self.check_cooldown():
-                    print(target, "attacked")
                     target.receive_damage(self.calculate_damage())
                 
     

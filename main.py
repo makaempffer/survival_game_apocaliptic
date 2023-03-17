@@ -33,7 +33,6 @@ class Game:
     def newGame(self):
         self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.npcManager.npcGroup, self.screen)
         self.playerManager = PlayerManager(self.screen, self.popMenu)
-        self.npcManager.setupNpc()
         self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
         self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
 

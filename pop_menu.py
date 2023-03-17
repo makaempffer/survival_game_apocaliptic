@@ -22,6 +22,8 @@ class PopMenu:
         self.savedLocation = []
         self.previous_action = None
         self.selected_target = None
+        self.open_menu_sound = pg.mixer.Sound('./sounds/Open_menu.wav')
+        self.select_sound = pg.mixer.Sound('./sounds/Select.wav')
         
     
     def getTargetNpc(self):
@@ -47,6 +49,8 @@ class PopMenu:
         
 
     def getMenuOptions(self):
+        self.open_menu_sound.set_volume(0.1)
+        self.open_menu_sound.play()
         mouseX, mouseY = pg.mouse.get_pos()
         self.startingPoint = [mouseX, mouseY]
         options = []
@@ -89,6 +93,7 @@ class PopMenu:
             self.interacting = True
         else:
             self.showMenu(options=[])
+            
         
     def interactionUpdate(self):
         if self.interacting == False:
@@ -144,6 +149,8 @@ class PopMenu:
                 if mouseX >= rect.x and mouseX <= rect.x + 100: #100 is menuwidth
                     if mouseY >= rect.y and mouseY <= rect.y + 20: #20 is option height
                         self.selectedAction = index
+                        self.select_sound.set_volume(0.15)
+                        self.select_sound.play()
                         return index
                         
 
