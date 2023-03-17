@@ -44,7 +44,10 @@ class Health:
         self.attack_cooldown: int = 100
         self.counter: int = 0
         self.create_instance(type)
-    
+        self.attack_sound = pg.mixer.Sound('./sounds/Hit_hurt.wav')
+        self.death_sound = pg.mixer.Sound('./sounds/Death.wav')
+        self.attack_sound.set_volume(0.1)
+        self.death_sound.set_volume(0.1)
     def __del__(self):
         del self
     
@@ -64,6 +67,7 @@ class Health:
                 print(attribute, ":", value)
             self.is_alive = False
             owner.kill()
+            self.death_sound.play()
             return False
 
     
@@ -139,6 +143,8 @@ class Health:
                 continue
             if body_part == "is_alive":
                 continue
+            if body_part == "attack_sound" or body_part == "death_sound":
+                continue
             if hp > 0 and body_part != "body_avg":
                 return body_part
 
@@ -160,6 +166,8 @@ class Health:
             if target.body_avg >= 1:
                 if self.check_cooldown():
                     target.receive_damage(self.calculate_damage())
+                    self.attack_sound.play()
+
                 
     
     def calculate_damage(self):
@@ -177,9 +185,10 @@ class Health:
         
             
     def update(self, owner):
-        self.count()
-        self.check_alive(owner)
-        self.update_current_hp()
+        if owner.combat_triggered:
+            self.count()
+            self.check_alive(owner)
+            self.update_current_hp()
 
 
 

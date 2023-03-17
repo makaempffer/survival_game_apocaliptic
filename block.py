@@ -28,4 +28,4 @@ class Block(pg.sprite.Sprite):
             self.path = "./assets/tree.png"
             self.type = "TREE"
 
-        self.image = pg.image.load(str(self.path))
+        self.image = pg.image.load(str(self.path)).convert_alpha()
