@@ -48,7 +48,6 @@ class Player(pg.sprite.Sprite):
     
     def timer_event(self, event):
         if event.type == self.timer:
-            print("Counter:", self.counter)
             self.counter += 1
         
 
