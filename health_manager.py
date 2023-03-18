@@ -9,12 +9,24 @@ class HealthManager:
         self.player_a = None
         self.player_b = None
         
-
+    def is_combat_active(self) -> bool:
+        """Return True if there is a battle happening."""
+        active_combat = self.combat_ref.player_active_battle
+        if active_combat != None:
+            return True
+        else:
+            return False
+        
     def set_players(self):
         active_combat = self.combat_ref.player_active_battle
         
-        if active_combat != None:
+        if self.is_combat_active():
             self.player_a, self.player_b = active_combat
+
+    def update_health_counters(self, event):
+        if self.is_combat_active():
+            self.player_a.health.timer_event(event)
+            self.player_b.health.timer_event(event)
 
     def update(self):
         self.render_player_body(self.player_ref)

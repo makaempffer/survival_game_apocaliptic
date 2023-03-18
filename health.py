@@ -41,25 +41,33 @@ class Health:
         self.knee_r: int  
         self.foot_r: int
         self.body_avg: int = 0
-        self.attack_cooldown: int = 100
+        self.attack_cooldown: bool = False
         self.counter: int = 0
         self.create_instance(type)
         self.attack_sound = pg.mixer.Sound('./sounds/Hit_hurt.wav')
         self.death_sound = pg.mixer.Sound('./sounds/Death.wav')
         self.attack_sound.set_volume(0.1)
         self.death_sound.set_volume(0.1)
+        self.timer = pg.USEREVENT + 1
+        self.time_delay = 1000
+        pg.time.set_timer(self.timer, self.time_delay)
+
     def __del__(self):
         del self
     
-    def count(self):
-        self.counter += 1
-    
-    def check_cooldown(self):
-        if self.counter > self.attack_cooldown:
-            self.counter = 1
-            return True
+
+
+    def timer_event(self, event):
+        if event.type == self.timer:
+            print("Counter:", self.counter)
+            self.counter += 1
+        
+        if self.counter == 1:
+            self.attack_cooldown = True
+            self.counter = 0
         else:
-            return False
+            self.attack_cooldown = False
+    
     
     def check_alive(self, owner):
         if self.body_avg <= 0:
@@ -143,7 +151,7 @@ class Health:
                 continue
             if body_part == "is_alive":
                 continue
-            if body_part == "attack_sound" or body_part == "death_sound":
+            if body_part == "attack_sound" or body_part == "death_sound" or body_part == "timer" or body_part == "time_delay":
                 continue
             if hp > 0 and body_part != "body_avg":
                 return body_part
@@ -164,12 +172,12 @@ class Health:
     def give_damage(self, target):
         if target:
             if target.body_avg >= 1:
-                if self.check_cooldown():
+                if self.attack_cooldown:
                     target.receive_damage(self.calculate_damage())
                     self.attack_sound.play()
+                    self.attack_cooldown = False
 
                 
-    
     def calculate_damage(self):
         attack_hp = self.__getattribute__(self.attack_extremity)
         damage = 0
@@ -185,10 +193,8 @@ class Health:
         
             
     def update(self, owner):
-        if owner.combat_triggered:
-            self.count()
-            self.check_alive(owner)
-            self.update_current_hp()
+        self.check_alive(owner)
+        self.update_current_hp()
 
 
 

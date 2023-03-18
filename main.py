@@ -59,6 +59,7 @@ class Game:
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 pg.quit()
                 sys.exit()
+            self.health_manager.update_health_counters(event)
             
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
                 self.popMenu.setupMenu()
