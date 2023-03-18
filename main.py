@@ -60,7 +60,7 @@ class Game:
                 pg.quit()
                 sys.exit()
             self.health_manager.update_health_counters(event)
-            
+            self.playerManager.update_player_events(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
                 self.popMenu.setupMenu()
             self.popMenu.getSelectedOption(event)

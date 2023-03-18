@@ -11,13 +11,16 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/character_player.png")
         self.lastCommand = ""
         self.counter = 0
-        self.cooldown = 100
+        self.cooldown = 3
         self.doAction = True
         self.isWalking = False
         self.walkSound = pg.mixer.Sound('./sounds/walk.mp3')
         self.triggered = False
         self.combat_triggered = False
         self.vision_distance = 30
+        self.timer = pg.USEREVENT + 1
+        self.time_delay = 1000
+        pg.time.set_timer(self.timer, self.time_delay)
 
     def behavior_controller(self):
         #prevent player from moving when in battle
@@ -40,18 +43,25 @@ class Player(pg.sprite.Sprite):
             self.triggered = False
 
     def update(self):
-        self.counter += 1
-        if self.counter > self.cooldown:
-            self.counter = 0
         self.behavior_controller()
         self.health.update(self)
+    
+    def timer_event(self, event):
+        if event.type == self.timer:
+            print("Counter:", self.counter)
+            self.counter += 1
         
+
+    def counter_timer(self) -> bool:
+        if self.counter >= self.cooldown:
+            self.counter = 0
+            return True
+        else:
+            return False
     
     def movement(self):
-        if self.counter >= self.cooldown:
+        if self.counter_timer():
             self.doAction = True
-            self.counter = 0
-
         
         if self.doAction:
         
