@@ -7,7 +7,7 @@ class Item(pg.sprite.Sprite):
         self.size = 32
         self.rect = pg.Rect(x, y, 32, 32)
         self.image = None
-        self.item_quantity: int = 0
+        self.item_quantity: int = 1
         self.is_stackable = False
         self.get_item_sprite()
     
@@ -61,10 +61,13 @@ class Inventory:
                 self.inventory[pos_x][pos_y] = item
                 print("[INV] - ITEM INSERTED")
             else:
-                for slot in self.inventory:
-                    if slot == None:
-                        slot = item
-                        print("[INV] - ITEM AUTO PLACED")
+                for row in self.inventory:
+                    for slot in row:
+                        if slot != None:
+                            if slot.item_id == item.item_id:
+                                slot.item_quantity += item.item_quantity
+                                print("ITEM FOUND -> QUANTITY:", slot.item_quantity)
+                                return
                 print("[INV] - NO SLOTS AVAILABLE")
     
 
@@ -73,6 +76,8 @@ class Inventory:
             self.is_open = False
         else:
             self.is_open = True
+
+        
 
     def update_item_group(self):
         if len(self.inventory) > 0:
