@@ -68,6 +68,12 @@ class Inventory:
                 print("[INV] - NO SLOTS AVAILABLE")
     
 
+    def open(self):
+        if self.is_open:
+            self.is_open = False
+        else:
+            self.is_open = True
+
     def update_item_group(self):
         if len(self.inventory) > 0:
             for row in self.inventory:
@@ -78,7 +84,7 @@ class Inventory:
             print("[INV] - ITEM GROUP UPDATED")
     
     def render(self):
-        if self.screen != None:
+        if self.screen != None and self.is_open:
             self.item_frame_group.draw(self.screen)
             self.item_group.draw(self.screen)
 

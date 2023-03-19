@@ -67,6 +67,8 @@ class Game:
             self.playerManager.update_player_events(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
                 self.popMenu.setupMenu()
+            if event.type == pg.KEYDOWN and event.key ==pg.K_i:
+                self.inventory.open()
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
