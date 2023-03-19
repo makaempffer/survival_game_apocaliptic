@@ -65,7 +65,7 @@ class Game:
                 sys.exit()
             self.health_manager.update_health_counters(event)
             self.playerManager.update_player_events(event)
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.inventory.is_open:#right button mousse
                 self.popMenu.setupMenu()
             if event.type == pg.KEYDOWN and event.key ==pg.K_i:
                 self.inventory.open()
