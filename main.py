@@ -10,6 +10,7 @@ from block_manager import BlockManager
 from player_manager import PlayerManager
 from combat_manager import CombatManager
 from health_manager import HealthManager
+from inventory import Inventory
          
 
 class Game:
@@ -35,6 +36,7 @@ class Game:
         self.playerManager = PlayerManager(self.screen, self.popMenu)
         self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
         self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
+        self.inventory = Inventory(self.screen)
 
 
     def update(self):
@@ -42,6 +44,7 @@ class Game:
         self.popMenu.update()
         self.combat_manager.update()
         self.health_manager.update()
+        self.npcManager.npcGroup.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
         pg.display.flip()      
@@ -52,6 +55,7 @@ class Game:
         self.blockManager.render()
         self.playerManager.render()
         self.npcManager.render()
+        self.inventory.render()
 
 
     def check_events(self):
@@ -66,7 +70,7 @@ class Game:
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
-        self.npcManager.npcGroup.update()
+        
             
 
     def run(self):
