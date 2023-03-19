@@ -23,18 +23,20 @@ class Item(pg.sprite.Sprite):
 
 class Inventory:
     def __init__(self, screen=None) -> None:
-        self.x_start = WIDTH // 3
-        self.y_start = HEIGHT // 2
+        self.rows = 5
+        self.columns = 5
+        self.item_size = 32
+        self.x_start = WIDTH - self.item_size * self.rows
+        self.y_start = HEIGHT - self.item_size * self.columns
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
         self.screen = screen
-        self.rows = 5
-        self.columns = 5
         self.inventory = None
         self.is_open = False
 
         self.create_item_frame_group()
         self.create_inventory()
+        self.insert_item(3, 3, Item(self.x_start + 3*32, self.y_start + 3*32, "MONEY"))
         self.insert_item(3, 3, Item(self.x_start + 3*32, self.y_start + 3*32, "MONEY"))
         self.update_item_group()
 
@@ -64,6 +66,7 @@ class Inventory:
                         slot = item
                         print("[INV] - ITEM AUTO PLACED")
                 print("[INV] - NO SLOTS AVAILABLE")
+    
 
     def update_item_group(self):
         if len(self.inventory) > 0:
@@ -71,6 +74,8 @@ class Inventory:
                 for item in row:
                     if item != None and item not in self.item_group:
                         self.item_group.add(item)
+                        print("[INV] - ITEM: {", item.item_id, "} APPENDED")
+            print("[INV] - ITEM GROUP UPDATED")
     
     def render(self):
         if self.screen != None:
