@@ -90,7 +90,7 @@ class Inventory:
     
     def update(self):
         self.update_item_group()
-        self.get_item()
+        print(self.get_item())
 
     def open(self):
         if self.is_open:
