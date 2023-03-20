@@ -24,13 +24,12 @@ class PopMenu:
         self.selected_target = None
         self.open_menu_sound = pg.mixer.Sound('./sounds/Open_menu.wav')
         self.select_sound = pg.mixer.Sound('./sounds/Select.wav')
-        
-    
+
     def getTargetNpc(self):
         mouseX, mouseY = pg.mouse.get_pos()
         options = []
         detected = False
-        
+
         for index, npc in enumerate(self.npcGroup):
             if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
                 self.npcTarget = npc
@@ -40,13 +39,12 @@ class PopMenu:
 
         if detected == False:
             self.npcTarget = None
-        
+
         if self.npcTarget:
             if self.npcTarget.type == "zombie":
                 options = ["Attack", "Identify"]
 
         return options
-        
 
     def getMenuOptions(self):
         self.open_menu_sound.set_volume(0.1)
@@ -54,13 +52,13 @@ class PopMenu:
         mouseX, mouseY = pg.mouse.get_pos()
         self.startingPoint = [mouseX, mouseY]
         options = []
-        #print(mouseX//10, mouseY//10)
+        # print(mouseX//10, mouseY//10)
         for index, block in enumerate(self.mapData):
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
                 self.selected = block[3]
                 self.posX, self.posY = mouseX, mouseY
                 self.blockIndex = index
-            
+
         for index, npc in enumerate(self.npcGroup):
             if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
                 self.npcTarget = npc
@@ -69,21 +67,21 @@ class PopMenu:
         if self.selected == "DIRT":
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
-            
+
         elif self.selected == "TREE":
             options = ["Walk", "Cut Tree", "Inspect"]
             self.options = options
-            
+
         elif self.selected == "WATER":
             options = ["Drink", "Pour to Container", "Inspect"]
             self.options = options
-            
+
         elif self.selected == "SAND":
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
-        
+
         options += self.getTargetNpc()
-        
+
         return options
 
     def setupMenu(self):
@@ -93,8 +91,7 @@ class PopMenu:
             self.interacting = True
         else:
             self.showMenu(options=[])
-            
-        
+
     def interactionUpdate(self):
         if self.interacting == False:
             self.opened = False
@@ -106,7 +103,7 @@ class PopMenu:
             self.xCorrection = False
             self.yCorrection = False
             self.optionRects = []
-            
+
     def getAction(self):
         if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
@@ -116,14 +113,11 @@ class PopMenu:
                 self.savedLocation = self.startingPoint
             return selectedAction
 
-
-
     def showMenu(self, options):
         menuWidth = 100
         menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
         surfaceMenu.fill((50, 50, 50))
-        
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
             self.posX = self.posX - menuWidth
@@ -133,25 +127,25 @@ class PopMenu:
             self.posY -= menuOptHeight*len(options)
             if abs(HEIGHT - self.posY) >= menuOptHeight*len(options):
                 self.yCorrection = True
-        
+
         self.screen.blit(surfaceMenu, (self.posX, self.posY))
         for index, item in enumerate(options):
-            rect = pg.Rect(self.posX + 5, self.posY + (index*menuOptHeight), menuWidth, menuOptHeight)
+            rect = pg.Rect(self.posX + 5, self.posY +
+                           (index*menuOptHeight), menuWidth, menuOptHeight)
             self.optionRects.append(rect)
             text = FONT.render(item, True, (255, 255, 255))
             self.screen.blit(text, rect)
-        
+
     def getSelectedOption(self, event):
         mouseX, mouseY = pg.mouse.get_pos()
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
             for index, rect in enumerate(self.optionRects):
-                if mouseX >= rect.x and mouseX <= rect.x + 100: #100 is menuwidth
-                    if mouseY >= rect.y and mouseY <= rect.y + 20: #20 is option height
+                if mouseX >= rect.x and mouseX <= rect.x + 100:  # 100 is menuwidth
+                    if mouseY >= rect.y and mouseY <= rect.y + 20:  # 20 is option height
                         self.selectedAction = index
                         self.select_sound.set_volume(0.15)
                         self.select_sound.play()
                         return index
-                        
 
     def update(self):
         self.interactionUpdate()
