@@ -139,7 +139,6 @@ class PopMenu:
             rect = pg.Rect(self.posX + 5, self.posY + (index*menuOptHeight), menuWidth, menuOptHeight)
             self.optionRects.append(rect)
             text = FONT.render(item, True, (255, 255, 255))
-            x, y = self.posX, self.posY + (index*menuOptHeight)
             self.screen.blit(text, rect)
         
     def getSelectedOption(self, event):

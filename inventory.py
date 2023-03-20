@@ -11,6 +11,15 @@ class Item(pg.sprite.Sprite):
         self.is_stackable = False
         self.get_item_sprite()
     
+    def update(self, screen):
+        self.font_set_quantity(screen)
+
+    def font_set_quantity(self, screen):
+        rect = pg.Rect(self.rect.x, self.rect.y, 32, 32)
+        text = FONT.render(str(self.item_quantity), True, (255, 255, 255))
+        screen.blit(text, rect)
+
+    
     def get_item_sprite(self):
         if self.item_id == "EMPTY":
             self.image = pg.image.load("./assets/item_frame.png").convert_alpha()
@@ -77,8 +86,6 @@ class Inventory:
         else:
             self.is_open = True
 
-        
-
     def update_item_group(self):
         if len(self.inventory) > 0:
             for row in self.inventory:
@@ -88,9 +95,14 @@ class Inventory:
                         print("[INV] - ITEM: {", item.item_id, "} APPENDED")
             print("[INV] - ITEM GROUP UPDATED")
     
+    def render_item_text(self):
+        self.item_group.update(self.screen)
+
     def render(self):
         if self.screen != None and self.is_open:
             self.item_frame_group.draw(self.screen)
             self.item_group.draw(self.screen)
+            self.render_item_text()
+            
 
 
