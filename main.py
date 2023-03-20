@@ -10,7 +10,6 @@ from block_manager import BlockManager
 from player_manager import PlayerManager
 from combat_manager import CombatManager
 from health_manager import HealthManager
-from inventory import Inventory
          
 
 class Game:
@@ -74,7 +73,8 @@ class Game:
                 self.popMenu.setupMenu()
             if event.type == pg.KEYDOWN and event.key ==pg.K_i:
                 self.inventory.open()
-                print(self.inventory.inventory)
+                print(self.inventory.get_sprites())
+                #print(self.inventory.inventory)
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
