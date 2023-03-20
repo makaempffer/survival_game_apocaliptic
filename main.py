@@ -74,6 +74,7 @@ class Game:
                 self.popMenu.setupMenu()
             if event.type == pg.KEYDOWN and event.key ==pg.K_i:
                 self.inventory.open()
+                print(self.inventory.inventory)
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False

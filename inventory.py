@@ -2,7 +2,7 @@ from settings import *
 
 
 class Item(pg.sprite.Sprite):
-    def __init__(self, x, y, item_id: str = "EMPTY"):
+    def __init__(self, x=0, y=0, item_id: str = "EMPTY"):
         super().__init__()
         self.item_id = item_id
         self.size = 32
@@ -44,17 +44,23 @@ class Inventory:
         self.screen = screen
         self.inventory = None
         self.is_open = False
-
         self.create_item_frame_group()
         self.create_inventory()
+        
+        self.insert_item(0, 0, Item(self.x_start + 3*32,
+                         self.y_start + 3*32, "MONEY"))
+        """
         self.insert_item(3, 3, Item(self.x_start + 3*32,
                          self.y_start + 3*32, "MONEY"))
-        self.insert_item(3, 3, Item(self.x_start + 3*32,
-                         self.y_start + 3*32, "MONEY"))
+        """
         # self.update_item_group()
 
     def add_item_list(self, inventory_list):
-        self.inventory += list
+        for row in inventory_list:
+            for item in row:
+                if item != None:
+                    print("[INV] - ITEM ADDED ->", item.item_id)
+                    self.insert_item(0, 0, item)
 
     def create_item_frame_inventory(self):
         return [[Item(self.x_start + j*32, self.y_start + i*32) for j in range(self.rows)] for i in range(self.columns)]
@@ -66,6 +72,13 @@ class Inventory:
                 for item in row:
                     self.item_frame_group.add(item)
 
+    def update_sprites_positions(self):
+        for x, row in enumerate(self.inventory):
+            for y, item in enumerate(row):
+                if isinstance(item, Item):
+                    item.rect.x = self.x_start + x * 32
+                    item.rect.y = self.y_start + y * 32
+
     def create_inventory(self):
         self.inventory = [[None for j in range(
             self.rows)] for i in range(self.columns)]
@@ -73,7 +86,7 @@ class Inventory:
     def get_inv(self):
         return self.inventory
 
-    def insert_item(self, pos_x, pos_y, item="X"):
+    def insert_item(self, pos_x=0, pos_y=0, item="X"):
         if self.inventory[pos_x][pos_y] == None:
             self.inventory[pos_x][pos_y] = item
             print("[INV] - ITEM INSERTED")
@@ -85,6 +98,15 @@ class Inventory:
                             slot.item_quantity += item.item_quantity
                             print("[INV] - ITEM FOUND -> {", slot.item_id, "} -> QUANTITY:", slot.item_quantity)
                             return
+            for x, row in enumerate(self.inventory):
+                for y, slot in enumerate(row):
+                    if slot == None:
+                        print("[INV] - FILLED CLOSEST EMPTY SLOT")
+                        item.rect.x = self.x_start + x * 32
+                        item.rect.y = self.y_start + y * 32
+                        slot = item
+                        return
+
             print("[INV] - NO SLOTS AVAILABLE")
 
     def get_item(self) -> Item:
@@ -98,6 +120,7 @@ class Inventory:
 
     def update(self):
         self.update_item_group()
+        self.update_sprites_positions()
         #print(self.get_item())
 
     def open(self):
@@ -107,13 +130,19 @@ class Inventory:
             self.is_open = True
 
     def update_item_group(self):
+        for row in self.inventory:
+                for item in row:
+                    if item != None and not self.item_group.has(item):
+                        self.item_group.add(item)
+                        print("[INV] - ITEM: {", item.item_id, "} APPENDED")
+        """    
         if len(self.inventory) > 0:
             for row in self.inventory:
                 for item in row:
                     if item != None and item not in self.item_group:
                         self.item_group.add(item)
                         print("[INV] - ITEM: {", item.item_id, "} APPENDED")
-
+        """         
     def render_item_text(self):
         self.item_group.update(self.screen)
 

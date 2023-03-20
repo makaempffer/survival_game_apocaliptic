@@ -49,7 +49,7 @@ class Health:
         self.attack_sound.set_volume(0.1)
         self.death_sound.set_volume(0.1)
         self.timer = pg.USEREVENT + 1
-        self.time_delay = 1000
+        self.time_delay = 500
         pg.time.set_timer(self.timer, self.time_delay)
 
     def __del__(self):
@@ -116,23 +116,23 @@ class Health:
             self.body_avg = self.get_total_hp()
 
         if type == "zombie":
-            self.head = 100
+            self.head = 50
             self.eye_r = 20
             self.eye_l = 20
             self.mouth = 60
             self.chest = 60
-            self.stomach = 100
+            self.stomach = 40
             self.arm_r = random.randint(20, 80)
-            self.bone_arm_r = 100
-            self.hand_r = 100
-            self.arm_l = random.randint(60, 100)
-            self.bone_arm_l = 100
+            self.bone_arm_r = 40
+            self.hand_r = 40
+            self.arm_l = random.randint(30, 50)
+            self.bone_arm_l = 40
             self.hand_l = 30  
             self.fingers_l = 30
             self.fingers_r = 30
             self.leg_l = random.randint(50, 80)
-            self.knee_l = 100
-            self.foot_l = 100
+            self.knee_l = 40
+            self.foot_l = 40
             self.leg_r = random.randint(30, 45)
             self.knee_r = 50 
             self.foot_r = random.randint(40, 80)

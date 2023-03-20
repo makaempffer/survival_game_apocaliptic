@@ -17,12 +17,13 @@ class CombatSystem:
             if player_a.health.get_total_hp() <= 0:
                 player_b.combat_triggered = False
                 self.player_active_battle = None
-                print("[COMBAT-S] - COMBAT ENDED")
+                print("[COMBAT-S] - COMBAT ENDED - PLAYER_DIED")
 
             if player_b.health.get_total_hp() <= 0:
                 player_a.combat_triggered = False
                 self.player_active_battle = None
-                print("[COMBAT-S] - COMBAT ENDED")
+                player_a.inventory.add_item_list(player_b.inventory.inventory)
+                print("[COMBAT-S] - COMBAT ENDED - NPC_DIED")
 
             
 

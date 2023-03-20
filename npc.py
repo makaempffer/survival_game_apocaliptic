@@ -1,11 +1,13 @@
 from settings import *
 from random import randint, choice
 from health import Health
+from inventory import Inventory, Item
 
 class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, type):
         super().__init__()
         self.health = Health(type)
+        self.inventory = Inventory()
         self.size = 10
         self.rect = None
         self.path = "./assets/character_player.png"
@@ -24,7 +26,9 @@ class NPC(pg.sprite.Sprite):
         self.combat_triggered = False
         self.vision_distance = 30
         self.getType()
-    
+        self.inventory.insert_item(0, 0, Item(0,
+                         0, "BANDAGE"))
+
 
         
             
