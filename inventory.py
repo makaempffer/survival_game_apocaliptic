@@ -53,6 +53,9 @@ class Inventory:
                          self.y_start + 3*32, "MONEY"))
         # self.update_item_group()
 
+    def add_item_list(self, inventory_list):
+        self.inventory += list
+
     def create_item_frame_inventory(self):
         return [[Item(self.x_start + j*32, self.y_start + i*32) for j in range(self.rows)] for i in range(self.columns)]
 
@@ -80,8 +83,7 @@ class Inventory:
                     if slot != None:
                         if slot.item_id == item.item_id:
                             slot.item_quantity += item.item_quantity
-                            print(
-                                "[INV] - ITEM FOUND -> {", slot.item_id, "} -> QUANTITY:", slot.item_quantity)
+                            print("[INV] - ITEM FOUND -> {", slot.item_id, "} -> QUANTITY:", slot.item_quantity)
                             return
             print("[INV] - NO SLOTS AVAILABLE")
 
@@ -96,7 +98,7 @@ class Inventory:
 
     def update(self):
         self.update_item_group()
-        print(self.get_item())
+        #print(self.get_item())
 
     def open(self):
         if self.is_open:

@@ -36,8 +36,11 @@ class Game:
         self.playerManager = PlayerManager(self.screen, self.popMenu)
         self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
         self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
-        self.inventory = Inventory(self.screen)
-
+        #self.inventory = Inventory(self.screen)
+        self.player =  self.playerManager.get_player()
+        self.inventory = self.player.inventory
+        self.player.inventory.screen = self.screen
+        print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):
         self.playerManager.update()
@@ -45,7 +48,8 @@ class Game:
         self.combat_manager.update()
         self.health_manager.update()
         self.npcManager.npcGroup.update()
-        self.inventory.update()
+        #self.inventory.update()
+        self.player.inventory.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
         pg.display.flip()      
@@ -56,7 +60,7 @@ class Game:
         self.blockManager.render()
         self.playerManager.render()
         self.npcManager.render()
-        self.inventory.render()
+        self.player.inventory.render()
 
 
     def check_events(self):
@@ -66,7 +70,7 @@ class Game:
                 sys.exit()
             self.health_manager.update_health_counters(event)
             self.playerManager.update_player_events(event)
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.inventory.is_open:#right button mousse
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.player.inventory.is_open:#right button mousse
                 self.popMenu.setupMenu()
             if event.type == pg.KEYDOWN and event.key ==pg.K_i:
                 self.inventory.open()

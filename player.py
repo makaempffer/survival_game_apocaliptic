@@ -1,9 +1,11 @@
 import pygame as pg
 from health import Health
+from inventory import Inventory
 class Player(pg.sprite.Sprite):
     def __init__(self, menu):
         super().__init__()
         self.health = Health("Player")
+        self.inventory = Inventory()
         self.posX = 400
         self.posY = 400
         self.menu = menu

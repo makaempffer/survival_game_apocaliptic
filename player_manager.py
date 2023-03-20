@@ -15,7 +15,7 @@ class PlayerManager:
     def update(self):
         self.group.update()
 
-    def get_player(self):
+    def get_player(self) -> Player:
         for player in self.group : return player
     
     def update_player_events(self, event):
