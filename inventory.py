@@ -47,7 +47,7 @@ class Inventory:
         self.create_inventory()
         self.insert_item(3, 3, Item(self.x_start + 3*32, self.y_start + 3*32, "MONEY"))
         self.insert_item(3, 3, Item(self.x_start + 3*32, self.y_start + 3*32, "MONEY"))
-        self.update_item_group()
+        #self.update_item_group()
 
     def create_item_frame_inventory(self):
         return [[Item(self.x_start + j*32, self.y_start + i*32) for j in range(self.rows)] for i in range(self.columns)]
@@ -75,10 +75,22 @@ class Inventory:
                         if slot != None:
                             if slot.item_id == item.item_id:
                                 slot.item_quantity += item.item_quantity
-                                print("ITEM FOUND -> QUANTITY:", slot.item_quantity)
+                                print("[INV] - ITEM FOUND -> {",slot.item_id,"} -> QUANTITY:", slot.item_quantity)
                                 return
                 print("[INV] - NO SLOTS AVAILABLE")
     
+    def get_item(self) -> Item:
+        mouse_x, mouse_y = pg.mouse.get_pos()
+        for row in self.inventory:
+            for item in row:
+                if item != None:
+                    if  mouse_x >= item.rect.x and mouse_x <= item.rect.x + 32: 
+                        if mouse_y >= item.rect.y and mouse_y <= item.rect.y + 32:
+                            return item
+    
+    def update(self):
+        self.update_item_group()
+        self.get_item()
 
     def open(self):
         if self.is_open:
@@ -93,7 +105,6 @@ class Inventory:
                     if item != None and item not in self.item_group:
                         self.item_group.add(item)
                         print("[INV] - ITEM: {", item.item_id, "} APPENDED")
-            print("[INV] - ITEM GROUP UPDATED")
     
     def render_item_text(self):
         self.item_group.update(self.screen)

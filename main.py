@@ -45,6 +45,7 @@ class Game:
         self.combat_manager.update()
         self.health_manager.update()
         self.npcManager.npcGroup.update()
+        self.inventory.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
         pg.display.flip()      
@@ -73,8 +74,7 @@ class Game:
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False
         
-            
-
+        
     def run(self):
         while self.isRunning:
             self.check_events()
