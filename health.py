@@ -54,8 +54,6 @@ class Health:
 
     def __del__(self):
         del self
-    
-
 
     def timer_event(self, event):
         if event.type == self.timer:

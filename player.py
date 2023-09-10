@@ -51,7 +51,6 @@ class Player(pg.sprite.Sprite):
     def timer_event(self, event):
         if event.type == self.timer:
             self.counter += 1
-        
 
     def counter_timer(self) -> bool:
         if self.counter >= self.cooldown:

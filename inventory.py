@@ -83,7 +83,7 @@ class Inventory:
                     self.item_frame_group.add(item)
 
     def get_sprites(self):
-        print("Getting sprites")
+        print("[INV] - GETTING ITEMS.")
         item_list = []
         for x, row in enumerate(self.inventory):
             for y, item in enumerate(row): 

@@ -10,6 +10,7 @@ from block_manager import BlockManager
 from player_manager import PlayerManager
 from combat_manager import CombatManager
 from health_manager import HealthManager
+from narrator_system import Narrator
          
 
 class Game:
@@ -39,6 +40,7 @@ class Game:
         self.player =  self.playerManager.get_player()
         self.inventory = self.player.inventory
         self.player.inventory.screen = self.screen
+        self.narrator = Narrator(self.screen)
         print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):
@@ -47,6 +49,7 @@ class Game:
         self.combat_manager.update()
         self.health_manager.update()
         self.npcManager.npcGroup.update()
+        self.narrator.update()
         #self.inventory.update()
         self.player.inventory.update()
         self.delta_time = self.clock.tick(FPS)
@@ -60,6 +63,7 @@ class Game:
         self.playerManager.render()
         self.npcManager.render()
         self.player.inventory.render()
+        self.narrator.show_narrator()
 
 
     def check_events(self):

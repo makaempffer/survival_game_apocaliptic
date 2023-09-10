@@ -8,4 +8,5 @@ FONT = pg.font.Font('RobotoMono-VariableFont_wght.ttf', 10)
 RED = 255, 0, 0
 GREEN = 0, 255, 0
 YELLOW = 255, 255, 0
-
+NARRATOR_WIDTH = 150
+NARRATOR_HEIGHT = 40
