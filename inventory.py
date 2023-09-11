@@ -5,8 +5,9 @@ class Item(pg.sprite.Sprite):
     def __init__(self, x=0, y=0, item_id: str = "EMPTY"):
         super().__init__()
         self.item_id = item_id
+        self.ITEM_SIZE = 32
         self.size = 32
-        self.rect = pg.Rect(x, y, 32, 32)
+        self.rect = pg.Rect(x, y, ITEM_SIZE, ITEM_SIZE)
         self.image = None
         self.item_quantity: int = 1
         self.is_stackable = False
@@ -16,7 +17,7 @@ class Item(pg.sprite.Sprite):
         self.font_set_quantity(screen)
 
     def font_set_quantity(self, screen):
-        rect = pg.Rect(self.rect.x, self.rect.y, 32, 32)
+        rect = pg.Rect(self.rect.x, self.rect.y, ITEM_SIZE, ITEM_SIZE)
         text = FONT.render(str(self.item_quantity), True, (255, 255, 255))
         screen.blit(text, rect)
 
@@ -37,9 +38,9 @@ class Inventory:
     def __init__(self, screen=None) -> None:
         self.rows = 5
         self.columns = 5
-        self.item_size = 32
-        self.x_start = WIDTH - self.item_size * self.rows
-        self.y_start = HEIGHT - self.item_size * self.columns
+        self.ITEM_SIZE = 32
+        self.x_start = WIDTH - self.ITEM_SIZE * self.rows
+        self.y_start = HEIGHT - self.ITEM_SIZE * self.columns
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
         self.screen = screen
@@ -48,10 +49,10 @@ class Inventory:
         self.create_item_frame_group()
         self.create_inventory()
         
-        self.insert_item(0, 0, Item(self.x_start + 2*32,
-                         self.y_start + 2*32, "BANDAGE"))
-        self.insert_item(0, 0, Item(self.x_start + 3*32,
-                         self.y_start + 3*32, "MONEY"))
+        self.insert_item(0, 0, Item(self.x_start + 2*ITEM_SIZE,
+                         self.y_start + 2*ITEM_SIZE, "BANDAGE"))
+        self.insert_item(0, 0, Item(self.x_start + 3*ITEM_SIZE,
+                         self.y_start + 3*ITEM_SIZE, "MONEY"))
         """
         self.insert_item(3, 3, Item(self.x_start + 3*32,
                          self.y_start + 3*32, "MONEY"))
@@ -73,7 +74,7 @@ class Inventory:
                 self.inventory[slot_x][slot_y] = item
 
     def create_item_frame_inventory(self):
-        return [[Item(self.x_start + j*32, self.y_start + i*32) for j in range(self.rows)] for i in range(self.columns)]
+        return [[Item(self.x_start + j*ITEM_SIZE, self.y_start + i*ITEM_SIZE) for j in range(self.rows)] for i in range(self.columns)]
 
     def create_item_frame_group(self):
         frames = self.create_item_frame_inventory()
@@ -95,8 +96,8 @@ class Inventory:
         for x, row in enumerate(self.inventory):
             for y, item in enumerate(row):
                 if isinstance(item, Item):
-                    item.rect.x = self.x_start + x * 32
-                    item.rect.y = self.y_start + y * 32
+                    item.rect.x = self.x_start + x * ITEM_SIZE 
+                    item.rect.y = self.y_start + y * ITEM_SIZE
 
     def create_inventory(self):
         self.inventory = [[None for j in range(
@@ -114,17 +115,15 @@ class Inventory:
                 for slot in row:
                     if slot != None:
                         if slot.item_id == item.item_id:
-                            print(slot.item_id,"=",item.item_id)
                             slot.item_quantity += item.item_quantity
-                            print("[INV] - ITEM FOUND -> {", slot.item_id, "} -> QUANTITY:", slot.item_quantity)
                             return
                         
             for x, row in enumerate(self.inventory):
                 for y, slot in enumerate(row):
                     if slot == None:
                         print("[INV] - FILLED CLOSEST EMPTY SLOT")
-                        item.rect.x = self.x_start + x * 32
-                        item.rect.y = self.y_start + y * 32
+                        item.rect.x = self.x_start + x * ITEM_SIZE
+                        item.rect.y = self.y_start + y * ITEM_SIZE 
                         #slot = item
                         self.inventory[x][y] = item
                         return
@@ -136,8 +135,8 @@ class Inventory:
         for row in self.inventory:
             for item in row:
                 if item != None:
-                    if mouse_x >= item.rect.x and mouse_x <= item.rect.x + 32:
-                        if mouse_y >= item.rect.y and mouse_y <= item.rect.y + 32:
+                    if mouse_x >= item.rect.x and mouse_x <= item.rect.x + ITEM_SIZE:
+                        if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
                             return item
 
     def update(self):

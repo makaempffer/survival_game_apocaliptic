@@ -18,6 +18,7 @@ class World:
         self.map = arr
     
     def view(self):
+        print("[WORLD] - CREATING WORLD...")
         if len(self.map) > 1:
             for x, row in enumerate(self.map):
                 for y, col in enumerate(row):

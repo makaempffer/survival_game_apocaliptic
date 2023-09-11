@@ -12,9 +12,10 @@ class BlockManager:
         self.group.draw(self.screen)
 
     def fillGroup(self):
+        print("[BLOCK-MNG] - FILLING MAP...")
         for x, row in enumerate(self.mapData):
             block = Block(self.mapData[x][0], self.mapData[x][1], self.mapData[x][2])
             self.group.add(block)
             self.mapData[x].append(block.type)
-        print("[BLOCK-M] - BLOCK GROUP FILLED")
+        print("[BLOCK-MNG] - BLOCK GROUP FILLED.")
 

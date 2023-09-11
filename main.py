@@ -37,10 +37,11 @@ class Game:
         self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
         self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
         #self.inventory = Inventory(self.screen)
+        self.narrator = Narrator(self.screen)
         self.player =  self.playerManager.get_player()
+        self.player.set_narrator(self.narrator)
         self.inventory = self.player.inventory
         self.player.inventory.screen = self.screen
-        self.narrator = Narrator(self.screen)
         print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):
@@ -50,7 +51,6 @@ class Game:
         self.health_manager.update()
         self.npcManager.npcGroup.update()
         self.narrator.update()
-        #self.inventory.update()
         self.player.inventory.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))

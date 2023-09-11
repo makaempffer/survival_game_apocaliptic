@@ -2,13 +2,14 @@ import pygame as pg
 from health import Health
 from inventory import Inventory
 class Player(pg.sprite.Sprite):
-    def __init__(self, menu):
+    def __init__(self, menu, narrator = None):
         super().__init__()
         self.health = Health("Player")
         self.inventory = Inventory()
         self.posX = 400
         self.posY = 400
         self.menu = menu
+        self.narrator = narrator
         self.rect = pg.Rect(self.posX, self.posY, 10, 10)
         self.image = pg.image.load("./assets/character_player.png")
         self.lastCommand = ""
@@ -23,6 +24,9 @@ class Player(pg.sprite.Sprite):
         self.timer = pg.USEREVENT + 1
         self.time_delay = 1000
         pg.time.set_timer(self.timer, self.time_delay)
+        
+    def set_narrator(self, narrator):
+        self.narrator = narrator
 
     def behavior_controller(self):
         #prevent player from moving when in battle
@@ -32,7 +36,6 @@ class Player(pg.sprite.Sprite):
             self.walkSound.stop()
 
     def walk(self, target):
-        
         if self.health.is_alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.walkSound.set_volume(0.2)
             self.walkSound.play(1, 0, 2000)
@@ -40,6 +43,7 @@ class Player(pg.sprite.Sprite):
             self.triggered = True
         if self.combat_triggered == True or self.health.is_alive == False:
             self.walkSound.fadeout(2000)
+
         if target == None:
             self.walkSound.fadeout(2000)
             self.triggered = False
@@ -58,6 +62,8 @@ class Player(pg.sprite.Sprite):
             return True
         else:
             return False
+
+
     
     def movement(self):
         if self.counter_timer():

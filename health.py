@@ -88,69 +88,52 @@ class Health:
             + self.knee_r + self.foot_r )
         return hp_summed
     
+    def type_initializer(self, modifier: int):
+        """Takes a modifier from 1-10"""
+        self.head = 100 * (modifier * 0.1)
+        self.eye_r = 100 * (modifier * 0.1)
+        self.eye_l = 100 * (modifier * 0.1)
+        self.mouth = 100 * (modifier * 0.1)
+        self.chest = 100 * (modifier * 0.1)
+        self.stomach = 100 * (modifier * 0.1)
+        self.arm_r = 100 * (modifier * 0.1)
+        self.bone_arm_r = 100 * (modifier * 0.1)
+        self.hand_r = 100 * (modifier * 0.1)
+        self.arm_l = 100 * (modifier * 0.1)
+        self.bone_arm_l = 100 * (modifier * 0.1)
+        self.hand_l = 100 * (modifier * 0.1)
+        self.fingers_l = 100 * (modifier * 0.1)
+        self.fingers_r = 100 * (modifier * 0.1)
+        self.leg_l = 100 * (modifier * 0.1)
+        self.knee_l = 100 * (modifier * 0.1)
+        self.foot_l = 100 * (modifier * 0.1)
+        self.leg_r = 100 * (modifier * 0.1)
+        self.knee_r = 100 * (modifier * 0.1)
+        self.foot_r = 100 * (modifier * 0.1)
+        self.body_avg = self.get_total_hp()
+
+    
     def create_instance(self, type: str):
         """Create a Health object for instance from type"""
         if type == "Player":
-            self.head = 100
-            self.eye_r = 100
-            self.eye_l = 100
-            self.mouth = 100
-            self.chest = 100
-            self.stomach = 100
-            self.arm_r = 100
-            self.bone_arm_r = 100
-            self.hand_r = 100
-            self.arm_l = 100
-            self.bone_arm_l = 100
-            self.hand_l = 100    
-            self.fingers_l = 100
-            self.fingers_r = 100
-            self.leg_l = 100
-            self.knee_l = 100
-            self.foot_l = 100
-            self.leg_r = 100
-            self.knee_r = 100  
-            self.foot_r = 100
-            self.body_avg = self.get_total_hp()
-
+            self.type_initializer(10) 
         if type == "zombie":
-            self.head = 50
-            self.eye_r = 20
-            self.eye_l = 20
-            self.mouth = 60
-            self.chest = 60
-            self.stomach = 40
-            self.arm_r = random.randint(20, 80)
-            self.bone_arm_r = 40
-            self.hand_r = 40
-            self.arm_l = random.randint(30, 50)
-            self.bone_arm_l = 40
-            self.hand_l = 30  
-            self.fingers_l = 30
-            self.fingers_r = 30
-            self.leg_l = random.randint(50, 80)
-            self.knee_l = 40
-            self.foot_l = 40
-            self.leg_r = random.randint(30, 45)
-            self.knee_r = 50 
-            self.foot_r = random.randint(40, 80)
-            
-            self.body_avg = self.get_total_hp()
+            self.type_initializer(5)
 
     def update_current_hp(self):
         self.body_avg = self.get_total_hp()
 
     def choose_random_body_part(self):
         body_list = list(self.__dict__.items())
+        skip_list = ["attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay"]
+        cleaned_list = [(key, value) for key, value in body_list if key not in skip_list]
+        print("[HEALTH-DBG]", body_list, cleaned_list)
         shuffled_list = random.sample(body_list, k=len(body_list))
         for body_part, hp in shuffled_list:
-            if body_part == "attack_extremity":
-                continue
-            if body_part == "is_alive":
-                continue
-            if body_part == "attack_sound" or body_part == "death_sound" or body_part == "timer" or body_part == "time_delay":
+            if body_part in skip_list:
                 continue
             if hp > 0 and body_part != "body_avg":
+                print(f"[HEALTH] -> BODY PART {body_part}")
                 return body_part
 
     def get_body_part_hp(self, body_part: str):
