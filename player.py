@@ -39,14 +39,16 @@ class Player(pg.sprite.Sprite):
         if self.hunger >= MAX_STARVATION:
             self.health.receive_damage(0.1)
             print("[PLAYER] - STARVING.")
+            self.set_current_action("Starving...")
         if self.thirst >= MAX_STARVATION:
             self.health.receive_damage(0.1)
+            self.set_current_action("Dehydrated...")
             print("[PLAYER] - DEHYDRATED.")
 
     def get_stats_text(self):
         """Returns player stats on presentable format"""
         message = "HUNGER: " + str(round(self.hunger, 2)) + " THIRST: " + str(round(self.thirst, 2))
-        self.narrator.set_constant_text(("HP: " + str(self.health.get_total_hp())), " ACTION: " + self.last_action)
+        self.narrator.set_constant_text(("HP: " + str(round(self.health.get_total_hp(), 2))), " ACTION: " + self.last_action)
         self.narrator.append_message(message)
         
     def set_narrator(self, narrator):
@@ -57,6 +59,7 @@ class Player(pg.sprite.Sprite):
         if self.combat_triggered == False and self.health.is_alive:
             self.movement()
         if self.combat_triggered == True:
+            self.set_current_action("Fighting.")
             self.walkSound.stop()
 
     def set_current_action(self, action):
@@ -96,6 +99,7 @@ class Player(pg.sprite.Sprite):
             most_damaged = self.health.get_most_damaged_part()
             self.health.add_body_part_hp(most_damaged, 10)
             print(self.health.get_total_hp())
+            self.set_current_action("Bandaging...")
             self.inventory.kill_consumed()
             # Get the most damaged part and heal it some amount.
 
