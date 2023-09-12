@@ -86,11 +86,25 @@ class Player(pg.sprite.Sprite):
         if event.type == self.timer:
             self.counter += 1
 
+    def get_consumed_item(self):
+        """Get the consumed item effects, all items to add here."""
+        consumed_item = self.inventory.last_consumed
+        if not consumed_item:
+            return
+        if consumed_item.item_id == "BANDAGE":
+            print("[PLAYER] - USED BANDAGE")
+            most_damaged = self.health.get_most_damaged_part()
+            self.health.add_body_part_hp(most_damaged, 10)
+            print(self.health.get_total_hp())
+            self.inventory.kill_consumed()
+            # Get the most damaged part and heal it some amount.
+
     def update_on_timer(self):
         """Function calls to run every time the timer is met."""
         self.update_time_effects()
         self.get_stats_text()
         self.inventory.update_item_player_effects()
+        self.get_consumed_item()
 
     def counter_timer(self) -> bool:
         if self.counter >= self.cooldown:

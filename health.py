@@ -121,17 +121,39 @@ class Health:
     def update_current_hp(self):
         self.body_avg = self.get_total_hp()
 
+    def get_most_damaged_part(self):
+        part_list = list(self.__dict__.items())
+        skip_list = ["body_avg", "attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
+        most_damaged = None
+        part = None
+        # Fix using wrong body parts.
+        for body_part, hp in part_list:
+            if body_part in skip_list:
+                continue
+            if most_damaged == None:
+                most_damaged = hp
+                part = body_part 
+            if hp < most_damaged:
+                most_damaged = hp
+                part = body_part
+        print(f"[HEALTH] - MOST DAMAGED - {part}")
+        return part
+
     def choose_random_body_part(self):
         body_list = list(self.__dict__.items())
-        skip_list = ["attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay"]
+        skip_list = ["attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
         cleaned_list = [(key, value) for key, value in body_list if key not in skip_list]
         shuffled_list = random.sample(body_list, k=len(body_list))
         for body_part, hp in shuffled_list:
             if body_part in skip_list:
                 continue
             if hp > 0 and body_part != "body_avg":
-                print(f"[HEALTH] -> BODY PART {body_part}")
+                print(f"[HEALTH] -> BODY PART {body_part} - {hp}")
                 return body_part
+
+    def add_body_part_hp(self, body_part: str, amount):
+        hp = self.__getattribute__(body_part)
+        self.__setattr__(body_part, (hp + amount))
 
     def get_body_part_hp(self, body_part: str):
         hp = self.__getattribute__(body_part)
@@ -143,7 +165,6 @@ class Health:
             if self.__getattribute__(body_part_hit) > 0:
                 self.__setattr__(body_part_hit, self.get_body_part_hp(body_part_hit) - damageAmount)
                 self.update_current_hp()
-            #print("[HEALTH] - LAST HIT ON", body_part_hit,"TOTAL HP:", self.body_avg)
 
 
     def give_damage(self, target):

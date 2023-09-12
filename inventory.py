@@ -57,6 +57,7 @@ class Inventory:
         self.inventory = None
         self.is_open = False
         self.consumable_stack = []
+        self.last_consumed = None
         self.create_item_frame_group()
         self.create_inventory()
         
@@ -161,6 +162,7 @@ class Inventory:
             return
         item = self.consumable_stack.pop()
         item.consume()
+        self.last_consumed = item
 
     def get_item(self) -> Item:
         if not pg.mouse.get_pressed()[0]:
@@ -173,6 +175,9 @@ class Inventory:
                         if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
                             self.add_to_consumable_stack(item)
                             return item
+
+    def kill_consumed(self):
+        self.last_consumed = None
 
     def update(self):
         self.update_item_group()
