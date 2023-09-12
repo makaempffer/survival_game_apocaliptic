@@ -12,7 +12,7 @@
 # Make world feel inmersive
 # Inventory system like Resident Evil
 # Monsters invisible for player if doesnt meet some item/? requirements
-# Make a text-narrator class where every manager has a reference to, it would push the message into a stack and read items into a screen
+# FINISH! #TODO text-narrator class where every manager has a reference to, it would push the message into a stack and read items into a screen
 # Make a fujnction to give NPC inventory by type
 # Add CLASS SYSTEM (BIG!)
 # Add climate, day/night

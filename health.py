@@ -68,8 +68,6 @@ class Health:
     
     def check_alive(self, owner):
         if self.body_avg <= 0:
-            for attribute, value in self.__dict__.items():
-                print(attribute, ":", value)
             self.is_alive = False
             owner.kill()
             self.death_sound.play()
@@ -127,7 +125,6 @@ class Health:
         body_list = list(self.__dict__.items())
         skip_list = ["attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay"]
         cleaned_list = [(key, value) for key, value in body_list if key not in skip_list]
-        print("[HEALTH-DBG]", body_list, cleaned_list)
         shuffled_list = random.sample(body_list, k=len(body_list))
         for body_part, hp in shuffled_list:
             if body_part in skip_list:
