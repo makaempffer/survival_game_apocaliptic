@@ -34,7 +34,7 @@ class Player(pg.sprite.Sprite):
         self.thirst += 0.05
 
     def check_effects(self):
-        """Check if the player should start losing health according to health/hunger"""
+        """Player loses health when MAX_STARVATION is reached."""
         MAX_STARVATION = 10
         if self.hunger >= MAX_STARVATION:
             self.health.receive_damage(0.1)
@@ -67,7 +67,7 @@ class Player(pg.sprite.Sprite):
         if self.health.is_alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.walkSound.set_volume(0.2)
             self.walkSound.play(1, 0, 2000)
-            self.last_action = "Walking..."
+            self.set_current_action("Walking...")
             
             self.triggered = True
         if self.combat_triggered == True or self.health.is_alive == False:
@@ -86,11 +86,16 @@ class Player(pg.sprite.Sprite):
         if event.type == self.timer:
             self.counter += 1
 
+    def update_on_timer(self):
+        """Function calls to run every time the timer is met."""
+        self.update_time_effects()
+        self.get_stats_text()
+        self.inventory.update_item_player_effects()
+
     def counter_timer(self) -> bool:
         if self.counter >= self.cooldown:
             self.counter = 0
-            self.update_time_effects()
-            self.get_stats_text()
+            self.update_on_timer()
             return True
         else:
             return False

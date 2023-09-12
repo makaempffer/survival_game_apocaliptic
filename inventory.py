@@ -11,6 +11,7 @@ class Item(pg.sprite.Sprite):
         self.image = None
         self.item_quantity: int = 1
         self.is_stackable = False
+        self.is_consumable = False
         self.get_item_sprite()
 
     def update(self, screen):
@@ -21,6 +22,13 @@ class Item(pg.sprite.Sprite):
         text = FONT.render(str(self.item_quantity), True, (255, 255, 255))
         screen.blit(text, rect)
 
+    def consume(self):
+        if self.item_id == "BANDAGE" and self.item_quantity > 0:
+            self.item_quantity -= 1
+            print("Bandage consumed!.")
+        else:
+            print("[ITEM] - ITEM CAN'T BE CONSUMED.")
+
     def get_item_sprite(self):
         if pg.get_init():
             if self.item_id == "EMPTY":
@@ -28,9 +36,11 @@ class Item(pg.sprite.Sprite):
                     "./assets/item_frame.png").convert_alpha()
             if self.item_id == "MONEY":
                 self.is_stackable = True
+                self.is_consumable = True
                 self.image = pg.image.load("./assets/money.png").convert_alpha()
             if self.item_id == "BANDAGE":
                 self.is_stackable = True
+                self.is_consumable = True
                 self.image = pg.image.load("./assets/bandage.png").convert_alpha()
 
 
@@ -46,11 +56,12 @@ class Inventory:
         self.screen = screen
         self.inventory = None
         self.is_open = False
+        self.consumable_stack = []
         self.create_item_frame_group()
         self.create_inventory()
         
         self.insert_item(0, 0, Item(self.x_start + 2*ITEM_SIZE,
-                         self.y_start + 2*ITEM_SIZE, "BANDAGE"))
+                         self.y_start + 2*ITEM_SIZE, "BANDAGE"), 10)
         self.insert_item(0, 0, Item(self.x_start + 3*ITEM_SIZE,
                          self.y_start + 3*ITEM_SIZE, "MONEY"))
         """
@@ -75,6 +86,14 @@ class Inventory:
 
     def create_item_frame_inventory(self):
         return [[Item(self.x_start + j*ITEM_SIZE, self.y_start + i*ITEM_SIZE) for j in range(self.rows)] for i in range(self.columns)]
+
+    def use_consumable(self, item):
+        if item.is_consumable:
+            item.consume()
+
+    def update_item_player_effects(self):
+        """All item-player related update-calls here."""
+        self.consume_stack()
 
     def create_item_frame_group(self):
         frames = self.create_item_frame_inventory()
@@ -106,7 +125,9 @@ class Inventory:
     def get_inv(self):
         return self.inventory
 
-    def insert_item(self, pos_x=0, pos_y=0, item: Item=Item()):
+    def insert_item(self, pos_x=0, pos_y=0, item: Item=Item(), quantity=None):
+        if quantity != None:
+            item.item_quantity += quantity
         if self.inventory[pos_x][pos_y] == None:
             self.inventory[pos_x][pos_y] = item
             print("[INV] - ITEM INSERTED")
@@ -121,7 +142,7 @@ class Inventory:
             for x, row in enumerate(self.inventory):
                 for y, slot in enumerate(row):
                     if slot == None:
-                        print("[INV] - FILLED CLOSEST EMPTY SLOT")
+                        print("[INV] - FILLED CLOSEST EMPTY SLOT.")
                         item.rect.x = self.x_start + x * ITEM_SIZE
                         item.rect.y = self.y_start + y * ITEM_SIZE 
                         #slot = item
@@ -130,19 +151,33 @@ class Inventory:
 
             print("[INV] - NO SLOTS AVAILABLE")
 
+
+    def add_to_consumable_stack(self, item):
+        if item.is_consumable and item not in self.consumable_stack:
+            self.consumable_stack.append(item)
+
+    def consume_stack(self):
+        if len(self.consumable_stack) < 1:
+            return
+        item = self.consumable_stack.pop()
+        item.consume()
+
     def get_item(self) -> Item:
+        if not pg.mouse.get_pressed()[0]:
+            return
         mouse_x, mouse_y = pg.mouse.get_pos()
         for row in self.inventory:
             for item in row:
                 if item != None:
                     if mouse_x >= item.rect.x and mouse_x <= item.rect.x + ITEM_SIZE:
                         if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
+                            self.add_to_consumable_stack(item)
                             return item
 
     def update(self):
         self.update_item_group()
         self.update_sprites_positions()
-        #print(self.get_item())
+        self.get_item()
 
     def open(self):
         if self.is_open:
@@ -156,14 +191,7 @@ class Inventory:
                     if item != None and not self.item_group.has(item):
                         self.item_group.add(item)
                         print("[INV] - ITEM: {", item.item_id, "} APPENDED")
-        """    
-        if len(self.inventory) > 0:
-            for row in self.inventory:
-                for item in row:
-                    if item != None and item not in self.item_group:
-                        self.item_group.add(item)
-                        print("[INV] - ITEM: {", item.item_id, "} APPENDED")
-        """         
+
     def render_item_text(self):
         self.item_group.update(self.screen)
 
