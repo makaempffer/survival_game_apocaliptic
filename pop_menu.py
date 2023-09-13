@@ -111,6 +111,7 @@ class PopMenu:
             self.selectedAction = None
             if selectedAction == "Walk":
                 self.savedLocation = self.startingPoint
+            print(selectedAction)
             return selectedAction
 
     def showMenu(self, options):

@@ -86,7 +86,7 @@ class Health:
             + self.knee_r + self.foot_r )
         return hp_summed
     
-    def type_initializer(self, modifier: int):
+    def apply_modifier(self, modifier: int):
         """Takes a modifier from 1-10"""
         self.head = 100 * (modifier * 0.1)
         self.eye_r = 100 * (modifier * 0.1)
@@ -114,9 +114,9 @@ class Health:
     def create_instance(self, type: str):
         """Create a Health object for instance from type"""
         if type == "Player":
-            self.type_initializer(10) 
+            self.apply_modifier(10) 
         if type == "zombie":
-            self.type_initializer(5)
+            self.apply_modifier(5)
 
     def update_current_hp(self):
         self.body_avg = self.get_total_hp()

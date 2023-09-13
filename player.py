@@ -33,9 +33,10 @@ class Player(pg.sprite.Sprite):
         self.hunger += 0.03
         self.thirst += 0.05
 
+
     def check_effects(self):
         """Player loses health when MAX_STARVATION is reached."""
-        MAX_STARVATION = 10
+        MAX_STARVATION = self.health.stomach
         if self.hunger >= MAX_STARVATION:
             self.health.receive_damage(0.1)
             print("[PLAYER] - STARVING.")
@@ -61,6 +62,17 @@ class Player(pg.sprite.Sprite):
         if self.combat_triggered == True:
             self.set_current_action("Fighting.")
             self.walkSound.stop()
+
+    def perform_action(self):
+        print("PERFORMING ACTION...")
+        action = self.lastCommand
+        print(f"ACTION TO PERFORM - {action}")
+        if not action:
+            return
+        action = action.lower()
+        if action == "cut tree":
+            self.set_current_action("Chopping tree...")
+            print("[PLAYER] - GETTING WOOD.")
 
     def set_current_action(self, action):
         if self.last_action != action:
@@ -109,6 +121,7 @@ class Player(pg.sprite.Sprite):
         self.get_stats_text()
         self.inventory.update_item_player_effects()
         self.get_consumed_item()
+        self.perform_action()
 
     def counter_timer(self) -> bool:
         if self.counter >= self.cooldown:

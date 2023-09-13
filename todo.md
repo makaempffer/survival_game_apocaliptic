@@ -7,6 +7,8 @@
 # Add a gun system
 # Add items
     Medicine, Herbs, Drugs, Cigarretes, sticks
+# Grindy with a not many items but many craftables.
+# On inventory click-crafting, by creating a stack and processing it.
 # Add an economy system
 # Add NPCS to Trade and get missions
 # Make world feel inmersive
@@ -16,3 +18,5 @@
 # Make a fujnction to give NPC inventory by type
 # Add CLASS SYSTEM (BIG!)
 # Add climate, day/night
+# Wood and trees are finite, so the player has to buy fuel to keep his power on or by crafting.
+# Wood and trees are finite, so the player has to buy fuel to keep his power o or by crafting.
