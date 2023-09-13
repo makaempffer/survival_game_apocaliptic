@@ -64,6 +64,8 @@ class Player(pg.sprite.Sprite):
             self.walkSound.stop()
 
     def perform_action(self):
+        # TODO CALCULATE AMOUNT SOMEHOW
+        total = 1
         print("PERFORMING ACTION...")
         action = self.lastCommand
         print(f"ACTION TO PERFORM - {action}")
@@ -72,7 +74,16 @@ class Player(pg.sprite.Sprite):
         action = action.lower()
         if action == "cut tree":
             self.set_current_action("Chopping tree...")
+            block = self.menu.get_selected_block()
+            block.harvest_resource(total)
+            self.block_resource_update(block)
+            self.inventory.add_item("WOOD", total)
             print("[PLAYER] - GETTING WOOD.")
+
+    def block_resource_update(self, block):
+        if block.get_resource_amount() <= 0:
+            self.lastCommand = None
+            self.set_current_action("Idle.")
 
     def set_current_action(self, action):
         if self.last_action != action:

@@ -42,6 +42,10 @@ class Item(pg.sprite.Sprite):
                 self.is_stackable = True
                 self.is_consumable = True
                 self.image = pg.image.load("./assets/bandage.png").convert_alpha()
+            if self.item_id == "WOOD":
+                self.image = pg.image.load("./assets/wood.png").convert_alpha()
+                self.is_stackable = True
+                self.is_consumable = False
 
 
 class Inventory:
@@ -125,6 +129,36 @@ class Inventory:
 
     def get_inv(self):
         return self.inventory
+
+    def add_item(self, item_name, quantity=1):
+        pos_x, pos_y = 0, 0
+        item = Item(0, 0, item_name)
+        #if quantity != None:
+            #item.item_quantity += quantity
+        if self.inventory[pos_x][pos_y] == None:
+            self.inventory[pos_x][pos_y] = item
+            print("[INV] - ITEM INSERTED")
+        else:
+            for row in self.inventory:
+                for slot in row:
+                    if slot != None:
+                        if slot.item_id == item.item_id:
+                            slot.item_quantity += item.item_quantity
+                            return
+                        
+            for x, row in enumerate(self.inventory):
+                for y, slot in enumerate(row):
+                    if slot == None:
+                        print("[INV] - FILLED CLOSEST EMPTY SLOT.")
+                        item.rect.x = self.x_start + x * ITEM_SIZE
+                        item.rect.y = self.y_start + y * ITEM_SIZE 
+                        #slot = item
+                        self.inventory[x][y] = item
+                        return
+
+            print("[INV] - NO SLOTS AVAILABLE")
+
+
 
     def insert_item(self, pos_x=0, pos_y=0, item: Item=Item(), quantity=None):
         if quantity != None:

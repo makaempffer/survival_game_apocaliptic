@@ -21,7 +21,7 @@ class Game:
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.world = World(WIDTH, HEIGHT)
         self.popMenu = None
-        self.blockManager = BlockManager(self.screen, self.world.mapData)
+        self.block_manager = BlockManager(self.screen, self.world.mapData)
         self.npcManager = NPCManager(self.screen)
         self.combat_manager: CombatManager
         self.isRunning = True
@@ -32,7 +32,7 @@ class Game:
 
 
     def newGame(self):
-        self.popMenu = PopMenu(self.blockManager.mapData, self.blockManager.group, self.npcManager.npcGroup, self.screen)
+        self.popMenu = PopMenu(self.block_manager.mapData, self.block_manager, self.npcManager.npcGroup, self.screen)
         self.playerManager = PlayerManager(self.screen, self.popMenu)
         self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
         self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
@@ -50,6 +50,7 @@ class Game:
         self.combat_manager.update()
         self.health_manager.update()
         self.npcManager.npcGroup.update()
+        self.block_manager.update_resource_blocks()
         self.narrator.update()
         self.player.inventory.update()
         self.delta_time = self.clock.tick(FPS)
@@ -59,7 +60,7 @@ class Game:
 
     def draw(self):
         self.screen.fill((0, 0, 0))
-        self.blockManager.render()
+        self.block_manager.render()
         self.playerManager.render()
         self.npcManager.render()
         self.player.inventory.render()

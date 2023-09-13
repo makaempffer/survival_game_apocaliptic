@@ -2,12 +2,14 @@ from settings import *
 
 
 class PopMenu:
-    def __init__(self, mapdata, blockGroup, npcGroup, screen):
+    def __init__(self, mapdata, block_manager, npcGroup, screen):
         self.screen = screen
         self.mapData = mapdata
-        self.group = blockGroup
+        self.group = block_manager.group
+        self.block_manager = block_manager
         self.npcGroup = npcGroup
         self.selected = None
+        self.selected_block = None
         self.opened = False
         self.interacting = False
         self.options = []
@@ -24,6 +26,9 @@ class PopMenu:
         self.selected_target = None
         self.open_menu_sound = pg.mixer.Sound('./sounds/Open_menu.wav')
         self.select_sound = pg.mixer.Sound('./sounds/Select.wav')
+
+    def get_selected_block(self):
+        return self.selected_block
 
     def getTargetNpc(self):
         mouseX, mouseY = pg.mouse.get_pos()
@@ -56,6 +61,8 @@ class PopMenu:
         for index, block in enumerate(self.mapData):
             if mouseX//10 == block[0] and mouseY//10 == block[1]:
                 self.selected = block[3]
+                # TODO Make get_block_index()
+                self.selected_block = self.block_manager.blocks[index]
                 self.posX, self.posY = mouseX, mouseY
                 self.blockIndex = index
 

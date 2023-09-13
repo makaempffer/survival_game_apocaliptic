@@ -4,11 +4,11 @@ class World:
         self.map = []
         self.sizeX = sizeX
         self.sizeY = sizeY
-        self.createMap()
         self.mapData = []
-        self.view()
         self.cols = 0
         self.rows = 0
+        self.createMap()
+        self.view()
 
     def createMap(self):
         noise = PerlinNoise(octaves=7, seed=1)
