@@ -4,9 +4,8 @@ from random import randint
 class Block(pg.sprite.Sprite):
     def __init__(self, posX, posY, value):
         super().__init__()
-        self.posX = posX    
-        self.posY = posY
         self.size = 10
+        self.position = pg.Vector2(posX*self.size, posY*self.size)
         self.rect = pg.Rect(posX * self.size, posY * self.size, 10, 10)
         self.is_resource = False
         self.resource_amount = 0

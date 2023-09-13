@@ -8,14 +8,14 @@ class Player(pg.sprite.Sprite):
         self.hunger = 0
         self.thirst = 0
         self.inventory = Inventory()
-        self.posX = 400
-        self.posY = 400
+        self.position = pg.Vector2(400, 400)
         self.menu = menu
         self.narrator = narrator
-        self.rect = pg.Rect(self.posX, self.posY, 10, 10)
+        self.rect = pg.Rect(self.position.x, self.position.y, 10, 10)
         self.image = pg.image.load("./assets/character_player.png")
         self.lastCommand = ""
         self.counter = 0
+        self.interaction_reach = 15
         self.cooldown = 3
         self.doAction = True
         self.isWalking = False
@@ -63,6 +63,11 @@ class Player(pg.sprite.Sprite):
             self.set_current_action("Fighting.")
             self.walkSound.stop()
 
+
+    def distance_to(self, position: pg.Vector2):
+        distance = self.position.distance_to(position)
+        return distance
+
     def perform_action(self):
         # TODO CALCULATE AMOUNT SOMEHOW
         total = 1
@@ -73,8 +78,12 @@ class Player(pg.sprite.Sprite):
             return
         action = action.lower()
         if action == "cut tree":
-            self.set_current_action("Chopping tree...")
             block = self.menu.get_selected_block()
+            if not self.distance_to(block.position) <= self.interaction_reach:
+                print("[PLAYER] - Too far.")
+                return
+                
+            self.set_current_action("Chopping tree...")
             block.harvest_resource(total)
             self.block_resource_update(block)
             self.inventory.add_item("WOOD", total)
@@ -187,6 +196,7 @@ class Player(pg.sprite.Sprite):
                             self.rect.x, self.rect.y = self.rect.x, self.rect.y - 10
                         elif distY < 0: 
                             self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
+                        self.position.x, self.position.y = self.rect.x, self.rect.y
                     self.doAction = False   
 
         
