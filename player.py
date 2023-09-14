@@ -67,6 +67,7 @@ class Player(pg.sprite.Sprite):
         if self.combat_triggered == True:
             self.set_current_action("Fighting.")
             self.walkSound.stop()
+        
 
 
     def distance_to(self, position: pg.Vector2):
@@ -96,7 +97,7 @@ class Player(pg.sprite.Sprite):
         action = action.lower()
         if action == "cut tree":
             self.gather_action("wood", 1)
-            print("[PLAYER] - GETTING WOOD.")
+            self.sound_system.play_sound("wood_chop")
 
     def block_resource_update(self, block):
         if block.get_resource_amount() <= 0:
