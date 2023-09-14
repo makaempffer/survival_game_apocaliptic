@@ -1,6 +1,8 @@
 import pygame as pg
 from health import Health
 from inventory import Inventory
+from sound_system import SoundSystem
+
 class Player(pg.sprite.Sprite):
     def __init__(self, menu, narrator = None):
         super().__init__()
@@ -8,6 +10,9 @@ class Player(pg.sprite.Sprite):
         self.hunger = 0
         self.thirst = 0
         self.inventory = Inventory()
+        self.inventory.setup_starting_items()
+        self.sound_system = SoundSystem()
+        self.sound_system.setup_sounds()
         self.position = pg.Vector2(400, 400)
         self.menu = menu
         self.narrator = narrator
@@ -67,6 +72,18 @@ class Player(pg.sprite.Sprite):
     def distance_to(self, position: pg.Vector2):
         distance = self.position.distance_to(position)
         return distance
+    
+    def gather_action(self, gathered_material: str = "WOOD", amount: int = 1):
+        gathered_material = gathered_material.upper()
+        block = self.menu.get_selected_block()
+        if not self.distance_to(block.position) <= self.interaction_reach:
+            print("[PLAYER] - BLOCK TOO FAR.")
+            return
+        
+        self.set_current_action("Gathering...")
+        block.gather_resource(amount)
+        self.block_resource_update(block)
+        self.inventory.add_item(gathered_material, amount)
 
     def perform_action(self):
         # TODO CALCULATE AMOUNT SOMEHOW
@@ -78,15 +95,7 @@ class Player(pg.sprite.Sprite):
             return
         action = action.lower()
         if action == "cut tree":
-            block = self.menu.get_selected_block()
-            if not self.distance_to(block.position) <= self.interaction_reach:
-                print("[PLAYER] - Too far.")
-                return
-                
-            self.set_current_action("Chopping tree...")
-            block.harvest_resource(total)
-            self.block_resource_update(block)
-            self.inventory.add_item("WOOD", total)
+            self.gather_action("wood", 1)
             print("[PLAYER] - GETTING WOOD.")
 
     def block_resource_update(self, block):
@@ -100,16 +109,15 @@ class Player(pg.sprite.Sprite):
 
     def walk(self, target):
         if self.health.is_alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
-            self.walkSound.set_volume(0.2)
-            self.walkSound.play(1, 0, 2000)
+            self.sound_system.play_sound("walk")
             self.set_current_action("Walking...")
             
             self.triggered = True
         if self.combat_triggered == True or self.health.is_alive == False:
-            self.walkSound.fadeout(2000)
+            self.sound_system.fadeout_sound("walk")
 
         if target == None:
-            self.walkSound.fadeout(2000)
+            self.sound_system.fadeout_sound("walk")
             self.triggered = False
 
     def update(self):

@@ -14,7 +14,7 @@ class Block(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/water.png")
         self.type = None
         self.data = []
-        self.getImage()
+        self.get_image()
         self.setup_resources()
 
     def reload_image(self, block_name: str):
@@ -33,7 +33,7 @@ class Block(pg.sprite.Sprite):
             self.is_resource = False
             self.reload_image("dirt")
 
-    def harvest_resource(self, amount):
+    def gather_resource(self, amount):
         if self.resource_amount <= 0:
             return 0
         self.resource_amount -= amount
@@ -44,7 +44,7 @@ class Block(pg.sprite.Sprite):
             return amount_left 
         return amount
 
-    def getImage(self):
+    def get_image(self):
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
             self.path = "./assets/water.png"

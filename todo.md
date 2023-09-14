@@ -19,4 +19,5 @@
 # Add CLASS SYSTEM (BIG!)
 # Add climate, day/night
 # Wood and trees are finite, so the player has to buy fuel to keep his power on or by crafting.
-# Wood and trees are finite, so the player has to buy fuel to keep his power o or by crafting.
+# Add cloth item, gun? , 
+

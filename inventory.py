@@ -65,15 +65,12 @@ class Inventory:
         self.create_item_frame_group()
         self.create_inventory()
         
-        self.insert_item(0, 0, Item(self.x_start + 2*ITEM_SIZE,
-                         self.y_start + 2*ITEM_SIZE, "BANDAGE"), 10)
-        self.insert_item(0, 0, Item(self.x_start + 3*ITEM_SIZE,
-                         self.y_start + 3*ITEM_SIZE, "MONEY"))
-        """
-        self.insert_item(3, 3, Item(self.x_start + 3*32,
-                         self.y_start + 3*32, "MONEY"))
-        """
         # self.update_item_group()
+
+    def setup_starting_items(self):
+        self.add_item("BANDAGE", 3)
+        self.add_item("WOOD", 5)
+        self.add_item("MONEY", 3)
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
@@ -133,6 +130,7 @@ class Inventory:
     def add_item(self, item_name, quantity=1):
         pos_x, pos_y = 0, 0
         item = Item(0, 0, item_name)
+        item.item_quantity = quantity
         #if quantity != None:
             #item.item_quantity += quantity
         if self.inventory[pos_x][pos_y] == None:
