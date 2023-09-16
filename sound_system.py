@@ -7,18 +7,18 @@ class SoundSystem:
         self.sounds = {}
         self.time_ms = 2000
 
-    def add_sound(self, sound_name: str, path: str, volume=0.4):
+    def add_sound(self, sound_name: str, path: str, volume=0.5):
         """Add a sound and give it a name"""
-        self.sounds[sound_name] = pg.mixer.Sound(path)
-        sound: pg.mixer.Sound = self.get_sound(sound_name)
+        sound = pg.mixer.Sound(path)
         sound.set_volume(volume)
+        self.sounds[sound_name] = sound
         print(f"[SOUND-SYS] - ADDED SOUND -> {sound_name}")
     
     def get_sound(self, sound_name: str) -> pg.mixer.Sound:
         if sound_name in self.sounds:
             return self.sounds.get(sound_name) 
         
-    def play_sound(self, sound_name, max_time=0, loops=1):
+    def play_sound(self, sound_name, max_time=0, loops=0):
         sound = self.get_sound(sound_name)
         sound.play(loops, max_time, self.time_ms)
     
@@ -29,6 +29,7 @@ class SoundSystem:
     def setup_sounds(self):
         self.add_sound("walk", './sounds/walk.mp3')
         self.add_sound("wood_chop", "./sounds/Wood_chop.wav")
+        self.add_sound("chop_over", "./sounds/Chop_over.wav", 0.5)
         print("[SOUND-SYS] - SETUP SOUNDS.")
     
     def stop_sound(self, sound_name: str):

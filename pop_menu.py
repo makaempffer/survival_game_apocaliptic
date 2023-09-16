@@ -80,7 +80,7 @@ class PopMenu:
             self.options = options
 
         elif self.selected == "WATER":
-            options = ["Drink", "Pour to Container", "Inspect"]
+            options = ["Drink", "Fill container", "Inspect"]
             self.options = options
 
         elif self.selected == "SAND":

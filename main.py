@@ -81,6 +81,10 @@ class Game:
                 self.inventory.open()
                 print(self.inventory.get_sprites())
                 #print(self.inventory.inventory)
+            if event.type == pg.KEYDOWN and event.key == pg.K_r:
+                self.world.regenerate_map()
+                self.block_manager.fill_groups()
+
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button
                 self.popMenu.interacting = False

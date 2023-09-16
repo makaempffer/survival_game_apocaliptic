@@ -49,6 +49,7 @@ class Block(pg.sprite.Sprite):
         if self.value >= 0.4 and self.value <= 1:
             self.path = "./assets/water.png"
             self.type = "WATER"
+            self.is_resource = True
         if self.value >= 0.3 and self.value <= 0.4: 
             self.path = "./assets/sand.png"
             self.type = "SAND"
@@ -65,7 +66,7 @@ class Block(pg.sprite.Sprite):
             if self.type == "TREE":
                 self.resource_amount = randint(5, 10)
             elif self.type == "WATER":
-                self.resource_amount = randint(20, 50)
+                self.resource_amount = randint(10, 20)
 
 
         self.image = pg.image.load(str(self.path)).convert_alpha()

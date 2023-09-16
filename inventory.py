@@ -34,18 +34,20 @@ class Item(pg.sprite.Sprite):
             if self.item_id == "EMPTY":
                 self.image = pg.image.load(
                     "./assets/item_frame.png").convert_alpha()
-            if self.item_id == "MONEY":
-                self.is_stackable = True
-                self.is_consumable = True
-                self.image = pg.image.load("./assets/money.png").convert_alpha()
-            if self.item_id == "BANDAGE":
-                self.is_stackable = True
-                self.is_consumable = True
-                self.image = pg.image.load("./assets/bandage.png").convert_alpha()
-            if self.item_id == "WOOD":
-                self.image = pg.image.load("./assets/wood.png").convert_alpha()
-                self.is_stackable = True
-                self.is_consumable = False
+            elif self.item_id == "MONEY":
+                self.create_item("MONEY", True, True, "./assets/money.png")
+
+            elif self.item_id == "BANDAGE":
+                self.create_item("BANDAGE", True, True, "./assets/bandage.png")
+
+            elif self.item_id == "WOOD":
+                self.create_item("WOOD", True, False, "./assets/wood.png")
+    
+    def create_item(self, item_id: str, stackable: bool, consumable: bool, image_path):
+        self.item_id = item_id
+        self.image = pg.image.load(image_path).convert_alpha()
+        self.is_stackable = stackable
+        self.is_consumable = consumable 
 
 
 class Inventory:

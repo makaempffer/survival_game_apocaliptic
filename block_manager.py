@@ -18,6 +18,9 @@ class BlockManager:
             block.update()
 
     def fill_groups(self):
+        self.coordinatesGroup.clear()
+        self.resource_blocks.clear()
+        self.blocks.clear()
         print("[BLOCK-MNG] - FILLING MAP...")
         for x, row in enumerate(self.mapData):
             block = Block(self.mapData[x][0], self.mapData[x][1], self.mapData[x][2])

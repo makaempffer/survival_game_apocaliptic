@@ -1,4 +1,6 @@
 from settings import *
+from random import randint
+
 class World:
     def __init__(self, sizeX, sizeY):
         self.map = []
@@ -9,9 +11,14 @@ class World:
         self.rows = 0
         self.createMap()
         self.view()
+        
+    def regenerate_map(self):
+        seed = randint(1, 500)
+        self.createMap(seed)
+        self.view()
 
-    def createMap(self):
-        noise = PerlinNoise(octaves=7, seed=1)
+    def createMap(self, seed=1):
+        noise = PerlinNoise(octaves=7, seed=seed)
         xpix, ypix = HEIGHT//10, WIDTH//10
         self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
         arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]

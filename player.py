@@ -69,7 +69,6 @@ class Player(pg.sprite.Sprite):
             self.walkSound.stop()
         
 
-
     def distance_to(self, position: pg.Vector2):
         distance = self.position.distance_to(position)
         return distance
@@ -85,7 +84,15 @@ class Player(pg.sprite.Sprite):
         block.gather_resource(amount)
         self.block_resource_update(block)
         self.inventory.add_item(gathered_material, amount)
-
+        
+    def is_resource_empty(self) -> bool:
+        block = self.menu.get_selected_block()
+        if block.is_resource:
+            if block.resource_amount <= 0:
+                return True
+            else:
+                return False
+        
     def perform_action(self):
         # TODO CALCULATE AMOUNT SOMEHOW
         total = 1
@@ -98,6 +105,12 @@ class Player(pg.sprite.Sprite):
         if action == "cut tree":
             self.gather_action("wood", 1)
             self.sound_system.play_sound("wood_chop")
+            if self.is_resource_empty():
+                self.sound_system.play_sound("chop_over")
+        
+        elif action == "fill container":
+            self.gather_action("water", 1)
+            
 
     def block_resource_update(self, block):
         if block.get_resource_amount() <= 0:
@@ -112,8 +125,8 @@ class Player(pg.sprite.Sprite):
         if self.health.is_alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.sound_system.play_sound("walk")
             self.set_current_action("Walking...")
-            
             self.triggered = True
+
         if self.combat_triggered == True or self.health.is_alive == False:
             self.sound_system.fadeout_sound("walk")
 
