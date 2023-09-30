@@ -27,8 +27,8 @@ class SoundSystem:
         sound.fadeout(time_ms)
     
     def setup_sounds(self):
-        self.add_sound("walk", './sounds/walk.mp3')
-        self.add_sound("wood_chop", "./sounds/Wood_chop.wav")
+        self.add_sound("walk", './sounds/walk.mp3', 0.1)
+        self.add_sound("wood_chop", "./sounds/Wood_chop.wav", 0.9)
         self.add_sound("chop_over", "./sounds/Chop_over.wav", 0.5)
         print("[SOUND-SYS] - SETUP SOUNDS.")
     

@@ -8,7 +8,7 @@ class BlockManager:
         self.mapData = mapData
         self.coordinatesGroup = []
         self.resource_blocks = []
-        self.fill_groups()
+        self.generate_map()
         
     def render(self):
         self.group.draw(self.screen)
@@ -17,7 +17,8 @@ class BlockManager:
         for block in self.resource_blocks:
             block.update()
 
-    def fill_groups(self):
+    def generate_map(self):
+        self.group.empty()
         self.coordinatesGroup.clear()
         self.resource_blocks.clear()
         self.blocks.clear()

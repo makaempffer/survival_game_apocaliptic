@@ -48,11 +48,14 @@ class PopMenu:
         if self.npcTarget:
             if self.npcTarget.type == "zombie":
                 options = ["Attack", "Identify"]
+            
+            if self.npcTarget.type == "trader":
+                options = ["Quest?", "Sell Trinkets."]
 
         return options
 
     def getMenuOptions(self):
-        self.open_menu_sound.set_volume(0.1)
+        self.open_menu_sound.set_volume(0.05)
         self.open_menu_sound.play()
         mouseX, mouseY = pg.mouse.get_pos()
         self.startingPoint = [mouseX, mouseY]
@@ -151,7 +154,7 @@ class PopMenu:
                 if mouseX >= rect.x and mouseX <= rect.x + 100:  # 100 is menuwidth
                     if mouseY >= rect.y and mouseY <= rect.y + 20:  # 20 is option height
                         self.selectedAction = index
-                        self.select_sound.set_volume(0.15)
+                        self.select_sound.set_volume(0.05)
                         self.select_sound.play()
                         return index
 

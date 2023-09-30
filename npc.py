@@ -4,16 +4,17 @@ from health import Health
 from inventory import Inventory, Item
 
 class NPC(pg.sprite.Sprite):
-    def __init__(self, x, y, type):
+    def __init__(self, x, y, npc_type):
         super().__init__()
-        self.health = Health(type)
+        self.health = Health(npc_type)
         self.inventory = Inventory()
         self.size = 10
+        self.position = pg.Vector2(x, y)
         self.rect = None
         self.path = "./assets/character_player.png"
         self.image = pg.image.load(self.path)
-        self.rect = pg.Rect(x * self.size, y * self.size, 10, 10)
-        self.type = type
+        self.rect = pg.Rect(self.position.x * self.size, self.position.y * self.size, 10, 10)
+        self.type = npc_type
         self.didMove = False
         self.isMoving = False
         self.stopAction = False
@@ -23,20 +24,27 @@ class NPC(pg.sprite.Sprite):
         self.counter = 0
         self.actionCooldown = randint(100, 1000)
         self.doAction = True
+        self.friendly = False
         self.combat_triggered = False
         self.vision_distance = 30
         self.getType()
         self.inventory.insert_item(0, 0, Item(0,
                          0, "BANDAGE"))
 
-
-        
-            
+    def load_texture(self, type="zombie"):
+        path = "./assets/" + type + ".png"
+        self.image = pg.image.load(path)
 
     def getType(self):
+        self.load_texture(self.type)
+        self.setup_behavior()
+
+    def setup_behavior(self):
         if self.type == "zombie":
-            self.path = "./assets/zombie.png"
-            self.image = pg.image.load(self.path)
+            self.friendly = False
+        elif self.type == "trader":
+            self.friendly = True
+            self.vision_distance = 0
 
     def setPosition(self, x, y):
         self.rect.x = x
@@ -56,13 +64,15 @@ class NPC(pg.sprite.Sprite):
         
 
     def update(self):
-        self.health.update(self)
+        if not self.friendly:
+            self.health.update(self)
         self.moveEventFunction()
         if self.doAction and not self.combat_triggered:
             self.move()
         
     
     def move(self):
+        self.position.x, self.position.y = self.rect.x, self.rect.y
         targetLocation = None
         if self.recalculate == True:
             targetLocation = self.getMoveLocation()

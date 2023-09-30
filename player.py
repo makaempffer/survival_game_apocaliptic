@@ -13,7 +13,8 @@ class Player(pg.sprite.Sprite):
         self.inventory.setup_starting_items()
         self.sound_system = SoundSystem()
         self.sound_system.setup_sounds()
-        self.position = pg.Vector2(400, 400)
+        self.friendly = False
+        self.position = pg.Vector2(410, 400)
         self.menu = menu
         self.narrator = narrator
         self.rect = pg.Rect(self.position.x, self.position.y, 10, 10)

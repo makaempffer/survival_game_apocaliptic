@@ -32,9 +32,9 @@ class Game:
 
 
     def newGame(self):
-        self.popMenu = PopMenu(self.block_manager.mapData, self.block_manager, self.npcManager.npcGroup, self.screen)
+        self.popMenu = PopMenu(self.block_manager.mapData, self.block_manager, self.npcManager.npc_group, self.screen)
         self.playerManager = PlayerManager(self.screen, self.popMenu)
-        self.combat_manager = CombatManager(self.screen, self.npcManager.npcGroup, self.playerManager.group, self.popMenu)
+        self.combat_manager = CombatManager(self.screen, self.npcManager.npc_group, self.playerManager.group, self.popMenu)
         self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
         #self.inventory = Inventory(self.screen)
         self.narrator = Narrator(self.screen)
@@ -49,7 +49,7 @@ class Game:
         self.popMenu.update()
         self.combat_manager.update()
         self.health_manager.update()
-        self.npcManager.npcGroup.update()
+        self.npcManager.npc_group.update()
         self.block_manager.update_resource_blocks()
         self.narrator.update()
         self.player.inventory.update()

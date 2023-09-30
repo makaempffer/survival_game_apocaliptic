@@ -5,6 +5,9 @@ class CombatSystem:
         self.player_active_battle = None
 
     def create_battle_instance(self, player_a, player_b):
+        if player_a.friendly or player_b.friendly:
+            print("[COMBAT] - CAN'T ATTACK FRIENDLY.")
+            return
         if player_a.health.is_alive and player_b.health.is_alive:
             self.player_active_battle = [player_a, player_b]
             print("[COMBAT-S] - CURRENT BATTLE :", self.player_active_battle)
