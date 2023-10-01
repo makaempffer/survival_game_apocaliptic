@@ -21,7 +21,6 @@ class BlockManager:
         block = Block(x//10, y//10, None, item.item_id)
         print(f"[BLOCK] - TYPE {block.type}")
         self.group.add(block)
-        self.group.update()
 
     def generate_map(self):
         self.group.empty()

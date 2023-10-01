@@ -10,12 +10,13 @@ class Block(pg.sprite.Sprite):
         self.is_resource = False
         self.resource_amount = 0
         self.value = value
-        self.path = "./assets/tree.png"
+        self.path = "./assets/furnace.png"
         self.image = pg.image.load("./assets/water.png")
         self.type = block_type
         self.data = []
         self.get_image()
         self.setup_resources()
+        self.reload_image(self.type)
 
     def reload_image(self, block_name: str):
         path = "./assets/" + block_name.lower() + ".png"
