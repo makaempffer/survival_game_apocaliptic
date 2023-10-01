@@ -21,4 +21,4 @@
 # Wood and trees are finite, so the player has to buy fuel to keep his power on or by crafting.
 # Add cloth item, gun? , 
 # Change item-block texturing to use a item_name + _icon.png to differentiate.
-
+# Add moving items inside inventory.

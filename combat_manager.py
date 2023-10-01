@@ -5,8 +5,7 @@ from math import sqrt
 class CombatManager:
     def __init__(self, screen, npc_group: pg.sprite.Group, 
                 player_group: pg.sprite.Group, 
-                menu: PopMenu,
-                combatSystem: CombatSystem = CombatSystem):
+                menu: PopMenu):
         self.menu = menu
         self.screen = screen
         self.combat_system = CombatSystem()
