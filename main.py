@@ -16,8 +16,6 @@ from narrator_system import Narrator
 class Game:
     def __init__(self):
         pg.init()
-        self.programIcon = pg.image.load('./assets/character_player.png') 
-        pg.display.set_icon(self.programIcon)
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.world = World(WIDTH, HEIGHT)
         self.popMenu = None

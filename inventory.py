@@ -2,7 +2,7 @@ from settings import *
 import pygame as pg
 
 class Item(pg.sprite.Sprite):
-    def __init__(self, x=0, y=0, item_id: str = "EMPTY"):
+    def __init__(self, x=0, y=0, item_id: str = "ITEM_FRAME"):
         super().__init__()
         self.item_id = item_id
         self.ITEM_SIZE = 32
@@ -32,22 +32,23 @@ class Item(pg.sprite.Sprite):
 
     def get_item_sprite(self):
         if pg.get_init():
-            if self.item_id == "EMPTY":
+            if self.item_id == "ITEM_FRAME":
                 self.image = pg.image.load(
-                    "./assets/item_frame.png").convert_alpha()
+                    "./assets/icons/item_frame_icon.png").convert_alpha()
             elif self.item_id == "MONEY":
-                self.create_item("MONEY", True, True, False, "./assets/money.png")
+                self.create_item("MONEY", True, True, False, "money")
 
             elif self.item_id == "BANDAGE":
-                self.create_item("BANDAGE", True, True, False, "./assets/bandage.png")
+                self.create_item("BANDAGE", True, True, False, "bandage")
 
             elif self.item_id == "WOOD":
-                self.create_item("WOOD", True, False, False, "./assets/wood.png")
+                self.create_item("WOOD", True, False, False, "wood")
             
             elif self.item_id == "WOOD_TABLE":
-                self.create_item("WOOD_TABLE", False, False, True, "./assets/wood_table.png")
+                self.create_item("WOOD_TABLE", False, False, True, "wood_table")
     
-    def create_item(self, item_id: str, stackable: bool, consumable: bool, placeable: bool = False, image_path: str = "./assets/item_frame.png"):
+    def create_item(self, item_id: str, stackable: bool, consumable: bool, placeable: bool = False, item_name: str = "item_frame"):
+        image_path = "./assets/icons/" + item_name + "_icon.png"
         self.item_id = item_id
         self.image = pg.image.load(image_path).convert_alpha()
         self.is_stackable = stackable
@@ -74,9 +75,13 @@ class Inventory:
         self.create_inventory()
         
         # self.update_item_group()
+        
+    def decrease_item_count(self, item, amount=1):
+        item = self.get_item_slot(item)
+        item.item_quantity -= amount
 
     def setup_starting_items(self):
-        self.add_item("BANDAGE", 3)
+        self.add_item("BANDAGE", 2)
         self.add_item("WOOD", 5)
         self.add_item("MONEY", 3)
         self.add_item("WOOD_TABLE", 1)
@@ -92,7 +97,6 @@ class Inventory:
                     continue
                 if item != None and self.inventory[x][y] == None:
                     print("[INV] - ITEM ADDED ->", item.item_id)
-                    #self.insert_item(0, 0, item)
                 self.inventory[slot_x][slot_y] = item
 
     def create_item_frame_inventory(self):
@@ -210,6 +214,13 @@ class Inventory:
             self.selected_item = item
         else:
             self.selected_item = None
+            
+    def get_item_slot(self, _item) -> Item:
+        for row in self.inventory:
+            for item in row:
+                if item == _item:
+                    return item
+                    
 
     def get_item(self) -> Item:
         if not pg.mouse.get_pressed()[0]:
@@ -227,10 +238,21 @@ class Inventory:
     def kill_consumed(self):
         self.last_consumed = None
 
+    def check_empty(self):
+        for x, row in enumerate(self.inventory):
+            for y, item in enumerate(row):
+                if item == None or item.item_id == "EMPTY":
+                    continue
+                if item.item_quantity <= 0:
+                    print(f"[INV] - DELETING ITEM -> {item.item_id}")
+                    self.item_group.remove(item)
+                    self.inventory[x][y] = None
+
     def update(self):
         self.update_item_group()
         self.update_sprites_positions()
         self.get_item()
+        self.check_empty()
 
     def open(self):
         if self.is_open:

@@ -26,6 +26,8 @@ class CombatManager:
     def npc_agro_check(self):
         if self.player_ref.combat_triggered == False:
             for npc in self.npc_group:
+                if npc.friendly:
+                   continue 
                 player_to_npc_dist_x = (npc.rect.x - self.player_ref.rect.x)**2
                 player_to_npc_dist_y = (npc.rect.y - self.player_ref.rect.y)**2
                 dist = sqrt(player_to_npc_dist_x + player_to_npc_dist_y)

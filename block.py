@@ -10,8 +10,8 @@ class Block(pg.sprite.Sprite):
         self.is_resource = False
         self.resource_amount = 0
         self.value = value
-        self.path = "./assets/furnace.png"
-        self.image = pg.image.load("./assets/water.png")
+        self.path = "./assets/blocks/furnace.png"
+        self.image = pg.image.load("./assets/blocks/water.png")
         self.type = block_type
         self.data = []
         self.get_image()
@@ -19,7 +19,7 @@ class Block(pg.sprite.Sprite):
         self.reload_image(self.type)
 
     def reload_image(self, block_name: str):
-        path = "./assets/" + block_name.lower() + ".png"
+        path = "./assets/blocks/" + block_name.lower() + ".png"
         self.image = pg.image.load(path)
 
     def update(self):
@@ -48,23 +48,24 @@ class Block(pg.sprite.Sprite):
         return amount
 
     def get_image(self):
+        path = "./assets/blocks/"
         if self.type:
             self.reload_image(self.type)
         if self.value == None:
             return
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
-            self.path = "./assets/water.png"
+            self.path = path + "water.png"
             self.type = "WATER"
             self.is_resource = True
         if self.value >= 0.3 and self.value <= 0.4: 
-            self.path = "./assets/sand.png"
+            self.path = path + "sand.png"
             self.type = "SAND"
         if self.value >= -0.2 and self.value <= 0.3: 
-            self.path = "./assets/dirt.png"
+            self.path = path + "dirt.png"
             self.type = "DIRT"
         if self.value >= -1 and self.value <= -0.2:
-            self.path = "./assets/tree.png"
+            self.path = path + "tree.png"
             self.type = "TREE"
             self.is_resource = True
 

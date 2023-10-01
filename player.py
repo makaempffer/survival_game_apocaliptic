@@ -18,7 +18,7 @@ class Player(pg.sprite.Sprite):
         self.menu = menu
         self.narrator = narrator
         self.rect = pg.Rect(self.position.x, self.position.y, 10, 10)
-        self.image = pg.image.load("./assets/character_player.png")
+        self.image = pg.image.load("./assets/blocks/character_player.png")
         self.lastCommand = ""
         self.counter = 0
         self.interaction_reach = 15
@@ -115,6 +115,7 @@ class Player(pg.sprite.Sprite):
         elif action == "place" and self.inventory.selected_item:
             # Place item in the map.
             self.menu.block_manager.insert_item_block(self.position.x, self.position.y, self.inventory.selected_item)
+            self.inventory.decrease_item_count(self.inventory.selected_item)
             print(f"[PLYR] - ITEM {self.inventory.selected_item} PLACED.")
             self.inventory.selected_item = None
 

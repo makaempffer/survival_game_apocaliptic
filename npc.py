@@ -11,7 +11,7 @@ class NPC(pg.sprite.Sprite):
         self.size = 10
         self.position = pg.Vector2(x, y)
         self.rect = None
-        self.path = "./assets/character_player.png"
+        self.path = "./assets/blocks/zombie.png"
         self.image = pg.image.load(self.path)
         self.rect = pg.Rect(self.position.x * self.size, self.position.y * self.size, 10, 10)
         self.type = npc_type
@@ -32,7 +32,7 @@ class NPC(pg.sprite.Sprite):
                          0, "BANDAGE"))
 
     def load_texture(self, type="zombie"):
-        path = "./assets/" + type + ".png"
+        path = "./assets/blocks/" + type + ".png"
         self.image = pg.image.load(path)
 
     def getType(self):

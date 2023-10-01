@@ -89,6 +89,10 @@ class PopMenu:
         elif self.selected == "SAND":
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
+        
+        elif self.seddlected.upper() == "WOOD_TABLE":
+            options = ["Craft"]
+            self.options = options
 
         options += self.get_npc_options()
 
