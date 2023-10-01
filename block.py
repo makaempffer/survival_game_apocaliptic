@@ -2,7 +2,7 @@ from settings import *
 from random import randint
 
 class Block(pg.sprite.Sprite):
-    def __init__(self, posX, posY, value):
+    def __init__(self, posX, posY, value, block_type="dirt"):
         super().__init__()
         self.size = 10
         self.position = pg.Vector2(posX*self.size, posY*self.size)
@@ -12,13 +12,13 @@ class Block(pg.sprite.Sprite):
         self.value = value
         self.path = "./assets/tree.png"
         self.image = pg.image.load("./assets/water.png")
-        self.type = None
+        self.type = block_type
         self.data = []
         self.get_image()
         self.setup_resources()
 
     def reload_image(self, block_name: str):
-        path = "./assets/" + block_name + ".png"
+        path = "./assets/" + block_name.lower() + ".png"
         self.image = pg.image.load(path)
 
     def update(self):
@@ -28,6 +28,8 @@ class Block(pg.sprite.Sprite):
         return self.resource_amount
 
     def consumable_logic(self):
+        if not self.is_resource:
+            return
         if self.resource_amount <= 0:
             self.type == "DIRT"
             self.is_resource = False
@@ -45,6 +47,10 @@ class Block(pg.sprite.Sprite):
         return amount
 
     def get_image(self):
+        if self.type:
+            self.reload_image(self.type)
+        if self.value == None:
+            return
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
             self.path = "./assets/water.png"

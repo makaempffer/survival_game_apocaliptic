@@ -111,7 +111,12 @@ class Player(pg.sprite.Sprite):
         
         elif action == "fill container":
             self.gather_action("water", 1)
-            
+        
+        elif action == "place" and self.inventory.selected_item:
+            # Place item in the map.
+            self.menu.block_manager.insert_item_block(self.position.x, self.position.y, self.inventory.selected_item)
+            print(f"[PLYR] - ITEM {self.inventory.selected_item} PLACED.")
+            self.inventory.selected_item = None
 
     def block_resource_update(self, block):
         if block.get_resource_amount() <= 0:

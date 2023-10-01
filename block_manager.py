@@ -17,6 +17,12 @@ class BlockManager:
         for block in self.resource_blocks:
             block.update()
 
+    def insert_item_block(self, x, y, item):
+        block = Block(x//10, y//10, None, item.item_id)
+        print(f"[BLOCK] - TYPE {block.type}")
+        self.group.add(block)
+        self.group.update()
+
     def generate_map(self):
         self.group.empty()
         self.coordinatesGroup.clear()

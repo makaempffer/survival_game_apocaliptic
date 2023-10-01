@@ -12,6 +12,7 @@ class Item(pg.sprite.Sprite):
         self.item_quantity: int = 1
         self.is_stackable = False
         self.is_consumable = False
+        self.is_placeable = False
         self.get_item_sprite()
 
     def update(self, screen):
@@ -35,18 +36,22 @@ class Item(pg.sprite.Sprite):
                 self.image = pg.image.load(
                     "./assets/item_frame.png").convert_alpha()
             elif self.item_id == "MONEY":
-                self.create_item("MONEY", True, True, "./assets/money.png")
+                self.create_item("MONEY", True, True, False, "./assets/money.png")
 
             elif self.item_id == "BANDAGE":
-                self.create_item("BANDAGE", True, True, "./assets/bandage.png")
+                self.create_item("BANDAGE", True, True, False, "./assets/bandage.png")
 
             elif self.item_id == "WOOD":
-                self.create_item("WOOD", True, False, "./assets/wood.png")
+                self.create_item("WOOD", True, False, False, "./assets/wood.png")
+            
+            elif self.item_id == "WOOD_TABLE":
+                self.create_item("WOOD_TABLE", False, False, True, "./assets/wood_table.png")
     
-    def create_item(self, item_id: str, stackable: bool, consumable: bool, image_path):
+    def create_item(self, item_id: str, stackable: bool, consumable: bool, placeable: bool = False, image_path: str = "./assets/item_frame.png"):
         self.item_id = item_id
         self.image = pg.image.load(image_path).convert_alpha()
         self.is_stackable = stackable
+        self.is_placeable = placeable
         self.is_consumable = consumable 
 
 
@@ -64,6 +69,7 @@ class Inventory:
         self.is_open = False
         self.consumable_stack = []
         self.last_consumed = None
+        self.selected_item = None
         self.create_item_frame_group()
         self.create_inventory()
         
@@ -73,6 +79,7 @@ class Inventory:
         self.add_item("BANDAGE", 3)
         self.add_item("WOOD", 5)
         self.add_item("MONEY", 3)
+        self.add_item("WOOD_TABLE", 1)
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
@@ -126,7 +133,7 @@ class Inventory:
         self.inventory = [[None for j in range(
             self.rows)] for i in range(self.columns)]
 
-    def get_inv(self):
+    def get_inventory(self):
         return self.inventory
 
     def add_item(self, item_name, quantity=1):
@@ -197,6 +204,12 @@ class Inventory:
         item = self.consumable_stack.pop()
         item.consume()
         self.last_consumed = item
+        
+    def select_item(self, item):
+        if item.is_placeable:
+            self.selected_item = item
+        else:
+            self.selected_item = None
 
     def get_item(self) -> Item:
         if not pg.mouse.get_pressed()[0]:
@@ -208,6 +221,7 @@ class Inventory:
                     if mouse_x >= item.rect.x and mouse_x <= item.rect.x + ITEM_SIZE:
                         if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
                             self.add_to_consumable_stack(item)
+                            self.select_item(item)
                             return item
 
     def kill_consumed(self):

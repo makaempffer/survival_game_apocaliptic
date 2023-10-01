@@ -79,7 +79,6 @@ class Game:
                 self.popMenu.setupMenu()
             if event.type == pg.KEYDOWN and event.key ==pg.K_i:
                 self.inventory.open()
-                print(self.inventory.get_sprites())
                 #print(self.inventory.inventory)
             if event.type == pg.KEYDOWN and event.key == pg.K_r:
                 self.world.regenerate_map()

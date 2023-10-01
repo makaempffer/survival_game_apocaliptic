@@ -30,7 +30,7 @@ class PopMenu:
     def get_selected_block(self):
         return self.selected_block
 
-    def getTargetNpc(self):
+    def get_npc_options(self):
         mouseX, mouseY = pg.mouse.get_pos()
         options = []
         detected = False
@@ -75,7 +75,7 @@ class PopMenu:
                 break
 
         if self.selected == "DIRT":
-            options = ["Walk", "Inspect", "Dig"]
+            options = ["Walk", "Place"]
             self.options = options
 
         elif self.selected == "TREE":
@@ -90,7 +90,7 @@ class PopMenu:
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
 
-        options += self.getTargetNpc()
+        options += self.get_npc_options()
 
         return options
 
