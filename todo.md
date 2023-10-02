@@ -22,3 +22,4 @@
 # Add cloth item, gun? , 
 # Change item-block texturing to use a item_name + _icon.png to differentiate.
 # Add moving items inside inventory.
+# Make an realtime icon state system.

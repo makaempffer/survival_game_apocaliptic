@@ -36,7 +36,7 @@ class PopMenu:
         detected = False
 
         for index, npc in enumerate(self.npcGroup):
-            if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
+            if mouseX//BLOCK_SIZE == npc.rect.x//BLOCK_SIZE and mouseY//BLOCK_SIZE == npc.rect.y//BLOCK_SIZE:
                 self.npcTarget = npc
                 self.selected_target = npc
                 detected = True
@@ -62,7 +62,7 @@ class PopMenu:
         options = []
         # print(mouseX//10, mouseY//10)
         for index, block in enumerate(self.mapData):
-            if mouseX//10 == block[0] and mouseY//10 == block[1]:
+            if mouseX//BLOCK_SIZE == block[0] and mouseY//BLOCK_SIZE == block[1]:
                 self.selected = block[3]
                 # TODO Make get_block_index()
                 self.selected_block = self.block_manager.blocks[index]
@@ -70,7 +70,7 @@ class PopMenu:
                 self.blockIndex = index
 
         for index, npc in enumerate(self.npcGroup):
-            if mouseX//10 == npc.rect.x//10 and mouseY//10 == npc.rect.y//10:
+            if mouseX//BLOCK_SIZE == npc.rect.x//BLOCK_SIZE and mouseY//BLOCK_SIZE == npc.rect.y//BLOCK_SIZE:
                 self.npcTarget = npc
                 break
 
@@ -90,7 +90,7 @@ class PopMenu:
             options = ["Walk", "Inspect", "Dig"]
             self.options = options
         
-        elif self.seddlected.upper() == "WOOD_TABLE":
+        elif self.selected.upper() == "WOOD_TABLE":
             options = ["Craft"]
             self.options = options
 

@@ -8,7 +8,7 @@ class NPC(pg.sprite.Sprite):
         super().__init__()
         self.health = Health(npc_type)
         self.inventory = Inventory()
-        self.size = 10
+        self.size = BLOCK_SIZE
         self.position = pg.Vector2(x, y)
         self.rect = None
         self.path = "./assets/blocks/zombie.png"
@@ -85,18 +85,18 @@ class NPC(pg.sprite.Sprite):
                 distY = (self.rect.y - targetLocation[1])
 
                 if distX > 0:
-                    self.setPosition(self.rect.x - 10, self.rect.y)
+                    self.setPosition(self.rect.x - BLOCK_SIZE, self.rect.y)
                 if distX < 0:
-                    self.setPosition(self.rect.x + 10, self.rect.y)
+                    self.setPosition(self.rect.x + BLOCK_SIZE, self.rect.y)
                 if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
                     targetLocation = None
                     self.isMoving = False
 
                 
                 if distY > 0: 
-                    self.setPosition(self.rect.x, self.rect.y - 10)
+                    self.setPosition(self.rect.x, self.rect.y - BLOCK_SIZE)
                 if distY < 0: 
-                    self.setPosition(self.rect.x, self.rect.y + 10)
+                    self.setPosition(self.rect.x, self.rect.y + BLOCK_SIZE)
             
         #neighbors = self.getNeighbors()
         #self.rect.x = neighbors[0]
@@ -108,10 +108,10 @@ class NPC(pg.sprite.Sprite):
             possibleMovements = []
             
             gridX, gridY = self.rect.x, self.rect.y
-            left = [gridX - 0, gridX - 10, gridX - 20, gridX - 30, gridX - 40]
-            right = [gridX + 0, gridX + 10, gridX + 20, gridX + 30, gridX + 40]
-            up = [gridY - 0, gridY - 10, gridY - 20, gridY - 30, gridY - 40]
-            bottom = [gridY + 0, gridY + 10, gridY + 20, gridY + 30, gridY + 40]
+            left = [gridX - 0, gridX - 12, gridX - 24, gridX - 36, gridX - 48]
+            right = [gridX + 0, gridX + 12, gridX + 24, gridX + 36, gridX + 48]
+            up = [gridY - 0, gridY - 12, gridY - 24, gridY - 36, gridY - 48]
+            bottom = [gridY + 0, gridY + 12, gridY + 24, gridY + 36, gridY + 48]
             xMoves = [left, right]
             yMoves = [up, bottom]
             xMovement = choice(xMoves)
@@ -124,8 +124,8 @@ class NPC(pg.sprite.Sprite):
 
     
     def getNeighbors(self):
-        left = self.rect.x - 10
-        right = self.rect.x + 10
-        top = self.rect.y - 10
-        bottom = self.rect.y + 10
+        left = self.rect.x - BLOCK_SIZE
+        right = self.rect.x + BLOCK_SIZE
+        top = self.rect.y - BLOCK_SIZE
+        bottom = self.rect.y + BLOCK_SIZE 
         return [left, right, top, bottom]

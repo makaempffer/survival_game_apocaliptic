@@ -2,6 +2,7 @@ import pygame as pg
 from health import Health
 from inventory import Inventory
 from sound_system import SoundSystem
+from settings import *
 
 class Player(pg.sprite.Sprite):
     def __init__(self, menu, narrator = None):
@@ -14,10 +15,10 @@ class Player(pg.sprite.Sprite):
         self.sound_system = SoundSystem()
         self.sound_system.setup_sounds()
         self.friendly = False
-        self.position = pg.Vector2(410, 400)
+        self.position = pg.Vector2(360, 360)
         self.menu = menu
         self.narrator = narrator
-        self.rect = pg.Rect(self.position.x, self.position.y, 10, 10)
+        self.rect = pg.Rect(self.position.x, self.position.y, BLOCK_SIZE, BLOCK_SIZE)
         self.image = pg.image.load("./assets/blocks/character_player.png")
         self.lastCommand = ""
         self.counter = 0
@@ -197,8 +198,8 @@ class Player(pg.sprite.Sprite):
                 #print("Action:", action, "Last Command:", self.lastCommand)
                 if self.lastCommand == "Walk" and self.menu.savedLocation:
                     targetLocation = self.menu.savedLocation
-                    targetLocation[0] = (targetLocation[0] // 10) * 10
-                    targetLocation[1] = (targetLocation[1] // 10) * 10
+                    targetLocation[0] = (targetLocation[0] // BLOCK_SIZE) * BLOCK_SIZE
+                    targetLocation[1] = (targetLocation[1] // BLOCK_SIZE) * BLOCK_SIZE
                     #print("Starting point:", self.menu.startingPoint)
                     #print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
 
@@ -217,14 +218,14 @@ class Player(pg.sprite.Sprite):
 
                         
                         if distX > 0:
-                            self.rect.x, self.rect.y = self.rect.x - 10, self.rect.y
+                            self.rect.x, self.rect.y = self.rect.x - BLOCK_SIZE, self.rect.y
                         elif distX < 0:
-                            self.rect.x, self.rect.y = self.rect.x + 10, self.rect.y
+                            self.rect.x, self.rect.y = self.rect.x + BLOCK_SIZE, self.rect.y
             
                         if distY > 0: 
-                            self.rect.x, self.rect.y = self.rect.x, self.rect.y - 10
+                            self.rect.x, self.rect.y = self.rect.x, self.rect.y - BLOCK_SIZE
                         elif distY < 0: 
-                            self.rect.x, self.rect.y = self.rect.x, self.rect.y + 10
+                            self.rect.x, self.rect.y = self.rect.x, self.rect.y + BLOCK_SIZE
                         self.position.x, self.position.y = self.rect.x, self.rect.y
                     self.doAction = False   
 

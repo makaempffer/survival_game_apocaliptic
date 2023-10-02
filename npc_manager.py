@@ -27,8 +27,8 @@ class NPCManager():
 
     def create_spawns(self):
         noise = PerlinNoise(octaves=7, seed=1)
-        xpix, ypix = HEIGHT//10, WIDTH//10
-        self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
+        xpix, ypix = HEIGHT//BLOCK_SIZE, WIDTH//BLOCK_SIZE
+        self.rows, self.cols = (self.sizeX//BLOCK_SIZE, self.sizeY//BLOCK_SIZE)
         arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
         self.map = arr
         print("[NPC-M] - NPC MAP CREATED")

@@ -4,9 +4,9 @@ from random import randint
 class Block(pg.sprite.Sprite):
     def __init__(self, posX, posY, value, block_type="dirt"):
         super().__init__()
-        self.size = 10
+        self.size = BLOCK_SIZE
         self.position = pg.Vector2(posX*self.size, posY*self.size)
-        self.rect = pg.Rect(posX * self.size, posY * self.size, 10, 10)
+        self.rect = pg.Rect(posX * self.size, posY * self.size, BLOCK_SIZE, BLOCK_SIZE)
         self.is_resource = False
         self.resource_amount = 0
         self.value = value
@@ -59,8 +59,8 @@ class Block(pg.sprite.Sprite):
             self.type = "WATER"
             self.is_resource = True
         if self.value >= 0.3 and self.value <= 0.4: 
-            self.path = path + "sand.png"
-            self.type = "SAND"
+            self.path = path + "grass.png"
+            self.type = "GRASS"
         if self.value >= -0.2 and self.value <= 0.3: 
             self.path = path + "dirt.png"
             self.type = "DIRT"

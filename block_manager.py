@@ -18,7 +18,7 @@ class BlockManager:
             block.update()
 
     def insert_item_block(self, x, y, item):
-        block = Block(x//10, y//10, None, item.item_id)
+        block = Block(x//BLOCK_SIZE, y//BLOCK_SIZE, None, item.item_id)
         print(f"[BLOCK] - TYPE {block.type}")
         self.group.add(block)
 
