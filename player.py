@@ -22,11 +22,10 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/blocks/character_player.png")
         self.lastCommand = ""
         self.counter = 0
-        self.interaction_reach = 15
+        self.interaction_reach = 12
         self.cooldown = 3
         self.doAction = True
         self.isWalking = False
-        self.walkSound = pg.mixer.Sound('./sounds/walk.mp3')
         self.triggered = False
         self.combat_triggered = False
         self.vision_distance = 30
@@ -43,12 +42,12 @@ class Player(pg.sprite.Sprite):
 
     def check_effects(self):
         """Player loses health when MAX_STARVATION is reached."""
-        MAX_STARVATION = self.health.stomach
-        if self.hunger >= MAX_STARVATION:
+        starvation_treshold = self.health.stomach
+        if self.hunger >= starvation_treshold:
             self.health.receive_damage(0.1)
             print("[PLAYER] - STARVING.")
             self.set_current_action("Starving...")
-        if self.thirst >= MAX_STARVATION:
+        if self.thirst >= starvation_treshold:
             self.health.receive_damage(0.1)
             self.set_current_action("Dehydrated...")
             print("[PLAYER] - DEHYDRATED.")
@@ -68,7 +67,6 @@ class Player(pg.sprite.Sprite):
             self.movement()
         if self.combat_triggered == True:
             self.set_current_action("Fighting.")
-            self.walkSound.stop()
         
 
     def distance_to(self, position: pg.Vector2):
@@ -80,12 +78,13 @@ class Player(pg.sprite.Sprite):
         block = self.menu.get_selected_block()
         if not self.distance_to(block.position) <= self.interaction_reach:
             print("[PLAYER] - BLOCK TOO FAR.")
-            return
+            return False
         
         self.set_current_action("Gathering...")
         block.gather_resource(amount)
         self.block_resource_update(block)
         self.inventory.add_item(gathered_material, amount)
+        return True
         
     def is_resource_empty(self) -> bool:
         block = self.menu.get_selected_block()
@@ -105,10 +104,10 @@ class Player(pg.sprite.Sprite):
             return
         action = action.lower()
         if action == "cut tree":
-            self.gather_action("wood", 1)
-            self.sound_system.play_sound("wood_chop")
-            if self.is_resource_empty():
-                self.sound_system.play_sound("chop_over")
+            if self.gather_action("wood", 1):
+                self.sound_system.play_sound("wood_chop")
+                if self.is_resource_empty():
+                    self.sound_system.play_sound("chop_over")
         
         elif action == "fill container":
             self.gather_action("water", 1)

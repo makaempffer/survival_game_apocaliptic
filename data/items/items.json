@@ -1,0 +1,57 @@
+{
+    "items": [
+        {
+            "id": "ITEM_FRAME",
+            "file_name": "item_frame"
+        },
+        {
+            "id": "BANDAGE",
+            "stackable": true,
+            "consumable": true,
+            "placeable": false,
+            "file_name": "bandage",
+            "equipable": false
+        },
+        {
+            "id": "WOOD",
+            "stackable": true,
+            "consumable": false,
+            "placeable": false,
+            "file_name": "wood",
+            "equipable": false
+        },
+        {
+            "id": "WOOD_TABLE",
+            "stackable": false,
+            "consumable": false,
+            "placeable": true,
+            "file_name": "wood_table",
+            "equipable": false
+        },
+        {
+            "id": "PICKAXE",
+            "stackable": false,
+            "consumable": false,
+            "placeable": false,
+            "file_name": "pickaxe",
+            "equipable": true
+        },
+        {
+            "id": "BREAD",
+            "stackable": true,
+            "consumable": true,
+            "placeable": false,
+            "file_name": "bread",
+            "equipable": false
+        },
+        {
+            "id": "IRON_BAR",
+            "stackable": true,
+            "consumable": false,
+            "placeable": false,
+            "file_name": "iron_bar",
+            "equipable": false
+        }
+
+    ]
+}

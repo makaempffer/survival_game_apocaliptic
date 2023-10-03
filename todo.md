@@ -23,3 +23,11 @@
 # Change item-block texturing to use a item_name + _icon.png to differentiate.
 # Add moving items inside inventory.
 # Make an realtime icon state system.
+# Make inventory smaller and like a backpack.
+# All equipable items have an effect in the mind of the player
+# Make mindsystem, doing certain things affect player levels of crazy.
+# Fix regen world crash
+# Add an equiped items tab
+# Icon system tab that display current buffs, debuffs, radiation, etc.
+# Bug cutting trees that are not in range reproduce cutting sound.
+# Bug? if player cant do action, clear current action

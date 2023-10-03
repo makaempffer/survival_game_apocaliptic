@@ -1,19 +1,26 @@
 from settings import *
 import pygame as pg
+import json
+
+with open('./data/items/items.json', 'r') as file:
+    item_data = json.load(file)
+item_dict = {item['id']: item for item in item_data['items']}
 
 class Item(pg.sprite.Sprite):
     def __init__(self, x=0, y=0, item_id: str = "ITEM_FRAME"):
         super().__init__()
         self.item_id = item_id
-        self.ITEM_SIZE = 32
-        self.size = 32
+        self.ITEM_SIZE = 12
+        self.size = ITEM_SIZE
         self.rect = pg.Rect(x, y, ITEM_SIZE, ITEM_SIZE)
         self.image = None
         self.item_quantity: int = 1
         self.is_stackable = False
         self.is_consumable = False
         self.is_placeable = False
-        self.get_item_sprite()
+        self.equipable = False
+        self.create_from_dict(item_dict)
+        # self.get_item_sprite()
 
     def update(self, screen):
         self.font_set_quantity(screen)
@@ -29,25 +36,26 @@ class Item(pg.sprite.Sprite):
             print("Bandage consumed!.")
         else:
             print("[ITEM] - ITEM CAN'T BE CONSUMED.")
-
-    def get_item_sprite(self):
-        if pg.get_init():
-            if self.item_id == "ITEM_FRAME":
-                self.image = pg.image.load(
-                    "./assets/icons/item_frame_icon.png").convert_alpha()
-            elif self.item_id == "MONEY":
-                self.create_item("MONEY", True, True, False, "money")
-
-            elif self.item_id == "BANDAGE":
-                self.create_item("BANDAGE", True, True, False, "bandage")
-
-            elif self.item_id == "WOOD":
-                self.create_item("WOOD", True, False, False, "wood")
-            
-            elif self.item_id == "WOOD_TABLE":
-                self.create_item("WOOD_TABLE", False, False, True, "wood_table")
     
-    def create_item(self, item_id: str, stackable: bool, consumable: bool, placeable: bool = False, item_name: str = "item_frame"):
+    def create_from_dict(self, _dict):
+        if pg.get_init(): 
+            id = self.item_id            
+            if id == "ITEM_FRAME":
+                self.image = pg.image.load("./assets/icons/item_frame_icon.png").convert_alpha()
+                return
+            print(_dict[id]['stackable'])
+            if self.item_id in _dict:
+                self.create_item(
+                    id,
+                    _dict[id]['stackable'], 
+                    _dict[id]['consumable'],
+                    _dict[id]["placeable"],
+                    _dict[id]['file_name'],
+                    _dict[id]['equipable']
+                    )
+
+    
+    def create_item(self, item_id: str, stackable: bool, consumable: bool, placeable: bool = False, item_name: str = "item_frame", equipable: bool = False):
         image_path = "./assets/icons/" + item_name + "_icon.png"
         self.item_id = item_id
         self.image = pg.image.load(image_path).convert_alpha()
@@ -58,11 +66,11 @@ class Item(pg.sprite.Sprite):
 
 class Inventory:
     def __init__(self, screen=None) -> None:
-        self.rows = 5
-        self.columns = 5
-        self.ITEM_SIZE = 32
+        self.rows = 10
+        self.columns = 6
+        self.ITEM_SIZE = 12
         self.x_start = WIDTH - self.ITEM_SIZE * self.rows
-        self.y_start = HEIGHT - self.ITEM_SIZE * self.columns
+        self.y_start = 0 
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
         self.screen = screen
@@ -75,6 +83,7 @@ class Inventory:
         self.create_inventory()
         
         # self.update_item_group()
+            
         
     def decrease_item_count(self, item, amount=1):
         item = self.get_item_slot(item)
@@ -82,9 +91,9 @@ class Inventory:
 
     def setup_starting_items(self):
         self.add_item("BANDAGE", 2)
-        self.add_item("WOOD", 5)
-        self.add_item("MONEY", 3)
+        self.add_item("IRON_BAR", 5)
         self.add_item("WOOD_TABLE", 1)
+        self.add_item("BREAD", 2)
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None

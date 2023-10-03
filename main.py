@@ -71,16 +71,18 @@ class Game:
                 pg.mixer.quit()
                 pg.quit()
                 sys.exit()
+
             self.health_manager.update_health_counters(event)
             self.playerManager.update_player_events(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.player.inventory.is_open:#right button mousse
                 self.popMenu.setupMenu()
+
             if event.type == pg.KEYDOWN and event.key ==pg.K_i:
                 self.inventory.open()
-                #print(self.inventory.inventory)
+
             if event.type == pg.KEYDOWN and event.key == pg.K_r:
                 self.world.regenerate_map()
-                self.block_manager.fill_groups()
+                self.block_manager.generate_map()
 
             self.popMenu.getSelectedOption(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:#left mouse button

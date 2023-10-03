@@ -56,11 +56,10 @@ class Block(pg.sprite.Sprite):
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
             self.path = path + "water.png"
-            self.type = "WATER"
-            self.is_resource = True
+            self.type = "SAND"
         if self.value >= 0.3 and self.value <= 0.4: 
             self.path = path + "grass.png"
-            self.type = "GRASS"
+            self.type = "SAND"
         if self.value >= -0.2 and self.value <= 0.3: 
             self.path = path + "dirt.png"
             self.type = "DIRT"
