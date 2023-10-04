@@ -2,56 +2,104 @@
     "items": [
         {
             "id": "ITEM_FRAME",
-            "file_name": "item_frame"
+            "file_path": "./assets/icons/item_frame_icon.png"
         },
         {
             "id": "BANDAGE",
             "stackable": true,
             "consumable": true,
             "placeable": false,
-            "file_name": "bandage",
-            "equipable": false
+            "file_path": "./assets/icons/bandage_icon.png",
+            "equipable": false,
+            "item_type": "bleed"
+        },
+        {
+            "id": "PILL",
+            "stackable": true,
+            "consumable": true,
+            "placeable": false,
+            "file_path": "./assets/icons/pill_icon.png",
+            "equipable": false,
+            "item_type": "analgesic",
+            "amount": 25
         },
         {
             "id": "WOOD",
             "stackable": true,
             "consumable": false,
             "placeable": false,
-            "file_name": "wood",
-            "equipable": false
+            "file_path": "./assets/icons/wood_icon.png",
+            "equipable": false,
+            "item_type": "resource"
         },
         {
             "id": "WOOD_TABLE",
             "stackable": false,
             "consumable": false,
             "placeable": true,
-            "file_name": "wood_table",
-            "equipable": false
+            "file_path": "./assets/icons/wood_table_icon.png",
+            "equipable": false,
+            "item_type": "station"
         },
         {
             "id": "PICKAXE",
             "stackable": false,
             "consumable": false,
             "placeable": false,
-            "file_name": "pickaxe",
-            "equipable": true
+            "file_path": "./assets/icons/pickaxe_icon.png",
+            "equipable": true,
+            "item_type": "tool"
         },
         {
             "id": "BREAD",
             "stackable": true,
             "consumable": true,
             "placeable": false,
-            "file_name": "bread",
-            "equipable": false
+            "file_path": "./assets/icons/bread_icon.png",
+            "equipable": false,
+            "item_type": "food",
+            "amount": "12.5"
         },
         {
             "id": "IRON_BAR",
             "stackable": true,
             "consumable": false,
             "placeable": false,
-            "file_name": "iron_bar",
-            "equipable": false
+            "file_path": "./assets/icons/iron_bar_icon.png",
+            "equipable": false,
+            "item_type": "resource"
+        },
+        {
+            "id": "BOTTLE",
+            "stackable": false,
+            "consumable": true,
+            "placeable": false,
+            "file_path": "./assets/icons/bottle_icon.png",
+            "equipable": false,
+            "item_type": "drink",
+            "amount": 15
+        },
+        {
+            "id": "PISTOL",
+            "stackable": false,
+            "consumable": false,
+            "placeable": false,
+            "file_path": "./assets/icons/pistol_icon.png",
+            "equipable": true,
+            "item_type": "gun",
+            "caliber": "9mm",
+            "damage": 32,
+            "range": 10
+        },
+        {
+            "id": "AMMO_9MM",
+            "stackable": true,
+            "consumable": false,
+            "placeable": false,
+            "file_path": "./assets/icons/bullet_icon.png",
+            "equipable": false,
+            "item_type": "ammo",
+            "caliber": "9mm"
         }
-
     ]
 }

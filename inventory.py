@@ -19,6 +19,7 @@ class Item(pg.sprite.Sprite):
         self.is_consumable = False
         self.is_placeable = False
         self.equipable = False
+        self.item_type = ""
         self.create_from_dict(item_dict)
         # self.get_item_sprite()
 
@@ -50,18 +51,24 @@ class Item(pg.sprite.Sprite):
                     _dict[id]['stackable'], 
                     _dict[id]['consumable'],
                     _dict[id]["placeable"],
-                    _dict[id]['file_name'],
-                    _dict[id]['equipable']
+                    _dict[id]['file_path'],
+                    _dict[id]['equipable'],
+                    _dict[id]['item_type']
                     )
 
     
-    def create_item(self, item_id: str, stackable: bool, consumable: bool, placeable: bool = False, item_name: str = "item_frame", equipable: bool = False):
-        image_path = "./assets/icons/" + item_name + "_icon.png"
+    def create_item(self, item_id: str = "", stackable: bool = False,
+                    consumable: bool = False, placeable: bool = False,
+                    file_path: str = "./assets/icons/item_frame_error.png", 
+                    equipable: bool = False,
+                    item_type: str = ""):
         self.item_id = item_id
-        self.image = pg.image.load(image_path).convert_alpha()
+        self.image = pg.image.load(file_path).convert_alpha()
         self.is_stackable = stackable
         self.is_placeable = placeable
         self.is_consumable = consumable 
+        self.equipable = equipable
+        self.item_type = item_type
 
 
 class Inventory:
@@ -90,10 +97,12 @@ class Inventory:
         item.item_quantity -= amount
 
     def setup_starting_items(self):
-        self.add_item("BANDAGE", 2)
+        self.add_item("BANDAGE", 3)
         self.add_item("IRON_BAR", 5)
         self.add_item("WOOD_TABLE", 1)
         self.add_item("BREAD", 2)
+        self.add_item("PILL", 3)
+        self.add_item("AMMO_9MM", 16)
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None

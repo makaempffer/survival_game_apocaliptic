@@ -26,8 +26,14 @@
 # Make inventory smaller and like a backpack.
 # All equipable items have an effect in the mind of the player
 # Make mindsystem, doing certain things affect player levels of crazy.
-# Fix regen world crash
-# Add an equiped items tab
+# Fix regen world crash DONE
+# Add an equiped items tab IMPORTANT!
 # Icon system tab that display current buffs, debuffs, radiation, etc.
-# Bug cutting trees that are not in range reproduce cutting sound.
+# Bug cutting trees that are not in range reproduce cutting sound. PATCHED
 # Bug? if player cant do action, clear current action
+# Add guns shooting mechanic. IMPORTANT!
+# Add gun system cycle
+# Add 3 SLOTS of EQUIPED ITEMS, a player can equip anything but limited to 3!, maybe exapandability with progress (start with 1?).
+# Lots of gun crafting and repairing
+# Make a system that manages bleeding, contussion, broken bones, etc
+# Make a system that manages skills like weapon use, that increase the gun range and accuracy, strenght that increases carry stacks amount (affected by body parts hp), how effective is a bandage
