@@ -20,6 +20,7 @@ class Health:
         #super().__init__()   
         self.attack_extremity: str = "arm_r"
         self.is_alive: bool = True 
+
         self.head: int
         self.eye_r: int
         self.eye_l: int
@@ -65,14 +66,17 @@ class Health:
         else:
             self.attack_cooldown = False
     
-    
+    def die(self, owner):
+        self.is_alive = False
+        owner.kill()
+        self.death_sound.play()
+        return False
+        
     def check_alive(self, owner):
         if self.body_avg <= 0:
-            self.is_alive = False
             owner.kill()
-            self.death_sound.play()
-            return False
-
+        elif self.head <= 0:
+            owner.kill()
     
     def get_total_hp(self) -> float:
         """Returns total hp"""
@@ -115,6 +119,8 @@ class Health:
         """Create a Health object for instance from type"""
         if type == "Player":
             self.apply_modifier(10) 
+            self.hunger = 50
+            self.thirst = 50
         if type == "zombie":
             self.apply_modifier(5)
 
@@ -123,7 +129,7 @@ class Health:
 
     def get_most_damaged_part(self):
         part_list = list(self.__dict__.items())
-        skip_list = ["body_avg", "attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
+        skip_list = ["hunger", "thirst", "body_avg", "attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
         most_damaged = None
         part = None
         # Fix using wrong body parts.
@@ -141,7 +147,7 @@ class Health:
 
     def choose_random_body_part(self):
         body_list = list(self.__dict__.items())
-        skip_list = ["attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
+        skip_list = ["hunger", "thirst","attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
         cleaned_list = [(key, value) for key, value in body_list if key not in skip_list]
         shuffled_list = random.sample(body_list, k=len(body_list))
         for body_part, hp in shuffled_list:

@@ -1,30 +1,30 @@
 {
     "items": [
         {
-            "id": "ITEM_FRAME",
+            "item_id": "ITEM_FRAME",
             "file_path": "./assets/icons/item_frame_icon.png"
         },
         {
-            "id": "BANDAGE",
+            "item_id": "BANDAGE",
             "stackable": true,
             "consumable": true,
             "placeable": false,
             "file_path": "./assets/icons/bandage_icon.png",
             "equipable": false,
-            "item_type": "bleed"
+            "item_type": "hemostat"
         },
         {
-            "id": "PILL",
+            "item_id": "PILL",
             "stackable": true,
             "consumable": true,
             "placeable": false,
             "file_path": "./assets/icons/pill_icon.png",
             "equipable": false,
             "item_type": "analgesic",
-            "amount": 25
+            "amount": 10
         },
         {
-            "id": "WOOD",
+            "item_id": "WOOD",
             "stackable": true,
             "consumable": false,
             "placeable": false,
@@ -33,7 +33,7 @@
             "item_type": "resource"
         },
         {
-            "id": "WOOD_TABLE",
+            "item_id": "WOOD_TABLE",
             "stackable": false,
             "consumable": false,
             "placeable": true,
@@ -42,7 +42,7 @@
             "item_type": "station"
         },
         {
-            "id": "PICKAXE",
+            "item_id": "PICKAXE",
             "stackable": false,
             "consumable": false,
             "placeable": false,
@@ -51,17 +51,17 @@
             "item_type": "tool"
         },
         {
-            "id": "BREAD",
+            "item_id": "BREAD",
             "stackable": true,
             "consumable": true,
             "placeable": false,
             "file_path": "./assets/icons/bread_icon.png",
             "equipable": false,
             "item_type": "food",
-            "amount": "12.5"
+            "amount": "5"
         },
         {
-            "id": "IRON_BAR",
+            "item_id": "IRON_BAR",
             "stackable": true,
             "consumable": false,
             "placeable": false,
@@ -70,17 +70,17 @@
             "item_type": "resource"
         },
         {
-            "id": "BOTTLE",
+            "item_id": "BOTTLE",
             "stackable": false,
             "consumable": true,
             "placeable": false,
             "file_path": "./assets/icons/bottle_icon.png",
             "equipable": false,
             "item_type": "drink",
-            "amount": 15
+            "amount": 4.5
         },
         {
-            "id": "PISTOL",
+            "item_id": "PISTOL",
             "stackable": false,
             "consumable": false,
             "placeable": false,
@@ -92,7 +92,7 @@
             "range": 10
         },
         {
-            "id": "AMMO_9MM",
+            "item_id": "AMMO_9MM",
             "stackable": true,
             "consumable": false,
             "placeable": false,

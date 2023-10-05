@@ -4,7 +4,7 @@ import json
 
 with open('./data/items/items.json', 'r') as file:
     item_data = json.load(file)
-item_dict = {item['id']: item for item in item_data['items']}
+item_dict = {item['item_id']: item for item in item_data['items']}
 
 class Item(pg.sprite.Sprite):
     def __init__(self, x=0, y=0, item_id: str = "ITEM_FRAME"):
@@ -15,14 +15,14 @@ class Item(pg.sprite.Sprite):
         self.rect = pg.Rect(x, y, ITEM_SIZE, ITEM_SIZE)
         self.image = None
         self.item_quantity: int = 1
-        self.is_stackable = False
-        self.is_consumable = False
-        self.is_placeable = False
+        self.stackable = False
+        self.consumable = False
+        self.placeable = False
         self.equipable = False
         self.item_type = ""
         self.create_from_dict(item_dict)
         # self.get_item_sprite()
-
+  
     def update(self, screen):
         self.font_set_quantity(screen)
 
@@ -32,11 +32,7 @@ class Item(pg.sprite.Sprite):
         screen.blit(text, rect)
 
     def consume(self):
-        if self.item_id == "BANDAGE" and self.item_quantity > 0:
-            self.item_quantity -= 1
-            print("Bandage consumed!.")
-        else:
-            print("[ITEM] - ITEM CAN'T BE CONSUMED.")
+        self.item_quantity -= 1
     
     def create_from_dict(self, _dict):
         if pg.get_init(): 
@@ -44,32 +40,17 @@ class Item(pg.sprite.Sprite):
             if id == "ITEM_FRAME":
                 self.image = pg.image.load("./assets/icons/item_frame_icon.png").convert_alpha()
                 return
-            print(_dict[id]['stackable'])
             if self.item_id in _dict:
-                self.create_item(
-                    id,
-                    _dict[id]['stackable'], 
-                    _dict[id]['consumable'],
-                    _dict[id]["placeable"],
-                    _dict[id]['file_path'],
-                    _dict[id]['equipable'],
-                    _dict[id]['item_type']
-                    )
+                for key, value in _dict[id].items():
+                    setattr(self, key, value)
+            self.load_image()
+        
+    def load_image(self):
+        if self.file_path:
+            self.image = pg.image.load(self.file_path).convert_alpha()
+            print("[ITEM] - IMAGE LOADED.")
 
     
-    def create_item(self, item_id: str = "", stackable: bool = False,
-                    consumable: bool = False, placeable: bool = False,
-                    file_path: str = "./assets/icons/item_frame_error.png", 
-                    equipable: bool = False,
-                    item_type: str = ""):
-        self.item_id = item_id
-        self.image = pg.image.load(file_path).convert_alpha()
-        self.is_stackable = stackable
-        self.is_placeable = placeable
-        self.is_consumable = consumable 
-        self.equipable = equipable
-        self.item_type = item_type
-
 
 class Inventory:
     def __init__(self, screen=None) -> None:
@@ -103,6 +84,7 @@ class Inventory:
         self.add_item("BREAD", 2)
         self.add_item("PILL", 3)
         self.add_item("AMMO_9MM", 16)
+        self.add_item("BOTTLE")
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
@@ -217,18 +199,19 @@ class Inventory:
 
 
     def add_to_consumable_stack(self, item):
-        if item.is_consumable and item not in self.consumable_stack:
+        if item.consumable and item not in self.consumable_stack:
+            print(f"[INV] - APPENDED CONSUMABLE {item} TO STACK.")
             self.consumable_stack.append(item)
 
     def consume_stack(self):
         if len(self.consumable_stack) < 1:
             return
         item = self.consumable_stack.pop()
-        item.consume()
         self.last_consumed = item
+        item.consume()
         
     def select_item(self, item):
-        if item.is_placeable:
+        if item.placeable:
             self.selected_item = item
         else:
             self.selected_item = None

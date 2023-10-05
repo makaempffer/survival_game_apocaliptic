@@ -2,15 +2,15 @@ import pygame as pg
 from health import Health
 from inventory import Inventory
 from sound_system import SoundSystem
+from health_effects import HealthEffects
 from settings import *
 
 class Player(pg.sprite.Sprite):
     def __init__(self, menu, narrator = None):
         super().__init__()
         self.health = Health("Player")
-        self.hunger = 0
-        self.thirst = 0
         self.inventory = Inventory()
+        self.health_effects = HealthEffects(self.health, self.inventory)
         self.inventory.setup_starting_items()
         self.sound_system = SoundSystem()
         self.sound_system.setup_sounds()
@@ -35,26 +35,14 @@ class Player(pg.sprite.Sprite):
         pg.time.set_timer(self.timer, self.time_delay)
 
     def update_time_effects(self):
-        print(f"[PLAYER] - HUNGER {self.hunger} THIRST {self.thirst}")
-        self.hunger += 0.03
-        self.thirst += 0.05
+        self.health_effects.physical_updates()
+        # Add updates on tick.
+        pass
 
-
-    def check_effects(self):
-        """Player loses health when MAX_STARVATION is reached."""
-        starvation_treshold = self.health.stomach
-        if self.hunger >= starvation_treshold:
-            self.health.receive_damage(0.1)
-            print("[PLAYER] - STARVING.")
-            self.set_current_action("Starving...")
-        if self.thirst >= starvation_treshold:
-            self.health.receive_damage(0.1)
-            self.set_current_action("Dehydrated...")
-            print("[PLAYER] - DEHYDRATED.")
 
     def get_stats_text(self):
         """Returns player stats on presentable format"""
-        message = "HUNGER: " + str(round(self.hunger, 2)) + " THIRST: " + str(round(self.thirst, 2))
+        message = "HUNGER: " + str(round(self.health.hunger, 2)) + " THIRST: " + str(round(self.health.thirst, 2))
         self.narrator.set_constant_text(("HP: " + str(round(self.health.get_total_hp(), 2))), " ACTION: " + self.last_action)
         self.narrator.append_message(message)
         
@@ -144,7 +132,6 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.behavior_controller()
         self.health.update(self)
-        self.check_effects()
     
     def timer_event(self, event):
         if event.type == self.timer:
@@ -152,17 +139,14 @@ class Player(pg.sprite.Sprite):
 
     def get_consumed_item(self):
         """Get the consumed item effects, all items to add here."""
-        consumed_item = self.inventory.last_consumed
-        if not consumed_item:
+        item = self.inventory.last_consumed
+        print(f"[PLAYER] - LAST ITEM {item}")
+        if not item:
             return
-        if consumed_item.item_id == "BANDAGE":
-            print("[PLAYER] - USED BANDAGE")
-            most_damaged = self.health.get_most_damaged_part()
-            self.health.add_body_part_hp(most_damaged, 10)
-            print(self.health.get_total_hp())
-            self.set_current_action("Bandaging...")
-            self.inventory.kill_consumed()
-            # Get the most damaged part and heal it some amount.
+        self.health_effects.consume_item_effect(item)
+        print(self.health.get_total_hp())
+        self.inventory.kill_consumed()
+        # Get the most damaged part and heal it some amount.
 
     def update_on_timer(self):
         """Function calls to run every time the timer is met."""
