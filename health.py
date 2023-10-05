@@ -119,8 +119,8 @@ class Health:
         """Create a Health object for instance from type"""
         if type == "Player":
             self.apply_modifier(10) 
-            self.hunger = 50
-            self.thirst = 50
+            self.hunger = 15
+            self.thirst = 15
         if type == "zombie":
             self.apply_modifier(5)
 

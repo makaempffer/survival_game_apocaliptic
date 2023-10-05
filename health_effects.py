@@ -12,7 +12,15 @@ class HealthEffects:
         self.stomach_size = 50
         self.bladder_size = 50
         
+    def affections(self):
+        pass
+        
+    def basic_update(self):
+        if self.health.hunger <= 0 or self.health.thirst <= 0:
+            self.health.receive_damage(0.2)
+                
     def physical_updates(self):
+        self.basic_update()
         amount = 0.1
         self.health.hunger -= amount
         self.health.thirst -= amount
@@ -25,20 +33,18 @@ class HealthEffects:
                 self.bleeding = False
                 
             elif item.item_type == "food":
+                print(f"[HEALTH-EFFECTS] - FOOD CONSUMED {item.item_id}")
                 satisfy_amount = float(item.amount)
-                consumed_sum = self.health.hunger + satisfy_amount
-                if consumed_sum > self.stomach_size:
-                    print(f"[HEALTH-EFFECTS] - CONSUMED FOOD {item.item_id} {item.amount}")
-                    self.health.stomach -= satisfy_amount
-                    self.health.hunger += satisfy_amount
+                self.health.hunger += satisfy_amount
+                if self.stomach_size < self.health.hunger:
+                    self.receive_damage(satisfy_amount//2)
                     
             elif item.item_type == "drink":
+                print(f"[HEALTH-EFFECTS] - DRINK CONSUMED {item.item_id}")
                 satisfy_amount = float(item.amount)
-                consumed_sum = self.health.thirst + satisfy_amount
-                if consumed_sum > self.bladder_size:
-                    self.health.stomach -= satisfy_amount
-                    self.health.thirst += satisfy_amount
-                    print(f"[HEALTH-EFFECTS] - CONSUMED DRINK {item.item_id} {item.amount}")
+                self.health.thirst += satisfy_amount
+                if self.bladder_size < self.health.thirst:
+                    self.receive_damage(satisfy_amount//2)
                     
             elif item.item_type == "analgesic":
                 print(f"[HEALTH-EFFECTS] - CONSUMED ANALGESIC. {item.item_id} {item.amount}")

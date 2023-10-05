@@ -38,3 +38,4 @@
 # Make a system that manages bleeding, contussion, broken bones, etc
 # Make a system that manages skills like weapon use, that increase the gun range and accuracy, strenght that increases carry stacks amount (affected by body parts hp), how effective is a bandage
 # FIX ITEM! image is generating for every item is made, maybe fix to increase count of item instead of instancing a new one, or deleting duplicates. 
+# Improve world map generation, add randomness and more variation.

@@ -27,15 +27,14 @@ class NPC(pg.sprite.Sprite):
         self.friendly = False
         self.combat_triggered = False
         self.vision_distance = 30
-        self.getType()
-        self.inventory.insert_item(0, 0, Item(0,
-                         0, "BANDAGE"))
+        self.get_type()
+        self.inventory.add_item("BANDAGE", 1)
 
     def load_texture(self, type="zombie"):
         path = "./assets/blocks/" + type + ".png"
         self.image = pg.image.load(path)
 
-    def getType(self):
+    def get_type(self):
         self.load_texture(self.type)
         self.setup_behavior()
 

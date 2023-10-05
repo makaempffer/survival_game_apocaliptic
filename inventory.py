@@ -81,10 +81,12 @@ class Inventory:
         self.add_item("BANDAGE", 3)
         self.add_item("IRON_BAR", 5)
         self.add_item("WOOD_TABLE", 1)
-        self.add_item("BREAD", 2)
+        self.add_item("BREAD", 5)
         self.add_item("PILL", 3)
         self.add_item("AMMO_9MM", 16)
         self.add_item("BOTTLE")
+        self.add_item("PICKAXE")
+        self.add_item("PISTOL")
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
@@ -100,7 +102,11 @@ class Inventory:
                 self.inventory[slot_x][slot_y] = item
 
     def create_item_frame_inventory(self):
-        return [[Item(self.x_start + j*ITEM_SIZE, self.y_start + i*ITEM_SIZE) for j in range(self.rows)] for i in range(self.columns)]
+        return [[Item(self.x_start + j * self.ITEM_SIZE, self.y_start + i * self.ITEM_SIZE) for j in range(self.rows)] for i in range(self.columns)]
+
+    # NOT WORKING RIGHT
+    # def create_item_frame_inventory(self):
+        # return [[Item(self.x_start + j*ITEM_SIZE, self.y_start + i*ITEM_SIZE) for j in range(self.rows)] for i in range(self.columns)]
 
     def use_consumable(self, item):
         if item.is_consumable:
@@ -130,8 +136,8 @@ class Inventory:
         for x, row in enumerate(self.inventory):
             for y, item in enumerate(row):
                 if isinstance(item, Item):
-                    item.rect.x = self.x_start + x * ITEM_SIZE 
-                    item.rect.y = self.y_start + y * ITEM_SIZE
+                    item.rect.x = self.x_start + y * ITEM_SIZE 
+                    item.rect.y = self.y_start + x * ITEM_SIZE
 
     def create_inventory(self):
         self.inventory = [[None for j in range(
@@ -141,62 +147,28 @@ class Inventory:
         return self.inventory
 
     def add_item(self, item_name, quantity=1):
-        pos_x, pos_y = 0, 0
-        item = Item(0, 0, item_name)
-        item.item_quantity = quantity
-        #if quantity != None:
-            #item.item_quantity += quantity
-        if self.inventory[pos_x][pos_y] == None:
-            self.inventory[pos_x][pos_y] = item
-            print("[INV] - ITEM INSERTED")
-        else:
-            for row in self.inventory:
-                for slot in row:
-                    if slot != None:
-                        if slot.item_id == item.item_id:
-                            slot.item_quantity += item.item_quantity
-                            return
-                        
-            for x, row in enumerate(self.inventory):
-                for y, slot in enumerate(row):
-                    if slot == None:
-                        print("[INV] - FILLED CLOSEST EMPTY SLOT.")
-                        item.rect.x = self.x_start + x * ITEM_SIZE
-                        item.rect.y = self.y_start + y * ITEM_SIZE 
-                        #slot = item
-                        self.inventory[x][y] = item
+    
+        for row in self.inventory:
+            for slot in row:
+                if slot != None:
+                    if slot.item_id == item_name:
+                        slot.item_quantity += quantity
+                        print(f"[INV] - ADDED QUANTITY {quantity} TO {slot.item_id}")
                         return
+                    
+        for x, row in enumerate(self.inventory):
+            for y, slot in enumerate(row):
+                if slot == None:
+                    item = Item(0, 0, item_name)
+                    item.item_quantity = quantity
+                    print("[INV] - FILLED CLOSEST EMPTY SLOT.")
+                    item.rect.x = self.x_start + x * ITEM_SIZE
+                    item.rect.y = self.y_start + y * ITEM_SIZE 
+                    #slot = item
+                    self.inventory[x][y] = item
+                    return
 
-            print("[INV] - NO SLOTS AVAILABLE")
-
-
-
-    def insert_item(self, pos_x=0, pos_y=0, item: Item=Item(), quantity=None):
-        if quantity != None:
-            item.item_quantity += quantity
-        if self.inventory[pos_x][pos_y] == None:
-            self.inventory[pos_x][pos_y] = item
-            print("[INV] - ITEM INSERTED")
-        else:
-            for row in self.inventory:
-                for slot in row:
-                    if slot != None:
-                        if slot.item_id == item.item_id:
-                            slot.item_quantity += item.item_quantity
-                            return
-                        
-            for x, row in enumerate(self.inventory):
-                for y, slot in enumerate(row):
-                    if slot == None:
-                        print("[INV] - FILLED CLOSEST EMPTY SLOT.")
-                        item.rect.x = self.x_start + x * ITEM_SIZE
-                        item.rect.y = self.y_start + y * ITEM_SIZE 
-                        #slot = item
-                        self.inventory[x][y] = item
-                        return
-
-            print("[INV] - NO SLOTS AVAILABLE")
-
+        print("[INV] - NO SLOTS AVAILABLE")
 
     def add_to_consumable_stack(self, item):
         if item.consumable and item not in self.consumable_stack:
