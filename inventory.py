@@ -88,7 +88,6 @@ class Inventory:
             weight += item_weight
         print(f"[INV] - INVENTORY WEIGHT {weight}")
         return weight
-            
         
     def decrease_item_count(self, item, amount=1):
         item = self.get_item_slot(item)

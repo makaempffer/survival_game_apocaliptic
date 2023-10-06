@@ -8,6 +8,7 @@ class PopMenu:
         self.group = block_manager.group
         self.block_manager = block_manager
         self.npcGroup = npcGroup
+        self.attacked_entity = None
         self.selected = None
         self.selected_block = None
         self.opened = False
@@ -20,7 +21,7 @@ class PopMenu:
         self.optionRects = []
         self.selectedAction = None
         self.blockIndex = None
-        self.npcTarget = None
+        self.npc_target = None
         self.savedLocation = []
         self.previous_action = None
         self.selected_target = None
@@ -38,25 +39,25 @@ class PopMenu:
 
         for index, npc in enumerate(self.npcGroup):
             if mouseX//BLOCK_SIZE == npc.rect.x//BLOCK_SIZE and mouseY//BLOCK_SIZE == npc.rect.y//BLOCK_SIZE:
-                self.npcTarget = npc
+                self.npc_target = npc
                 self.selected_target = npc
                 detected = True
                 break
 
         if detected == False:
-            self.npcTarget = None
+            self.npc_target = None
 
-        if self.npcTarget:
-            if self.npcTarget.type == "zombie":
-                options = ["Attack", "Identify"]
+        if self.npc_target:
+            if self.npc_target.type == "zombie":
+                options = ["Melee Atk", "Range Atk"]
             
-            if self.npcTarget.type == "trader":
+            if self.npc_target.type == "trader":
                 options = ["Quest?", "Sell Trinkets."]
 
         return options
 
     def getMenuOptions(self):
-        self.open_menu_sound.set_volume(0.05)
+        self.open_menu_sound.set_volume(0.02)
         self.open_menu_sound.play()
         mouseX, mouseY = pg.mouse.get_pos()
         self.startingPoint = [mouseX, mouseY]
@@ -72,7 +73,7 @@ class PopMenu:
 
         for index, npc in enumerate(self.npcGroup):
             if mouseX//BLOCK_SIZE == npc.rect.x//BLOCK_SIZE and mouseY//BLOCK_SIZE == npc.rect.y//BLOCK_SIZE:
-                self.npcTarget = npc
+                self.npc_target = npc
                 break
 
         if self.selected == "DIRT":
@@ -126,7 +127,7 @@ class PopMenu:
             self.selectedAction = None
             if selectedAction == "Walk":
                 self.savedLocation = self.startingPoint
-            print(selectedAction)
+            print("[DBG]" + selectedAction)
             return selectedAction
 
     def showMenu(self, options):
@@ -159,7 +160,7 @@ class PopMenu:
                 if mouseX >= rect.x and mouseX <= rect.x + 100:  # 100 is menuwidth
                     if mouseY >= rect.y and mouseY <= rect.y + 20:  # 20 is option height
                         self.selectedAction = index
-                        self.select_sound.set_volume(0.05)
+                        self.select_sound.set_volume(0.02)
                         self.select_sound.play()
                         return index
     

@@ -53,7 +53,7 @@ class Game:
         self.player.inventory.update()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(str(self.clock.get_fps()))
-        pg.display.flip()      
+        pg.display.flip()
 
 
     def draw(self):

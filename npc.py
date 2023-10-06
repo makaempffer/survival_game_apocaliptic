@@ -1,13 +1,19 @@
 from settings import *
 from random import randint, choice
 from health import Health
-from inventory import Inventory, Item
+from inventory import Inventory
+from new_combat import Combat
+from skills import Skills
+from health_effects import HealthEffects
 
 class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, npc_type):
         super().__init__()
         self.health = Health(npc_type)
         self.inventory = Inventory()
+        self.skills = Skills()
+        self.combat = Combat(self)
+        self.health_effects = HealthEffects(self.health, self.inventory)
         self.size = BLOCK_SIZE
         self.position = pg.Vector2(x, y)
         self.rect = None

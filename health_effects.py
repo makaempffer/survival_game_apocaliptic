@@ -4,6 +4,8 @@ from inventory import Item
 from pygame.sprite import Group
 # Add hunger and thirst to the health object
 # TODO FINISH RADIATION SYSTEM
+# TODO GET PASSIVE BONUSES FROM THE EQUIPED ITEMS SUCH AS ARMOR, RADIATION RES, ETC.
+
 class HealthEffects:
     """Class that applies all the corresponding effects to the user,
     bleeding, broken bones, etc.
@@ -103,15 +105,26 @@ class HealthEffects:
     def equip_item(self, item):
         self.reset_equiped_list()
         if self.equiped_index >= len(self.equiped_items):
-            print("Reset count")
             self.equiped_index = 0
         slot = self.equiped_list[self.equiped_index]
         if item.equipable:
-            print("is equipable")
             slot.set_item_to(item.item_id)
             self.equiped_index += 1
-
             
+    def get_gun(self) -> Item:
+        for item in self.equiped_list:
+            if item.item_type == "gun":
+                print("User has Gun!")
+                return item
+        print("No gun.")
+        return False
+
+    def get_armor_rating(self) -> float:
+        armor = 0
+        for item in self.equiped_list:
+            if item.item_type == "clothing":
+                armor += item.armor
+        return armor
             
     def consume_item_effect(self, item):
         

@@ -3,6 +3,8 @@ from health import Health
 from inventory import Inventory
 from sound_system import SoundSystem
 from health_effects import HealthEffects
+from skills import Skills
+from new_combat import Combat
 from settings import *
 
 class Player(pg.sprite.Sprite):
@@ -10,7 +12,9 @@ class Player(pg.sprite.Sprite):
         super().__init__()
         self.health = Health("Player")
         self.inventory = Inventory()
+        self.skills = Skills()
         self.health_effects = HealthEffects(self.health, self.inventory)
+        self.combat = Combat(self)
         self.inventory.setup_starting_items()
         self.sound_system = SoundSystem()
         self.sound_system.setup_sounds()
@@ -22,7 +26,7 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/blocks/character_player.png")
         self.lastCommand = ""
         self.counter = 0
-        self.interaction_reach = 12
+        self.interaction_reach = BLOCK_SIZE
         self.cooldown = 3
         self.doAction = True
         self.isWalking = False
@@ -55,6 +59,7 @@ class Player(pg.sprite.Sprite):
         #prevent player from moving when in battle
         if self.combat_triggered == False and self.health.is_alive:
             self.movement()
+            
         if self.combat_triggered == True:
             self.set_current_action("Fighting.")
         
@@ -162,6 +167,7 @@ class Player(pg.sprite.Sprite):
         """Function calls to run every time the timer is met."""
         self.update_time_effects()
         self.get_stats_text()
+        self.combat.player_combat_logic()
         self.inventory.update_item_player_effects()
         self.get_consumed_item()
         self.perform_action()

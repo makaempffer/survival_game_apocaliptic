@@ -7,3 +7,8 @@ def apply_resistance(initial_damage, resistance_level, resistance_factor=0.2) ->
    damage = initial_damage - (resistance_level * resistance_factor)
    damage = max(damage, 0)
    return damage
+
+def calculate_damage(initial_damage, skill_level, factor):
+   damage = initial_damage + (skill_level * factor)
+   damage = max(damage, 0)
+   return damage
