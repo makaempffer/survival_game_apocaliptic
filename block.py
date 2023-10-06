@@ -14,6 +14,7 @@ class Block(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/blocks/water.png")
         self.type = block_type
         self.data = []
+        self.radiation_level = 10
         self.get_image()
         self.setup_resources()
         self.reload_image(self.type)
@@ -57,9 +58,11 @@ class Block(pg.sprite.Sprite):
         if self.value >= 0.4 and self.value <= 1:
             self.path = path + "water.png"
             self.type = "SAND"
+            self.radiation_level = 10
         if self.value >= 0.3 and self.value <= 0.4: 
             self.path = path + "grass.png"
             self.type = "SAND"
+            self.radiation_level = 15
         if self.value >= -0.2 and self.value <= 0.3: 
             self.path = path + "dirt.png"
             self.type = "DIRT"
@@ -72,6 +75,7 @@ class Block(pg.sprite.Sprite):
         if self.is_resource:
             if self.type == "TREE":
                 self.resource_amount = randint(5, 10)
+                self.radiation_level = 15
             elif self.type == "WATER":
                 self.resource_amount = randint(10, 20)
 

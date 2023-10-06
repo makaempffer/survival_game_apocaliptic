@@ -65,7 +65,7 @@ class Inventory:
         self.columns = 6
         self.ITEM_SIZE = 12
         self.x_start = WIDTH - self.ITEM_SIZE * self.rows
-        self.y_start = 0 
+        self.y_start = 0 + 12
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
         self.screen = screen
@@ -79,6 +79,15 @@ class Inventory:
         self.create_inventory()
         
         # self.update_item_group()
+            
+            
+    def get_inventory_weight(self):
+        weight = 0
+        for item in self.item_group:
+            item_weight = item.weight * item.item_quantity
+            weight += item_weight
+        print(f"[INV] - INVENTORY WEIGHT {weight}")
+        return weight
             
         
     def decrease_item_count(self, item, amount=1):
@@ -96,6 +105,7 @@ class Inventory:
         self.add_item("PICKAXE")
         self.add_item("PISTOL")
         self.add_item("PICKAXE")
+        self.add_item("CIGARRETE_UNLUCKY", 5)
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None

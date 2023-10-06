@@ -71,6 +71,9 @@ class Health:
         owner.kill()
         self.death_sound.play()
         return False
+    
+    def damage_limb_group(self, limbs="arms"):
+        pass
         
     def check_alive(self, owner):
         if self.body_avg <= 0:
@@ -147,7 +150,7 @@ class Health:
 
     def choose_random_body_part(self):
         body_list = list(self.__dict__.items())
-        skip_list = ["hunger", "thirst","attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
+        skip_list = ["hunger", "thirst", "attack_extremity", "is_alive", "attack_sound", "death_sound", "timer", "time_delay", "counter", "attack_cooldown"]
         cleaned_list = [(key, value) for key, value in body_list if key not in skip_list]
         shuffled_list = random.sample(body_list, k=len(body_list))
         for body_part, hp in shuffled_list:

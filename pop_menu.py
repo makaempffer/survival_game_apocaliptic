@@ -26,6 +26,7 @@ class PopMenu:
         self.selected_target = None
         self.open_menu_sound = pg.mixer.Sound('./sounds/Open_menu.wav')
         self.select_sound = pg.mixer.Sound('./sounds/Select.wav')
+        self.stepped_block = None
 
     def get_selected_block(self):
         return self.selected_block
@@ -161,7 +162,20 @@ class PopMenu:
                         self.select_sound.set_volume(0.05)
                         self.select_sound.play()
                         return index
-
+    
+        
+    def get_block(self, x, y):
+        if self.stepped_block:
+            if self.stepped_block.position.x == x and self.stepped_block.position.y == y:
+                return self.stepped_block
+        else:
+        
+            for block in self.block_manager.blocks:
+                if block.position.x == x and block.position.y == y:
+                    # print(block, block.radiation_level, block.position.x, block.position.y)
+                    self.stepped_block = block
+                    return block
+                
     def update(self):
         self.interactionUpdate()
         self.getAction()

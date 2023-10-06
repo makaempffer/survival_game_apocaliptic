@@ -2,7 +2,7 @@ from settings import *
 from inventory import Item
 from pygame.sprite import Group
 # Add hunger and thirst to the health object
-
+# TODO FINISH RADIATION SYSTEM
 class HealthEffects:
     """Class that applies all the corresponding effects to the user,
     bleeding, broken bones, etc.
@@ -14,19 +14,50 @@ class HealthEffects:
         self.stomach_size = 50
         self.bladder_size = 50
         self.bleed_resistance = 10
+        self.equiped_index = 0
+        self.environment_radiation = 0
+        self.current_radiation = 0
+        self.radiation_resistance = 5
         ## EQUIPABLE SLOTS
         self.equiped_items = Group()
+        self.equiped_list = []
+        self.max_weight = 50
+        self.slot_amount = 3
+        # calculate somehow this value
         # Creating item frames
-        self.equipable_slots_frame(3)
+        self.equipable_slots_frame(self.slot_amount)
         
     def equipable_slots_frame(self, slots_amount=3):
         """Creates item slots for equipables"""
+        self.inventory.get_inventory_weight()
+        ###
         for x in range(slots_amount):
             slot = Item(self.inventory.x_start - 64 + (x * 12), self.inventory.y_start, "ITEM_FRAME")
             self.equiped_items.add(slot)
+            self.equiped_list.append(slot)
+            
+    def set_environment_radiation(self, block):
+        print(f"[*] - BLOCK {block}")
+        if not block:
+            return
+        if block:
+            print(f"RADIATION_LEVEL: {block.radiation_level}")
+            self.environment_radiation = block.radiation_level
             
     def render_slots(self):
         self.equiped_items.draw(self.inventory.screen)
+        
+    def radiation_effect(self):
+        print(self.environment_radiation)
+        if self.environment_radiation > self.radiation_resistance:
+            self.current_radiation += 1
+    
+    def overcumbered_effect(self):
+        if self.inventory.get_inventory_weight() > self.max_weight:
+            print("[HEALTH-EFFECTS] - OVER ENCUMBERED.")
+            difference = self.inventory.get_inventory_weight() - self.max_weight
+            # Example: self.state_icons.show("encumbered")
+            self.health.receive_damage(0.1 * difference)
         
     def affections(self):
         pass
@@ -34,27 +65,50 @@ class HealthEffects:
     def bleeding_effect(self):
         # Get the last hit part when the bleeding started and save it
         pass
-        
-    def basic_update(self):
+    
+    def withdrawal_effect(self):
+        pass
+    
+    def needs_effect(self):
         if self.health.hunger <= 0 or self.health.thirst <= 0:
+            # Example: self.state_icons.show("bleed")
+            # Following code is what ever happens as consecuence.
             self.health.receive_damage(0.2)
-                
+            
+    def basic_update(self):
+        ### DISPLAY STATUS ICONS HERE!! encumbered, bleeding, etc.
+        self.needs_effect()
+        self.overcumbered_effect()
+        self.radiation_effect()
+        
     def physical_updates(self):
+        
         self.basic_update()
         amount = 0.1
         self.health.hunger -= amount
-        self.health.thirst -= amount
-        
+        self.health.thirst -= amount    
+    
+    def reset_equiped_list(self):
+        self.equiped_list.clear() 
+        for item in self.equiped_items:
+            self.equiped_list.append(item)
+            print("[HEALTH-EFFECTS] - EQUIPABLE LIST RESET")
+            
     def equip_item(self, item):
+        self.reset_equiped_list()
+        if self.equiped_index >= len(self.equiped_items):
+            print("Reset count")
+            self.equiped_index = 0
+        slot = self.equiped_list[self.equiped_index]
         if item.equipable:
             print("is equipable")
-            for _item in self.equiped_items:
-                if _item.item_id == "ITEM_FRAME":
-                    _item.set_item_to(item.item_id)
-                    return
+            slot.set_item_to(item.item_id)
+            self.equiped_index += 1
+
             
             
     def consume_item_effect(self, item):
+        
         if item.item_type:
             print(f"[HEALTH-EFFECTS] -> ITEM: {item}")
             if item.item_type == "hemostat":
@@ -78,4 +132,8 @@ class HealthEffects:
             elif item.item_type == "analgesic":
                 # Do something
                 print(f"[HEALTH-EFFECTS] - CONSUMED ANALGESIC. {item.item_id} {item.amount}")
+                
+            elif item.item_type == "drug":
+                print(f"[HEALTH-EFFECTS] - CONSUMED {item.item_id}")
+                self.current_radiation -= item.amount
                 

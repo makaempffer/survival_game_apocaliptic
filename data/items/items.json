@@ -11,7 +11,8 @@
             "placeable": false,
             "file_path": "./assets/icons/bandage_icon.png",
             "equipable": false,
-            "item_type": "hemostat"
+            "item_type": "hemostat",
+            "weight": 0.4
         },
         {
             "item_id": "PILL",
@@ -21,7 +22,8 @@
             "file_path": "./assets/icons/pill_icon.png",
             "equipable": false,
             "item_type": "analgesic",
-            "amount": 10
+            "amount": 10,
+            "weight": 0.2
         },
         {
             "item_id": "WOOD",
@@ -30,7 +32,8 @@
             "placeable": false,
             "file_path": "./assets/icons/wood_icon.png",
             "equipable": false,
-            "item_type": "resource"
+            "item_type": "resource",
+            "weight": 1
         },
         {
             "item_id": "WOOD_TABLE",
@@ -39,7 +42,8 @@
             "placeable": true,
             "file_path": "./assets/icons/wood_table_icon.png",
             "equipable": false,
-            "item_type": "station"
+            "item_type": "station",
+            "weight": 4
         },
         {
             "item_id": "PICKAXE",
@@ -48,7 +52,8 @@
             "placeable": false,
             "file_path": "./assets/icons/pickaxe_icon.png",
             "equipable": true,
-            "item_type": "tool"
+            "item_type": "tool",
+            "weight": 1
         },
         {
             "item_id": "BREAD",
@@ -58,7 +63,8 @@
             "file_path": "./assets/icons/bread_icon.png",
             "equipable": false,
             "item_type": "food",
-            "amount": "5"
+            "amount": "5",
+            "weight": 0.5
         },
         {
             "item_id": "IRON_BAR",
@@ -67,7 +73,8 @@
             "placeable": false,
             "file_path": "./assets/icons/iron_bar_icon.png",
             "equipable": false,
-            "item_type": "resource"
+            "item_type": "resource",
+            "weight": 2
         },
         {
             "item_id": "BOTTLE",
@@ -77,7 +84,8 @@
             "file_path": "./assets/icons/bottle_icon.png",
             "equipable": false,
             "item_type": "drink",
-            "amount": 4.5
+            "amount": 4.5,
+            "weight": 0.7
         },
         {
             "item_id": "PISTOL",
@@ -89,7 +97,8 @@
             "item_type": "gun",
             "caliber": "9mm",
             "damage": 32,
-            "range": 10
+            "range": 10,
+            "weight": 2.5
         },
         {
             "item_id": "AMMO_9MM",
@@ -99,7 +108,18 @@
             "file_path": "./assets/icons/bullet_icon.png",
             "equipable": false,
             "item_type": "ammo",
-            "caliber": "9mm"
+            "caliber": "9mm",
+            "weight": 0.1
+        },
+        {
+            "item_id": "CIGARRETE_UNLUCKY",
+            "stackable": true,
+            "consumable": true,
+            "file_path": "./assets/icons/cigarrete_unlucky.png",
+            "item_type": "drug",
+            "amount": 15,
+            "adictive": true,
+            "weight": 0.1
         }
     ]
 }

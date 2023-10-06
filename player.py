@@ -36,13 +36,14 @@ class Player(pg.sprite.Sprite):
 
     def update_time_effects(self):
         self.health_effects.physical_updates()
+        self.health_effects.set_environment_radiation(self.menu.stepped_block)
         # Add updates on tick.
         pass
 
 
     def get_stats_text(self):
         """Returns player stats on presentable format"""
-        message = "HUNGER: " + str(round(self.health.hunger, 2)) + " THIRST: " + str(round(self.health.thirst, 2))
+        message = "HUNGER: " + str(round(self.health.hunger, 2)) + " THIRST: " + str(round(self.health.thirst, 2)) + " RADS: " + str(round(self.health_effects.current_radiation, 2))
         self.narrator.set_constant_text(("HP: " + str(round(self.health.get_total_hp(), 2))), " ACTION: " + self.last_action)
         self.narrator.append_message(message)
         
@@ -132,6 +133,7 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.behavior_controller()
         self.health.update(self)
+        self.menu.get_block(self.position.x, self.position.y)
     
     def timer_event(self, event):
         if event.type == self.timer:
