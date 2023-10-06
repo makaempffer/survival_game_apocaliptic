@@ -8,11 +8,18 @@ class HealthEffects:
     def __init__(self, user_health_ref, inventory_ref):
         self.health = user_health_ref
         self.inventory = inventory_ref
+        self.equipable_slot = []
         self.bleeding: bool = False
         self.stomach_size = 50
         self.bladder_size = 50
+        self.bleed_resistance = 10
+        
         
     def affections(self):
+        pass
+    
+    def bleeding_effect(self):
+        # Get the last hit part when the bleeding started and save it
         pass
         
     def basic_update(self):

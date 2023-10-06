@@ -27,6 +27,9 @@ class Item(pg.sprite.Sprite):
         self.font_set_quantity(screen)
 
     def font_set_quantity(self, screen):
+        # Only show stackables quantity
+        if not self.stackable:
+            return
         rect = pg.Rect(self.rect.x, self.rect.y, ITEM_SIZE, ITEM_SIZE)
         text = FONT.render(str(self.item_quantity), True, (255, 255, 255))
         screen.blit(text, rect)
@@ -87,6 +90,7 @@ class Inventory:
         self.add_item("BOTTLE")
         self.add_item("PICKAXE")
         self.add_item("PISTOL")
+        self.add_item("PICKAXE")
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
@@ -151,7 +155,7 @@ class Inventory:
         for row in self.inventory:
             for slot in row:
                 if slot != None:
-                    if slot.item_id == item_name:
+                    if slot.item_id == item_name and slot.stackable:
                         slot.item_quantity += quantity
                         print(f"[INV] - ADDED QUANTITY {quantity} TO {slot.item_id}")
                         return
@@ -168,7 +172,7 @@ class Inventory:
                     self.inventory[x][y] = item
                     return
 
-        print("[INV] - NO SLOTS AVAILABLE")
+        print("[INV] - NO SLOTS AVAILABLE OR ITEM DOESN'T EXIST")
 
     def add_to_consumable_stack(self, item):
         if item.consumable and item not in self.consumable_stack:
