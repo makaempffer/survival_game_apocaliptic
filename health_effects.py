@@ -1,4 +1,5 @@
 from settings import *
+from functions import apply_resistance
 from inventory import Item
 from pygame.sprite import Group
 # Add hunger and thirst to the health object
@@ -17,7 +18,7 @@ class HealthEffects:
         self.equiped_index = 0
         self.environment_radiation = 0
         self.current_radiation = 0
-        self.radiation_resistance = 5
+        self.radiation_resistance = 10 # SHOULD BE INCREASED BY SKILLS AND EQUIPABLE ITEMS.
         ## EQUIPABLE SLOTS
         self.equiped_items = Group()
         self.equiped_list = []
@@ -37,10 +38,10 @@ class HealthEffects:
             self.equiped_list.append(slot)
             
     def set_environment_radiation(self, block):
-        print(f"[*] - BLOCK {block}")
         if not block:
             return
         if block:
+            print(f"[*] - BLOCK {block.type}")
             print(f"RADIATION_LEVEL: {block.radiation_level}")
             self.environment_radiation = block.radiation_level
             
@@ -49,8 +50,13 @@ class HealthEffects:
         
     def radiation_effect(self):
         print(self.environment_radiation)
+        taken_radiation = apply_resistance(self.environment_radiation, self.radiation_resistance, RESISTANCE_FACTOR)
         if self.environment_radiation > self.radiation_resistance:
-            self.current_radiation += 1
+            self.current_radiation += taken_radiation
+        if self.current_radiation >= 1:
+            self.health.receive_damage(taken_radiation)
+        elif self.current_radiation < 0:
+            self.current_radiation = 0
     
     def overcumbered_effect(self):
         if self.inventory.get_inventory_weight() > self.max_weight:

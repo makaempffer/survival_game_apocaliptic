@@ -14,25 +14,27 @@ class Block(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/blocks/water.png")
         self.type = block_type
         self.data = []
-        self.radiation_level = 10
+        self.radiation_level = 0
         self.get_image()
         self.setup_resources()
         self.reload_image(self.type)
+        self.set_radiation_level()
+        # TODO FIX - Blocks not setting the according type.
 
     def reload_image(self, block_name: str):
         path = "./assets/blocks/" + block_name.lower() + ".png"
         self.image = pg.image.load(path)
 
     def update(self):
-        self.consumable_logic()
+        self.harvestable_logic()
 
     def get_resource_amount(self):
         return self.resource_amount
 
-    def consumable_logic(self):
+    def harvestable_logic(self):
         if not self.is_resource:
             return
-        if self.resource_amount <= 0:
+        if self.resource_amount <= 0 and self.is_resource:
             self.type == "DIRT"
             self.is_resource = False
             self.reload_image("dirt")
@@ -48,6 +50,12 @@ class Block(pg.sprite.Sprite):
             return amount_left 
         return amount
 
+    def set_radiation_level(self):
+        if self.type == "TREE":
+            self.radiation_level = 20
+        else:
+            self.radiation_level = 10
+
     def get_image(self):
         path = "./assets/blocks/"
         if self.type:
@@ -56,18 +64,13 @@ class Block(pg.sprite.Sprite):
             return
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
-            self.path = path + "water.png"
             self.type = "SAND"
-            self.radiation_level = 10
         if self.value >= 0.3 and self.value <= 0.4: 
-            self.path = path + "grass.png"
             self.type = "SAND"
-            self.radiation_level = 15
         if self.value >= -0.2 and self.value <= 0.3: 
-            self.path = path + "dirt.png"
             self.type = "DIRT"
+            self.radiation_level = 5
         if self.value >= -1 and self.value <= -0.2:
-            self.path = path + "tree.png"
             self.type = "TREE"
             self.is_resource = True
 

@@ -12,3 +12,4 @@ NARRATOR_WIDTH = 150
 NARRATOR_HEIGHT = 40
 ITEM_SIZE = 12
 BLOCK_SIZE = 12 # PIXELS
+RESISTANCE_FACTOR = 0.7 # 20% damage reduction from all resistances

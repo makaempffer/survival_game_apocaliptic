@@ -165,16 +165,11 @@ class PopMenu:
     
         
     def get_block(self, x, y):
-        if self.stepped_block:
-            if self.stepped_block.position.x == x and self.stepped_block.position.y == y:
-                return self.stepped_block
-        else:
-        
-            for block in self.block_manager.blocks:
-                if block.position.x == x and block.position.y == y:
-                    # print(block, block.radiation_level, block.position.x, block.position.y)
-                    self.stepped_block = block
-                    return block
+        for block in self.block_manager.blocks:
+            if block.position.x == x and block.position.y == y:                    # print(block, block.radiation_level, block.position.x, block.position.y)
+                self.stepped_block = block
+                return block
+        print(f"BLOCK from get block -> {block.type}")
                 
     def update(self):
         self.interactionUpdate()

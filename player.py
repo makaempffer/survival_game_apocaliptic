@@ -35,6 +35,7 @@ class Player(pg.sprite.Sprite):
         pg.time.set_timer(self.timer, self.time_delay)
 
     def update_time_effects(self):
+        self.menu.get_block(self.position.x, self.position.y)
         self.health_effects.physical_updates()
         self.health_effects.set_environment_radiation(self.menu.stepped_block)
         # Add updates on tick.
@@ -133,7 +134,6 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.behavior_controller()
         self.health.update(self)
-        self.menu.get_block(self.position.x, self.position.y)
     
     def timer_event(self, event):
         if event.type == self.timer:
