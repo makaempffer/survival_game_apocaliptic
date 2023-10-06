@@ -136,8 +136,16 @@ class Player(pg.sprite.Sprite):
     def timer_event(self, event):
         if event.type == self.timer:
             self.counter += 1
+        
+    def get_equiped(self):
+        item = self.inventory.last_equiped
+        if item:
+            print(f"[PLAYER] - EQUIPED {item.item_id}")
+            self.health_effects.equip_item(item)
+            self.inventory.last_equiped = None
 
     def get_consumed_item(self):
+        self.get_equiped()
         """Get the consumed item effects, all items to add here."""
         item = self.inventory.last_consumed
         print(f"[PLAYER] - LAST ITEM {item}")
@@ -163,6 +171,9 @@ class Player(pg.sprite.Sprite):
             return True
         else:
             return False
+        
+    def render_player_related(self):
+        self.health_effects.render_slots()
 
 
     

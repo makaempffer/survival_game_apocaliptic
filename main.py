@@ -62,6 +62,7 @@ class Game:
         self.playerManager.render()
         self.npcManager.render()
         self.player.inventory.render()
+        self.player.render_player_related()
         self.narrator.show_narrator()
 
 

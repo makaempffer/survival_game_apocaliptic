@@ -36,6 +36,10 @@ class Item(pg.sprite.Sprite):
 
     def consume(self):
         self.item_quantity -= 1
+        
+    def set_item_to(self, item_id):
+        self.item_id = item_id
+        self.create_from_dict(item_dict)
     
     def create_from_dict(self, _dict):
         if pg.get_init(): 
@@ -70,6 +74,7 @@ class Inventory:
         self.consumable_stack = []
         self.last_consumed = None
         self.selected_item = None
+        self.last_equiped = None
         self.create_item_frame_group()
         self.create_inventory()
         
@@ -210,6 +215,8 @@ class Inventory:
                         if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
                             self.add_to_consumable_stack(item)
                             self.select_item(item)
+                            if item.equipable:
+                                self.last_equiped = item
                             return item
 
     def kill_consumed(self):
