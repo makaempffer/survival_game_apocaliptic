@@ -24,9 +24,9 @@ class NPCManager():
         self.create_spawns()
         self.spawn()
     
-    def update(self):
+    def update(self, delta_time):
         for npc in self.npc_group:
-            npc.update()
+            npc.update(delta_time)
         self.remove_dead_npc()
 
     def spawn_npc(self,x, y,type="zombie"):

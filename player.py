@@ -39,6 +39,7 @@ class Player(pg.sprite.Sprite):
         self.timer = pg.USEREVENT + 1
         self.time_delay = 1000
         self.last_action = ""
+        self.MAX_HP = self.health.get_health()
         pg.time.set_timer(self.timer, self.time_delay)
 
     def update_time_effects(self):
@@ -49,8 +50,8 @@ class Player(pg.sprite.Sprite):
         pass
     
     def show_health_bar(self):
-        hp = self.health.get_total_hp()
-        pg.draw.line(self.inventory.screen, (255, 0, 0), (self.rect.x, self.rect.y), (self.rect.x + mapFromTo(hp, 0, 2000, 0, 12), self.rect.y))
+        hp = self.health.get_health()
+        pg.draw.line(self.inventory.screen, (255, 0, 0), (self.rect.x, self.rect.y), (self.rect.x + mapFromTo(hp, 0, self.MAX_HP, 0, BLOCK_SIZE), self.rect.y))
 
     def get_stats_text(self):
         """Returns player stats on presentable format"""
@@ -185,7 +186,7 @@ class Player(pg.sprite.Sprite):
         
     def render_player_related(self):
         self.health_effects.render_slots()
-        self.combat.render_enemy_hp(self.combat.target)
+        self.combat.render_enemy_hp()
 
 
     

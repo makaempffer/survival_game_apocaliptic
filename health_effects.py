@@ -55,6 +55,7 @@ class HealthEffects:
             self.current_radiation += taken_radiation
         if self.current_radiation >= 1:
             self.health.take_true_damage(taken_radiation)
+            print(f"[HEALTH] - TRUE HP {self.health.true_hp}")
         elif self.current_radiation < 0:
             self.current_radiation = 0
     
@@ -134,7 +135,6 @@ class HealthEffects:
                     bleeding_limb.stop_bleed()
                     print("[HEALTH-EFFECTS] - HEMOSTAT APPLIED.")
                     return
-                
                 
             elif item.item_type == "food":
                 stomach = self.health.get_organ('stomach')

@@ -16,31 +16,28 @@ class NPC(pg.sprite.Sprite):
         self.health = Health(self.skills)
         self.health_effects = HealthEffects(self.health, self.inventory)
         self.size = BLOCK_SIZE
-        self.position = pg.Vector2(x, y)
-        self.rect = None
+        self.rect = pg.Rect(x * self.size, y * self.size, BLOCK_SIZE, BLOCK_SIZE)
+        self.position = pg.Vector2(self.rect.x, self.rect.y)
         self.path = "./assets/blocks/zombie.png"
         self.image = pg.image.load(self.path)
-        self.rect = pg.Rect(self.position.x * self.size, self.position.y * self.size, 10, 10)
         self.type = npc_type
         self.interaction_reach = 12
-        self.didMove = False
-        self.isMoving = False
-        self.stopAction = False
-        self.recalculate = True
-        self.target = []
-        self.resetTime = randint(500, 3000)
+        self.speed = 0.01
         self.counter = 0
-        self.actionCooldown = randint(100, 1000)
-        self.doAction = True
+        self.target_reached = False
+        self.target_pos = None
+        self.can_move = True
         self.friendly = False
-        self.combat_triggered = False
         self.vision_distance = 30
+        self.cooldown = randint(100, 500)
+        self.start_timer = False
         self.get_type()
         self.inventory.add_item("BANDAGE", 1)
+        self.max_hp = self.health.get_health()
         
     def show_health_bar(self, screen):
         hp = self.health.get_health()
-        pg.draw.line(screen, (255, 0, 0), (self.rect.x + 6, self.rect.y), (self.rect.x + 6 + mapFromTo(hp, 0, 2000, 0, 12), self.rect.y))
+        pg.draw.line(screen, (255, 0, 0), (self.rect.x, self.rect.y), (self.rect.x + mapFromTo(hp, 0, self.max_hp, 0, BLOCK_SIZE), self.rect.y))
 
     def load_texture(self, type="zombie"):
         path = "./assets/blocks/" + type + ".png"
@@ -59,84 +56,83 @@ class NPC(pg.sprite.Sprite):
 
     def setPosition(self, x, y):
         self.rect.x = x
-        self.rect.y = y
-    
-    def moveEventFunction(self):
-        self.counter += 1
-        if self.counter == self.resetTime:
-            self.recalculate = True
-            self.counter = 0
-        
-        if self.counter == self.actionCooldown:
-            self.doAction = True
-        if self.counter != self.actionCooldown:
-            self.doAction = False
+        self.rect.y = y   
 
-        
-
-    def update(self):
+    def update(self, delta_time):
         if not self.friendly:
             self.health.update()
-        self.moveEventFunction()
-        if self.doAction and not self.combat_triggered:
-            self.move()
+        self.move(delta_time)
+        self.cooldown_timer()
+        self.check_boundaries()
+    
+    def check_boundaries(self):
+        over_shoot = False
+        if self.position.x > WIDTH:
+            self.position.x = 0
+            over_shoot = True
+        elif self.position.x < 0:
+            self.position.x = WIDTH
+            over_shoot = True
+            
+        if self.position.y > HEIGHT:
+            over_shoot = True
+            self.position.y = 0
+        elif self.position.y < 0:
+            over_shoot = True
+            self.position.y = HEIGHT
+            
+        if over_shoot:
+            target_pos = self.getMoveLocation()
+            target_pos = pg.Vector2(target_pos[0], target_pos[1])
+            self.target_pos = target_pos
+            
         
-    
-    def move(self):
-        self.position.x, self.position.y = self.rect.x, self.rect.y
-        targetLocation = None
-        if self.recalculate == True:
-            targetLocation = self.getMoveLocation()
-            self.recalculate = False
+    def move(self, delta_time):
+        attacker = self.combat.attacker
+        if attacker:
+            self.position = self.position.move_towards(attacker.position, self.speed * delta_time)
+            self.rect.x, self.rect.y = self.position.x, self.position.y
         else:
-            targetLocation = self.target 
-        if self.isMoving:
-            if targetLocation and self.isMoving:
-                distX = (self.rect.x - targetLocation[0])
-                distY = (self.rect.y - targetLocation[1])
-
-                if distX > 0:
-                    self.setPosition(self.rect.x - BLOCK_SIZE, self.rect.y)
-                if distX < 0:
-                    self.setPosition(self.rect.x + BLOCK_SIZE, self.rect.y)
-                if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
-                    targetLocation = None
-                    self.isMoving = False
-
+            if not self.can_move:
+                return
+            if self.position == self.target_pos:
+                self.target_reached = True
+                self.can_move = False
+                self.start_timer = True
                 
-                if distY > 0: 
-                    self.setPosition(self.rect.x, self.rect.y - BLOCK_SIZE)
-                if distY < 0: 
-                    self.setPosition(self.rect.x, self.rect.y + BLOCK_SIZE)
+            elif self.position != self.target_pos:
+                self.target_reached = False
+                
+            if self.target_reached or not self.target_pos:       
+                target_pos = self.getMoveLocation()
+                target_pos = pg.Vector2(target_pos[0], target_pos[1])
+                self.target_pos = target_pos
+                
+            if self.target_pos:
+                self.position = self.position.move_towards(self.target_pos, self.speed * delta_time)
+                self.rect.x, self.rect.y = self.position.x, self.position.y
+                
+    def cooldown_timer(self):
+        if self.start_timer:
+            self.counter += 1
+        if self.counter >= self.cooldown:
+            self.can_move = True
+            self.counter = 0
+            self.start_timer = False
             
-        #neighbors = self.getNeighbors()
-        #self.rect.x = neighbors[0]
-        #self.getMoveLocation()
-        #self.rect.y = neighbors[2]
 
-    def getMoveLocation(self):
-        if self.recalculate:
-            possibleMovements = []
-            
-            gridX, gridY = self.rect.x, self.rect.y
-            left = [gridX - 0, gridX - 12, gridX - 24, gridX - 36, gridX - 48]
-            right = [gridX + 0, gridX + 12, gridX + 24, gridX + 36, gridX + 48]
-            up = [gridY - 0, gridY - 12, gridY - 24, gridY - 36, gridY - 48]
-            bottom = [gridY + 0, gridY + 12, gridY + 24, gridY + 36, gridY + 48]
-            xMoves = [left, right]
-            yMoves = [up, bottom]
-            xMovement = choice(xMoves)
-            yMovement = choice(yMoves)
-            moveChoiceX = choice(xMovement)
-            moveChoiceY = choice(yMovement)
-            self.isMoving = True
-            self.target = [moveChoiceX, moveChoiceY]
-            return [moveChoiceX, moveChoiceY]
-
-    
-    def getNeighbors(self):
-        left = self.rect.x - BLOCK_SIZE
-        right = self.rect.x + BLOCK_SIZE
-        top = self.rect.y - BLOCK_SIZE
-        bottom = self.rect.y + BLOCK_SIZE 
-        return [left, right, top, bottom]
+    def getMoveLocation(self):            
+        gridX, gridY = self.rect.x, self.rect.y
+        left = [gridX - 0, gridX - BLOCK_SIZE, gridX - BLOCK_SIZE * 2, gridX - BLOCK_SIZE * 3, gridX - BLOCK_SIZE * 4]
+        right = [gridX + 0, gridX + BLOCK_SIZE, gridX + BLOCK_SIZE * 2, gridX + BLOCK_SIZE * 3, gridX + BLOCK_SIZE * 4]
+        up = [gridY - 0, gridY - BLOCK_SIZE, gridY - BLOCK_SIZE * 2, gridY - BLOCK_SIZE * 3, gridY - BLOCK_SIZE * 4]
+        bottom = [gridY + 0, gridY + BLOCK_SIZE, gridY + BLOCK_SIZE * 2, gridY + BLOCK_SIZE * 3, gridY + BLOCK_SIZE * 4]
+        xMoves = [left, right]
+        yMoves = [up, bottom]
+        xMovement = choice(xMoves)
+        yMovement = choice(yMoves)
+        moveChoiceX = choice(xMovement)
+        moveChoiceY = choice(yMovement)
+        self.isMoving = True
+        self.target = [moveChoiceX, moveChoiceY]
+        return [moveChoiceX, moveChoiceY]

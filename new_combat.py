@@ -27,13 +27,16 @@ class Combat:
         
     def attack_objective(self):
         target = self.user.menu.npc_target
+        self.target = target
         
         if not target:
             return
         
         if not target.health.check_alive():
+            self.loot_body(target)
             self.target = None
-        
+            self.user.menu.npc_target = None
+            
         command = self.user.lastCommand
         if command:
             command = command.lower()
@@ -49,14 +52,13 @@ class Combat:
                 self.target = target
                 target.combat.return_attack()
             
-    def render_enemy_hp(self, target):
+    def render_enemy_hp(self):
         if self.target and self.show_hp:
             self.target.show_health_bar(self.user.inventory.screen)
                             
     def player_combat_logic(self):
         self.attack_objective()
 
-        
     def attack_distance(self, target_user):
         gun = self.user.health_effects.get_gun()
         if not gun:
@@ -66,6 +68,7 @@ class Combat:
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)
+            print(f"[COMBAT - TARGET DISTANCE {distance} {self.user.position} / {target_user.position}")
             if distance > gun_range:
                 print("Target too far, gun range too short")
                 return False
@@ -96,14 +99,14 @@ class Combat:
         """Calculates the damage acording to the user armor"""
         armor_rating = self.user.health_effects.get_armor_rating()
         damage_after_res = apply_resistance(damage, armor_rating, RESISTANCE_FACTOR)
-        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res}.")
+        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}")
         self.user.health.take_damage_on_calculated_limb(damage_after_res)
         
     def receive_melee_damage(self, damage):
         armor_rating = self.user.health_effects.get_armor_rating() + self.user.skills.strength * 2
         damage_after_res = apply_resistance(damage, armor_rating, RESISTANCE_FACTOR)
         self.user.health.take_damage_on_calculated_limb(damage_after_res)
-        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res}.")
+        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}.")
         
     def calculate_damage_distance(self, weapon_damage) -> float:
         accuracy = self.user.skills.accuracy
