@@ -1,18 +1,19 @@
 from settings import *
 from random import randint, choice
-from health import Health
+from new_health import Health
 from inventory import Inventory
 from new_combat import Combat
 from skills import Skills
 from health_effects import HealthEffects
+from functions import mapFromTo
 
 class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, npc_type):
         super().__init__()
-        self.health = Health(npc_type)
         self.inventory = Inventory()
         self.skills = Skills()
         self.combat = Combat(self)
+        self.health = Health(self.skills)
         self.health_effects = HealthEffects(self.health, self.inventory)
         self.size = BLOCK_SIZE
         self.position = pg.Vector2(x, y)
@@ -21,6 +22,7 @@ class NPC(pg.sprite.Sprite):
         self.image = pg.image.load(self.path)
         self.rect = pg.Rect(self.position.x * self.size, self.position.y * self.size, 10, 10)
         self.type = npc_type
+        self.interaction_reach = 12
         self.didMove = False
         self.isMoving = False
         self.stopAction = False
@@ -35,6 +37,10 @@ class NPC(pg.sprite.Sprite):
         self.vision_distance = 30
         self.get_type()
         self.inventory.add_item("BANDAGE", 1)
+        
+    def show_health_bar(self, screen):
+        hp = self.health.get_health()
+        pg.draw.line(screen, (255, 0, 0), (self.rect.x + 6, self.rect.y), (self.rect.x + 6 + mapFromTo(hp, 0, 2000, 0, 12), self.rect.y))
 
     def load_texture(self, type="zombie"):
         path = "./assets/blocks/" + type + ".png"
@@ -70,7 +76,7 @@ class NPC(pg.sprite.Sprite):
 
     def update(self):
         if not self.friendly:
-            self.health.update(self)
+            self.health.update()
         self.moveEventFunction()
         if self.doAction and not self.combat_triggered:
             self.move()

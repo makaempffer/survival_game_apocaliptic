@@ -8,8 +8,6 @@ from pop_menu import PopMenu
 from npc_manager import NPCManager
 from block_manager import BlockManager
 from player_manager import PlayerManager
-from combat_manager import CombatManager
-from health_manager import HealthManager
 from narrator_system import Narrator
          
 
@@ -21,7 +19,6 @@ class Game:
         self.popMenu = None
         self.block_manager = BlockManager(self.screen, self.world.mapData)
         self.npcManager = NPCManager(self.screen)
-        self.combat_manager: CombatManager
         self.isRunning = True
         self.clock = pg.time.Clock()
         self.delta_time = 1
@@ -32,9 +29,6 @@ class Game:
     def newGame(self):
         self.popMenu = PopMenu(self.block_manager.mapData, self.block_manager, self.npcManager.npc_group, self.screen)
         self.playerManager = PlayerManager(self.screen, self.popMenu)
-        self.combat_manager = CombatManager(self.screen, self.npcManager.npc_group, self.playerManager.group, self.popMenu)
-        self.health_manager = HealthManager(self.screen, self.combat_manager.combat_system, self.playerManager.get_player())
-        #self.inventory = Inventory(self.screen)
         self.narrator = Narrator(self.screen)
         self.player =  self.playerManager.get_player()
         self.player.set_narrator(self.narrator)
@@ -45,9 +39,7 @@ class Game:
     def update(self):
         self.playerManager.update()
         self.popMenu.update()
-        self.combat_manager.update()
-        self.health_manager.update()
-        self.npcManager.npc_group.update()
+        self.npcManager.update()
         self.block_manager.update_resource_blocks()
         self.narrator.update()
         self.player.inventory.update()
@@ -73,7 +65,6 @@ class Game:
                 pg.quit()
                 sys.exit()
 
-            self.health_manager.update_health_counters(event)
             self.playerManager.update_player_events(event)
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.player.inventory.is_open:#right button mousse
                 self.popMenu.setupMenu()

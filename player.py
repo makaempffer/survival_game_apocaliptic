@@ -1,5 +1,6 @@
 import pygame as pg
-from health import Health
+from functions import *
+from new_health import Health
 from inventory import Inventory
 from sound_system import SoundSystem
 from health_effects import HealthEffects
@@ -10,9 +11,11 @@ from settings import *
 class Player(pg.sprite.Sprite):
     def __init__(self, menu, narrator = None):
         super().__init__()
-        self.health = Health("Player")
         self.inventory = Inventory()
         self.skills = Skills()
+        self.skills.set_skill_level("accuracy", 6)
+        self.health = Health(self.skills)
+        self.health.setup_organs()
         self.health_effects = HealthEffects(self.health, self.inventory)
         self.combat = Combat(self)
         self.inventory.setup_starting_items()
@@ -44,12 +47,15 @@ class Player(pg.sprite.Sprite):
         self.health_effects.set_environment_radiation(self.menu.stepped_block)
         # Add updates on tick.
         pass
-
+    
+    def show_health_bar(self):
+        hp = self.health.get_total_hp()
+        pg.draw.line(self.inventory.screen, (255, 0, 0), (self.rect.x, self.rect.y), (self.rect.x + mapFromTo(hp, 0, 2000, 0, 12), self.rect.y))
 
     def get_stats_text(self):
         """Returns player stats on presentable format"""
-        message = "HUNGER: " + str(round(self.health.hunger, 2)) + " THIRST: " + str(round(self.health.thirst, 2)) + " RADS: " + str(round(self.health_effects.current_radiation, 2))
-        self.narrator.set_constant_text(("HP: " + str(round(self.health.get_total_hp(), 2))), " ACTION: " + self.last_action)
+        message = "HUNGER: " + str(round(self.health.get_hunger(), 2)) + " THIRST: " + str(round(self.health.get_thirst(), 2)) + " RADS: " + str(round(self.health_effects.current_radiation, 2))
+        self.narrator.set_constant_text(("HP: " + str(round(self.health.get_health(), 2))), " ACTION: " + self.last_action)
         self.narrator.append_message(message)
         
     def set_narrator(self, narrator):
@@ -57,7 +63,7 @@ class Player(pg.sprite.Sprite):
 
     def behavior_controller(self):
         #prevent player from moving when in battle
-        if self.combat_triggered == False and self.health.is_alive:
+        if self.combat_triggered == False and self.health.alive:
             self.movement()
             
         if self.combat_triggered == True:
@@ -92,7 +98,6 @@ class Player(pg.sprite.Sprite):
     def perform_action(self):
         # TODO CALCULATE AMOUNT SOMEHOW
         total = 1
-        print("PERFORMING ACTION...")
         action = self.lastCommand
         print(f"ACTION TO PERFORM - {action}")
         if not action:
@@ -124,12 +129,12 @@ class Player(pg.sprite.Sprite):
             self.last_action = action
 
     def walk(self, target):
-        if self.health.is_alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
+        if self.health.alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.sound_system.play_sound("walk")
             self.set_current_action("Walking...")
             self.triggered = True
 
-        if self.combat_triggered == True or self.health.is_alive == False:
+        if self.combat_triggered == True or self.health.alive == False:
             self.sound_system.fadeout_sound("walk")
 
         if target == None:
@@ -138,7 +143,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.behavior_controller()
-        self.health.update(self)
+        self.health.update()
     
     def timer_event(self, event):
         if event.type == self.timer:
@@ -155,11 +160,9 @@ class Player(pg.sprite.Sprite):
         self.get_equiped()
         """Get the consumed item effects, all items to add here."""
         item = self.inventory.last_consumed
-        print(f"[PLAYER] - LAST ITEM {item}")
         if not item:
             return
         self.health_effects.consume_item_effect(item)
-        print(self.health.get_total_hp())
         self.inventory.kill_consumed()
         # Get the most damaged part and heal it some amount.
 
@@ -182,6 +185,7 @@ class Player(pg.sprite.Sprite):
         
     def render_player_related(self):
         self.health_effects.render_slots()
+        self.combat.render_enemy_hp(self.combat.target)
 
 
     

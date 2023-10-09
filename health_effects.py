@@ -13,7 +13,6 @@ class HealthEffects:
     def __init__(self, user_health_ref, inventory_ref):
         self.health = user_health_ref
         self.inventory = inventory_ref
-        self.bleeding: bool = False
         self.stomach_size = 50
         self.bladder_size = 50
         self.bleed_resistance = 10
@@ -51,12 +50,11 @@ class HealthEffects:
         self.equiped_items.draw(self.inventory.screen)
         
     def radiation_effect(self):
-        print(self.environment_radiation)
         taken_radiation = apply_resistance(self.environment_radiation, self.radiation_resistance, RESISTANCE_FACTOR)
         if self.environment_radiation > self.radiation_resistance:
             self.current_radiation += taken_radiation
         if self.current_radiation >= 1:
-            self.health.receive_damage(taken_radiation)
+            self.health.take_true_damage(taken_radiation)
         elif self.current_radiation < 0:
             self.current_radiation = 0
     
@@ -65,23 +63,20 @@ class HealthEffects:
             print("[HEALTH-EFFECTS] - OVER ENCUMBERED.")
             difference = self.inventory.get_inventory_weight() - self.max_weight
             # Example: self.state_icons.show("encumbered")
-            self.health.receive_damage(0.1 * difference)
+            self.health.take_true_damage(0.1 * difference)
         
     def affections(self):
         pass
     
-    def bleeding_effect(self):
-        # Get the last hit part when the bleeding started and save it
-        pass
-    
     def withdrawal_effect(self):
         pass
+
     
     def needs_effect(self):
-        if self.health.hunger <= 0 or self.health.thirst <= 0:
+        if self.health.get_hunger() <= 0 or self.health.get_thirst() <= 0:
             # Example: self.state_icons.show("bleed")
             # Following code is what ever happens as consecuence.
-            self.health.receive_damage(0.2)
+            self.health.take_true_damage(0.2)
             
     def basic_update(self):
         ### DISPLAY STATUS ICONS HERE!! encumbered, bleeding, etc.
@@ -89,12 +84,17 @@ class HealthEffects:
         self.overcumbered_effect()
         self.radiation_effect()
         
+    def organs_update(self):
+        if not self.health.organs:
+            return
+        liver = self.health.get_organ('liver')
+        stomach = self.health.get_organ('stomach')
+        liver.drain_capacity(ORGAN_DRAIN_AMOUNT)
+        stomach.drain_capacity(ORGAN_DRAIN_AMOUNT)
+               
     def physical_updates(self):
-        
-        self.basic_update()
-        amount = 0.1
-        self.health.hunger -= amount
-        self.health.thirst -= amount    
+        self.organs_update()
+        self.basic_update()   
     
     def reset_equiped_list(self):
         self.equiped_list.clear() 
@@ -114,9 +114,7 @@ class HealthEffects:
     def get_gun(self) -> Item:
         for item in self.equiped_list:
             if item.item_type == "gun":
-                print("User has Gun!")
                 return item
-        print("No gun.")
         return False
 
     def get_armor_rating(self) -> float:
@@ -131,28 +129,30 @@ class HealthEffects:
         if item.item_type:
             print(f"[HEALTH-EFFECTS] -> ITEM: {item}")
             if item.item_type == "hemostat":
-                print("[HEALTH-EFFECTS] - HEMOSTAT APPLIED.")
-                self.bleeding = False
+                bleeding_limb = self.health.get_bleeding_limb()
+                if bleeding_limb:
+                    bleeding_limb.stop_bleed()
+                    print("[HEALTH-EFFECTS] - HEMOSTAT APPLIED.")
+                    return
+                
                 
             elif item.item_type == "food":
+                stomach = self.health.get_organ('stomach')
                 print(f"[HEALTH-EFFECTS] - FOOD CONSUMED {item.item_id}")
                 satisfy_amount = float(item.amount)
-                self.health.hunger += satisfy_amount
-                if self.stomach_size < self.health.hunger:
-                    self.receive_damage(satisfy_amount//2)
+                stomach.fill_capacity(satisfy_amount)
                     
             elif item.item_type == "drink":
+                liver = self.health.get_organ('liver')
                 print(f"[HEALTH-EFFECTS] - DRINK CONSUMED {item.item_id}")
                 satisfy_amount = float(item.amount)
-                self.health.thirst += satisfy_amount
-                if self.bladder_size < self.health.thirst:
-                    self.receive_damage(satisfy_amount//2)
+                liver.fill_capacity(satisfy_amount)
                     
             elif item.item_type == "analgesic":
                 # Do something
                 print(f"[HEALTH-EFFECTS] - CONSUMED ANALGESIC. {item.item_id} {item.amount}")
                 
             elif item.item_type == "drug":
-                print(f"[HEALTH-EFFECTS] - CONSUMED {item.item_id}")
+                print(f"[HEALTH-EFFECTS] - CONSUMED DRUG {item.item_id}")
                 self.current_radiation -= item.amount
                 

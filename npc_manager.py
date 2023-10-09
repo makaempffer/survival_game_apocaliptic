@@ -14,10 +14,20 @@ class NPCManager():
     
     def npcEvent(self):
         self.npc_group.move()
+        
+    def remove_dead_npc(self):
+        for npc in self.npc_group:
+            if not npc.health.check_alive():
+                self.npc_group.remove(npc)
 
     def setupNpc(self):
         self.create_spawns()
         self.spawn()
+    
+    def update(self):
+        for npc in self.npc_group:
+            npc.update()
+        self.remove_dead_npc()
 
     def spawn_npc(self,x, y,type="zombie"):
         self.npc_group.add(NPC(x, y, type))

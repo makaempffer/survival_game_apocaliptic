@@ -15,6 +15,7 @@ import random
     #[N]
 """
 class Health:
+    # TODO REMAKE THIS CLASS
     """Shared Health System for entities."""
     def __init__(self, type: str):
         #super().__init__()   
@@ -66,20 +67,21 @@ class Health:
         else:
             self.attack_cooldown = False
     
-    def die(self, owner):
+    def die(self):
         self.is_alive = False
-        owner.kill()
         self.death_sound.play()
         return False
     
     def damage_limb_group(self, limbs="arms"):
         pass
         
-    def check_alive(self, owner):
+    def check_alive(self):
         if self.body_avg <= 0:
-            owner.kill()
+            print("NPC DEAD")
+            self.die()
         elif self.head <= 0:
-            owner.kill()
+            print("NPC DEAD HEAD")
+            self.die()
     
     def get_total_hp(self) -> float:
         """Returns total hp"""
@@ -199,8 +201,8 @@ class Health:
         return damage + 1
         
             
-    def update(self, owner):
-        self.check_alive(owner)
+    def update(self):
+        self.check_alive()
         self.update_current_hp()
 
 

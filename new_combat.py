@@ -2,8 +2,6 @@ from settings import *
 from functions import calculate_damage, apply_resistance
 from random import randint
 
-
-
 # TODO ADD MODIFIERS ON LIMB HEALTH: EX -> arm_r 
 # How do I get the gun? 
 # The equiped gun is stored in: HealthEffects - equiped_list
@@ -12,45 +10,72 @@ class Combat:
     def __init__(self, user):
         self.user = user
         self.attacker = None
+        self.show_hp = False
+        self.target = None
         
-    def get_attacked_entity(self):
+    
+    def loot_body(self, target):
+        self.user.inventory.add_item_list(target.inventory.inventory)
+        
+    def return_attack(self):
+        if self.attacker:
+            if self.attack_distance(self.attacker):
+                return
+            else:
+                self.attack_melee(self.attacker)
+            
+        
+    def attack_objective(self):
         target = self.user.menu.npc_target
+        
         if not target:
             return
         
+        if not target.health.check_alive():
+            self.target = None
+        
         command = self.user.lastCommand
-        print("COMMAND", command)
         if command:
             command = command.lower()
-            
             if command == "range atk":
                 self.attack_distance(target_user=target)
+                self.show_hp = True
+                self.target = target
+                target.combat.return_attack()
             
             elif command == "melee atk":
                 self.attack_melee(target_user=target)
+                self.show_hp = True
+                self.target = target
+                target.combat.return_attack()
+            
+    def render_enemy_hp(self, target):
+        if self.target and self.show_hp:
+            self.target.show_health_bar(self.user.inventory.screen)
                             
     def player_combat_logic(self):
-        self.get_attacked_entity()
+        self.attack_objective()
 
-    def set_attacker_to_target(self, user_target):
-        user_target.attacker = self
         
     def attack_distance(self, target_user):
         gun = self.user.health_effects.get_gun()
         if not gun:
             print("User has no gun")
-            return
+            return False
 
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)
             if distance > gun_range:
                 print("Target too far, gun range too short")
-                return
+                return False
             attack_success = self.hit_chance()
             if attack_success:
                 damage = self.calculate_damage_distance(gun.damage)
                 target_user.combat.receive_distance_damage(damage)
+                # Giving a reference to the attacker
+                target_user.combat.attacker = self.user
+                return True
     
     def attack_melee(self, target_user):
         if target_user:
@@ -61,18 +86,24 @@ class Combat:
                 if attack_success:
                     damage = self.calculate_damage_melee()
                     target_user.combat.receive_melee_damage(damage)
+                    # Giving a reference to the attacker
+                    target_user.combat.attacker = self.user
+                    
+            else:
+                print("Target is too far to melee hit.")
                 
     def receive_distance_damage(self, damage):
         """Calculates the damage acording to the user armor"""
         armor_rating = self.user.health_effects.get_armor_rating()
         damage_after_res = apply_resistance(damage, armor_rating, RESISTANCE_FACTOR)
-        self.user.health.receive_damage(damage_after_res)
+        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res}.")
+        self.user.health.take_damage_on_calculated_limb(damage_after_res)
         
     def receive_melee_damage(self, damage):
-        armor_rating = self.user.health_effects.get_armor_rating() + self.user.skills.strength
+        armor_rating = self.user.health_effects.get_armor_rating() + self.user.skills.strength * 2
         damage_after_res = apply_resistance(damage, armor_rating, RESISTANCE_FACTOR)
-        self.user.health.receive_damage(damage_after_res)
-        print("Received melee damage.")
+        self.user.health.take_damage_on_calculated_limb(damage_after_res)
+        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res}.")
         
     def calculate_damage_distance(self, weapon_damage) -> float:
         accuracy = self.user.skills.accuracy
@@ -88,7 +119,7 @@ class Combat:
         accuracy_level = self.user.skills.accuracy
         random_roll = randint(0, 10)
         if random_roll <= accuracy_level:
-            print("[COMBAT-NEW] - HIT CHANCE SUCCESS.")
+            print("[COMBAT-NEW] - HIT SUCCEED.")
             return True
         else:
             print("[COMBAT-NEW] - ATTACK MISSED.")
