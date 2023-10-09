@@ -36,7 +36,7 @@ class Player(pg.sprite.Sprite):
         self.triggered = False
         self.combat_triggered = False
         self.vision_distance = 30
-        self.speed = 0.005
+        self.speed = 0.01
         self.timer = pg.USEREVENT + 1
         self.time_delay = 1000
         self.last_action = ""
@@ -183,6 +183,10 @@ class Player(pg.sprite.Sprite):
         self.counter_timer()
         if not self.lastCommand:
             self.lastCommand = self.menu.getAction()
+        action = self.menu.getAction()
+        if action != None and action != self.lastCommand:
+            self.lastCommand = action
+            
         if self.lastCommand == "Walk" and self.menu.savedLocation:
             target_pos = pg.Vector2(self.menu.savedLocation[0], self.menu.savedLocation[1])
             if self.position == target_pos:

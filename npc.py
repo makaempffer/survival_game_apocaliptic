@@ -22,7 +22,7 @@ class NPC(pg.sprite.Sprite):
         self.image = pg.image.load(self.path)
         self.type = npc_type
         self.interaction_reach = 12
-        self.speed = 0.01
+        self.speed = 0.005
         self.counter = 0
         self.target_reached = False
         self.target_pos = None
@@ -89,9 +89,13 @@ class NPC(pg.sprite.Sprite):
         
     def move(self, delta_time):
         attacker = self.combat.attacker
-        if attacker:
+        if attacker and self.can_move:
             self.position = self.position.move_towards(attacker.position, self.speed * delta_time)
             self.rect.x, self.rect.y = self.position.x, self.position.y
+            if self.position == attacker.position:
+                self.target_reached = True
+                self.can_move = False
+                self.start_timer = True
         else:
             if not self.can_move:
                 return
