@@ -115,6 +115,7 @@ class NPC(pg.sprite.Sprite):
     def cooldown_timer(self):
         if self.start_timer:
             self.counter += 1
+            
         if self.counter >= self.cooldown:
             self.can_move = True
             self.counter = 0

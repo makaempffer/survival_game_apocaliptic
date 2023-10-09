@@ -1,6 +1,5 @@
 import sys
 import pygame as pg
-
 from settings import *
 from functions import *
 from world import World
@@ -25,7 +24,6 @@ class Game:
         self.playerManager = None
         self.newGame()
 
-
     def newGame(self):
         self.popMenu = PopMenu(self.block_manager.mapData, self.block_manager, self.npcManager.npc_group, self.screen)
         self.playerManager = PlayerManager(self.screen, self.popMenu)
@@ -37,7 +35,7 @@ class Game:
         print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):
-        self.playerManager.update()
+        self.playerManager.update(self.delta_time)
         self.popMenu.update()
         self.npcManager.update(self.delta_time)
         self.block_manager.update_resource_blocks()

@@ -12,8 +12,8 @@ class PlayerManager:
         player = Player(self.menu)
         self.group.add(player)
     
-    def update(self):
-        self.group.update()
+    def update(self, delta_time):
+        self.group.update(delta_time)
 
     def get_player(self) -> Player:
         for player in self.group : return player

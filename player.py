@@ -36,6 +36,7 @@ class Player(pg.sprite.Sprite):
         self.triggered = False
         self.combat_triggered = False
         self.vision_distance = 30
+        self.speed = 0.005
         self.timer = pg.USEREVENT + 1
         self.time_delay = 1000
         self.last_action = ""
@@ -46,8 +47,6 @@ class Player(pg.sprite.Sprite):
         self.menu.get_block(self.position.x, self.position.y)
         self.health_effects.physical_updates()
         self.health_effects.set_environment_radiation(self.menu.stepped_block)
-        # Add updates on tick.
-        pass
     
     def show_health_bar(self):
         hp = self.health.get_health()
@@ -61,14 +60,6 @@ class Player(pg.sprite.Sprite):
         
     def set_narrator(self, narrator):
         self.narrator = narrator
-
-    def behavior_controller(self):
-        #prevent player from moving when in battle
-        if self.combat_triggered == False and self.health.alive:
-            self.movement()
-            
-        if self.combat_triggered == True:
-            self.set_current_action("Fighting.")
         
 
     def distance_to(self, position: pg.Vector2):
@@ -142,8 +133,8 @@ class Player(pg.sprite.Sprite):
             self.sound_system.fadeout_sound("walk")
             self.triggered = False
 
-    def update(self):
-        self.behavior_controller()
+    def update(self, delta_time):
+        self.movement(delta_time)
         self.health.update()
     
     def timer_event(self, event):
@@ -188,52 +179,19 @@ class Player(pg.sprite.Sprite):
         self.health_effects.render_slots()
         self.combat.render_enemy_hp()
 
-
-    
-    def movement(self):
-        if self.counter_timer():
-            self.doAction = True
-        
-        if self.doAction:
-        
-            action = self.menu.getAction()
-            if action != None:
+    def movement(self, delta_time):
+        self.counter_timer()
+        if not self.lastCommand:
+            self.lastCommand = self.menu.getAction()
+        if self.lastCommand == "Walk" and self.menu.savedLocation:
+            target_pos = pg.Vector2(self.menu.savedLocation[0], self.menu.savedLocation[1])
+            if self.position == target_pos:
+                self.lastCommand = None
+                return
                 
-                self.lastCommand = action
-                self.isWalking = True
-            if self.lastCommand:
-                #print("Action:", action, "Last Command:", self.lastCommand)
-                if self.lastCommand == "Walk" and self.menu.savedLocation:
-                    targetLocation = self.menu.savedLocation
-                    targetLocation[0] = (targetLocation[0] // BLOCK_SIZE) * BLOCK_SIZE
-                    targetLocation[1] = (targetLocation[1] // BLOCK_SIZE) * BLOCK_SIZE
-                    #print("Starting point:", self.menu.startingPoint)
-                    #print(self.rect.x, targetLocation[0], self.rect.y, targetLocation[1])
-
-                    if self.rect.x == targetLocation[0] and self.rect.y == targetLocation[1]:
-                        targetLocation = None
-                        self.lastCommand = None
-                        self.isWalking = False
-                        self.walk(targetLocation)
-                        return
-                        
-                    self.walk(targetLocation)
-                    if targetLocation:
-                        
-                        distX = (self.rect.x - targetLocation[0])
-                        distY = (self.rect.y - targetLocation[1])
-
-                        
-                        if distX > 0:
-                            self.rect.x, self.rect.y = self.rect.x - BLOCK_SIZE, self.rect.y
-                        elif distX < 0:
-                            self.rect.x, self.rect.y = self.rect.x + BLOCK_SIZE, self.rect.y
-            
-                        if distY > 0: 
-                            self.rect.x, self.rect.y = self.rect.x, self.rect.y - BLOCK_SIZE
-                        elif distY < 0: 
-                            self.rect.x, self.rect.y = self.rect.x, self.rect.y + BLOCK_SIZE
-                        self.position.x, self.position.y = self.rect.x, self.rect.y
-                    self.doAction = False   
+            if target_pos:
+                self.position = self.position.move_towards(target_pos, self.speed * delta_time)
+                self.rect.x, self.rect.y = self.position.x, self.position.y
+            self.doAction = False   
 
         
