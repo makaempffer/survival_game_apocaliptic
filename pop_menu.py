@@ -71,11 +71,6 @@ class PopMenu:
                 self.posX, self.posY = mouseX, mouseY
                 self.blockIndex = index
 
-        for index, npc in enumerate(self.npcGroup):
-            if mouseX//BLOCK_SIZE == npc.rect.x//BLOCK_SIZE and mouseY//BLOCK_SIZE == npc.rect.y//BLOCK_SIZE:
-                self.npc_target = npc
-                break
-
         if self.selected == "DIRT":
             options = ["Walk", "Place"]
             self.options = options

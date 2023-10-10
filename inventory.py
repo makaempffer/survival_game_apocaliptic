@@ -181,7 +181,6 @@ class Inventory:
         return self.inventory
 
     def add_item(self, item_name, quantity=1):
-    
         for row in self.inventory:
             for slot in row:
                 if slot != None:

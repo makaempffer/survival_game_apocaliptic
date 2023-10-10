@@ -27,6 +27,7 @@ class Combat:
         
     def attack_objective(self):
         target = self.user.menu.npc_target
+
         self.target = target
         
         if not target:
