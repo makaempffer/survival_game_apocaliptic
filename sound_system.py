@@ -46,6 +46,10 @@ class SoundSystem:
         self.add_sound("walk", './sounds/walk.mp3', 0.1)
         self.add_sound("wood_chop", "./sounds/Wood_chop.wav", 0.9)
         self.add_sound("chop_over", "./sounds/Chop_over.wav", 0.5)
+        self.add_sound("pistol_reload", './sounds/guns/pistol_reload.wav', 4)
+        self.add_sound("pistol_pack", './sounds/guns/pistol_pack.wav', 4)
+        self.add_sound("pistol_rack", './sounds/guns/pistol_rack.wav', 4)
+        self.add_sound("pistol_dry_fire", './sounds/guns/pistol_dry_fire.wav', 4)
         print("[SOUND-SYS] - SETUP SOUNDS.")
     
     def stop_sound(self, sound_name: str):

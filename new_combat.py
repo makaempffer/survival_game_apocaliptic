@@ -57,15 +57,24 @@ class Combat:
             self.target.show_health_bar(self.user.inventory.screen)
                             
     def player_combat_logic(self):
-        self.attack_objective()
+        self.attack_objective()    
 
     def attack_distance(self, target_user):
         gun = self.user.health_effects.get_gun()
         if not gun:
             print("User has no gun")
             return False
-        if self.user.sound_system:
+        
+        
+        if not self.user.inventory.get_ammo_by_caliber(gun.caliber):
+            if self.user.sound_system:
+                self.user.sound_system.play_sound("pistol_pack")
+                print("NO AMMO")
+                return
+        if self.user.sound_system:   
             self.user.sound_system.play_sound(gun.item_id)
+        self.user.inventory.consume_ammo(gun.caliber)
+            
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)
@@ -110,17 +119,19 @@ class Combat:
         print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}.")
         
     def calculate_damage_distance(self, weapon_damage) -> float:
+        random_number = randint(0, 3)
         accuracy = self.user.skills.accuracy
-        damage = calculate_damage(weapon_damage, accuracy, WEAPON_DAMAGE_FACTOR)
+        damage = calculate_damage(weapon_damage + random_number, accuracy, WEAPON_DAMAGE_FACTOR)
         return damage
         
     def calculate_damage_melee(self) -> float:
+        random_number = randint(0, 3)
         strength_level = self.user.skills.strength
-        damage = calculate_damage(5, strength_level, SKILLS_FACTOR)
+        damage = calculate_damage(5 + random_number, strength_level, SKILLS_FACTOR)
         return damage
     
     def hit_chance(self):
-        accuracy_level = self.user.skills.accuracy
+        accuracy_level = self.user.skills.accuracy + self.user.skills.perception
         random_roll = randint(0, 10)
         if random_roll <= accuracy_level:
             print("[COMBAT-NEW] - HIT SUCCEED.")

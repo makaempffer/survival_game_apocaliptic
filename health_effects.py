@@ -77,7 +77,7 @@ class HealthEffects:
         if self.health.get_hunger() <= 0 or self.health.get_thirst() <= 0:
             # Example: self.state_icons.show("bleed")
             # Following code is what ever happens as consecuence.
-            self.health.take_true_damage(0.2)
+            self.health.take_true_damage(0.1)
             
     def basic_update(self):
         ### DISPLAY STATUS ICONS HERE!! encumbered, bleeding, etc.

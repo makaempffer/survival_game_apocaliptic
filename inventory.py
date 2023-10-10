@@ -40,6 +40,7 @@ class Item(pg.sprite.Sprite):
     def set_item_to(self, item_id):
         self.item_id = item_id
         self.create_from_dict(item_dict)
+
     
     def create_from_dict(self, _dict):
         if pg.get_init(): 
@@ -79,6 +80,22 @@ class Inventory:
         self.create_inventory()
         
         # self.update_item_group()
+    
+    def consume_ammo(self, caliber, shots_fired=1):
+        '''Call this function when ever a gun is fired, decreases the
+        ammo quantity by shots fired'''
+        ammo = self.get_ammo_by_caliber(caliber)
+        if ammo:
+            print(f"SHOTS FIRED {caliber} {shots_fired}")
+            self.decrease_item_count(ammo, shots_fired)
+        
+        
+    def get_ammo_by_caliber(self, caliber='9mm'):
+        for item in self.item_group:
+            if item.item_type == 'ammo' and item.caliber == caliber and item.item_quantity > 0:
+                return item
+        print("NO AMMO LEFT")
+        return False
             
             
     def get_inventory_weight(self):
@@ -103,7 +120,6 @@ class Inventory:
         self.add_item("BOTTLE")
         self.add_item("PICKAXE")
         self.add_item("PISTOL")
-        self.add_item("PICKAXE")
         self.add_item("CIGARRETE_UNLUCKY", 5)
 
     def add_item_list(self, inventory_list):
