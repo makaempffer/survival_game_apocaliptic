@@ -70,18 +70,19 @@ class NPC(pg.sprite.Sprite):
         if self.position.x > WIDTH:
             self.position.x = 0
             over_shoot = True
-        elif self.position.x < 0:
+        if self.position.x < 0:
             self.position.x = WIDTH
             over_shoot = True
             
         if self.position.y > HEIGHT:
             over_shoot = True
             self.position.y = 0
-        elif self.position.y < 0:
+        if self.position.y < 0:
             over_shoot = True
             self.position.y = HEIGHT
             
         if over_shoot:
+            self.target_pos = None
             target_pos = self.getMoveLocation()
             target_pos = pg.Vector2(target_pos[0], target_pos[1])
             self.target_pos = target_pos

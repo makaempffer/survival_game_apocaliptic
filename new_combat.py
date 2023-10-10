@@ -28,7 +28,6 @@ class Combat:
     def attack_objective(self):
         target = self.user.menu.npc_target
         self.target = target
-        print("attack objectivo")
         
         if not target:
             return
@@ -65,7 +64,8 @@ class Combat:
         if not gun:
             print("User has no gun")
             return False
-
+        if self.user.sound_system:
+            self.user.sound_system.play_sound(gun.item_id)
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)

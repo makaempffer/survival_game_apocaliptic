@@ -1,11 +1,19 @@
 import pygame as pg
-
+import json
 # TODO ADD AMBIENT MUSIC FUNCTION
 # Runs in background
+
+
+with open('./data/items/items.json', 'r') as file:
+    item_data = json.load(file)
+item_dict = {item['item_id']: item for item in item_data['items']}
+
+
 class SoundSystem:
     def __init__(self):
         self.sounds = {}
         self.time_ms = 2000
+        self.load_item_sounds_from_dict(item_dict)
 
     def add_sound(self, sound_name: str, path: str, volume=0.5):
         """Add a sound and give it a name"""
@@ -25,6 +33,14 @@ class SoundSystem:
     def fadeout_sound(self, sound_name, time_ms=2000):
         sound = self.get_sound(sound_name)
         sound.fadeout(time_ms)
+        
+    def load_item_sounds_from_dict(self, sounds_dict: dict):
+        for key, value in sounds_dict.items():
+            if 'sound' in value:
+                sound_path = value['sound']
+                self.add_sound(key, sound_path, 1)
+                
+       
     
     def setup_sounds(self):
         self.add_sound("walk", './sounds/walk.mp3', 0.1)

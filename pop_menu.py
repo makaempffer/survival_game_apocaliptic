@@ -33,12 +33,12 @@ class PopMenu:
         return self.selected_block
 
     def get_npc_options(self):
-        mouseX, mouseY = pg.mouse.get_pos()
+        mouse_pos = pg.mouse.get_pos()
         options = []
         detected = False
 
         for index, npc in enumerate(self.npcGroup):
-            if mouseX//BLOCK_SIZE == npc.rect.x//BLOCK_SIZE and mouseY//BLOCK_SIZE == npc.rect.y//BLOCK_SIZE:
+            if npc.rect.collidepoint(mouse_pos):
                 self.npc_target = npc
                 self.selected_target = npc
                 detected = True
