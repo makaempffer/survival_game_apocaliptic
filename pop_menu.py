@@ -163,10 +163,11 @@ class PopMenu:
     def get_block(self, x, y):
         """Make this faster"""
         for block in self.block_manager.blocks:
-            if block.position.x == x and block.position.y == y:                    # print(block, block.radiation_level, block.position.x, block.position.y)
+            if block.rect.collidepoint((x, y)):
                 self.stepped_block = block
+                print(f"BLOCK from get block -> {block.type}")
                 return block
-        print(f"BLOCK from get block -> {block.type}")
+        
                 
     def update(self):
         self.interactionUpdate()

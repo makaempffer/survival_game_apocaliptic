@@ -57,7 +57,6 @@ class Block(pg.sprite.Sprite):
             self.radiation_level = 10
 
     def get_image(self):
-        path = "./assets/blocks/"
         if self.type:
             self.reload_image(self.type)
         if self.value == None:
