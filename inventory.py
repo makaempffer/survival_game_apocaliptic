@@ -64,9 +64,9 @@ class Inventory:
     def __init__(self, screen=None) -> None:
         self.rows = 10
         self.columns = 6
-        self.ITEM_SIZE = 12
-        self.x_start = WIDTH - self.ITEM_SIZE * self.rows
-        self.y_start = 0 + 12
+        self.ITEM_SIZE = ITEM_SIZE
+        self.x_start = WIDTH - self.ITEM_SIZE * self.rows - 4 # 4 offset from the end
+        self.y_start = 0 + ITEM_SIZE
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
         self.screen = screen

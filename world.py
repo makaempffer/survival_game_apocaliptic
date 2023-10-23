@@ -19,8 +19,8 @@ class World:
 
     def createMap(self, seed=1):
         noise = PerlinNoise(octaves=7, seed=seed)
-        xpix, ypix = HEIGHT//10, WIDTH//10
-        self.rows, self.cols = (self.sizeX//10, self.sizeY//10)
+        xpix, ypix = HEIGHT//BLOCK_SIZE, WIDTH//BLOCK_SIZE
+        self.rows, self.cols = (self.sizeX//BLOCK_SIZE, self.sizeY//BLOCK_SIZE)
         arr = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
         self.map = arr
     
