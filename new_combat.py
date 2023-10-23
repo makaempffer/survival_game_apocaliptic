@@ -19,10 +19,8 @@ class Combat:
         
     def return_attack(self):
         if self.attacker:
-            if self.attack_distance(self.attacker):
-                return
-            else:
-                self.attack_melee(self.attacker)
+            attack_sucess = self.attack_distance(self.attacker)
+            if not attack_sucess: self.attack_melee(self.attacker)
             
         
     def attack_objective(self):
@@ -66,7 +64,7 @@ class Combat:
             print("User has no gun")
             return False
         
-        
+        print(gun.caliber)
         if not self.user.inventory.get_ammo_by_caliber(gun.caliber):
             if self.user.sound_system:
                 self.user.sound_system.play_sound("pistol_pack")

@@ -10,7 +10,7 @@ class Block(pg.sprite.Sprite):
         self.is_resource = False
         self.resource_amount = 0
         self.value = value
-        self.path = "./assets/blocks/furnace.png"
+        self.path = "./assets/blocks/water.png"
         self.image = pg.image.load("./assets/blocks/water.png")
         self.type = block_type
         self.data = []

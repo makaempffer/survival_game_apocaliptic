@@ -13,7 +13,7 @@ class Player(pg.sprite.Sprite):
         super().__init__()
         self.inventory = Inventory()
         self.skills = Skills()
-        self.skills.set_skill_level("accuracy", 6)
+        self.skills.set_skill_level("accuracy", 9)
         self.health = Health(self.skills)
         self.health.setup_organs()
         self.health_effects = HealthEffects(self.health, self.inventory)

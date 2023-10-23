@@ -41,3 +41,6 @@
 # Improve world map generation, add randomness and more variation.
 # REWORK BATTLE SYSTEM OR REPAIR IS BAD AF
 # Water bottle refilling? buy?
+# Add new Building class, (change name) this class consistist of pre-constructed places that can be placed (using map generation)
+- houses, closed areas, industrial areas, + 
+# idea: when the player feels ready can decide to advance to the next world, to find stronger, harder challenges (map regen, enemy scales)

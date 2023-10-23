@@ -53,7 +53,7 @@
             "file_path": "./assets/icons/pickaxe_icon.png",
             "equipable": true,
             "item_type": "tool",
-            "weight": 1
+            "weight": 2
         },
         {
             "item_id": "BREAD",
@@ -63,7 +63,7 @@
             "file_path": "./assets/icons/bread_icon.png",
             "equipable": false,
             "item_type": "food",
-            "amount": "5",
+            "amount": 5,
             "weight": 0.5
         },
         {
@@ -121,6 +121,15 @@
             "amount": 15,
             "adictive": true,
             "weight": 0.1
+        },
+        {
+            "item_id": "HAMMER",
+            "stackable": false,
+            "consumable": false,
+            "file_path": "./assets/icons/hammer.png",
+            "weight": 1.5,
+            "equipable": true,
+            "item_type": "tool"
         }
     ]
 }

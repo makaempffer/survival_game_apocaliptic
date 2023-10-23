@@ -37,7 +37,7 @@ class PopMenu:
         options = []
         detected = False
 
-        for index, npc in enumerate(self.npcGroup):
+        for npc in self.npcGroup:
             if npc.rect.collidepoint(mouse_pos):
                 self.npc_target = npc
                 self.selected_target = npc
@@ -161,6 +161,7 @@ class PopMenu:
     
         
     def get_block(self, x, y):
+        """Make this faster"""
         for block in self.block_manager.blocks:
             if block.position.x == x and block.position.y == y:                    # print(block, block.radiation_level, block.position.x, block.position.y)
                 self.stepped_block = block

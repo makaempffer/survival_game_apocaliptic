@@ -6,15 +6,19 @@ from new_combat import Combat
 from skills import Skills
 from health_effects import HealthEffects
 from functions import mapFromTo
+from sound_system import SoundSystem
 
 class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, npc_type):
         super().__init__()
         self.inventory = Inventory()
         self.skills = Skills()
+        self.skills.set_skill_level("acurracy", 6)
         self.combat = Combat(self)
         self.health = Health(self.skills)
         self.health_effects = HealthEffects(self.health, self.inventory)
+        self.sound_system = SoundSystem()
+        self.sound_system.setup_sounds()
         self.size = BLOCK_SIZE
         self.rect = pg.Rect(x * self.size, y * self.size, BLOCK_SIZE, BLOCK_SIZE)
         self.position = pg.Vector2(self.rect.x, self.rect.y)
@@ -33,8 +37,12 @@ class NPC(pg.sprite.Sprite):
         self.start_timer = False
         self.get_type()
         self.inventory.add_item("BANDAGE", 1)
+        self.inventory.add_item("AMMO_9MM", 20)
+        self.inventory.add_item("PISTOL", 1)
+        self.inventory.add_item("CIGARRETE_UNLUCKY", 3)
+        self.health_effects.equip_item(self.inventory.get_item_by_id("PISTOL"))
         self.max_hp = self.health.get_health()
-        
+                
     def show_health_bar(self, screen):
         hp = self.health.get_health()
         pg.draw.line(screen, (255, 0, 0), (self.rect.x, self.rect.y), (self.rect.x + mapFromTo(hp, 0, self.max_hp, 0, BLOCK_SIZE), self.rect.y))

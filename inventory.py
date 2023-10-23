@@ -10,7 +10,7 @@ class Item(pg.sprite.Sprite):
     def __init__(self, x=0, y=0, item_id: str = "ITEM_FRAME"):
         super().__init__()
         self.item_id = item_id
-        self.ITEM_SIZE = 12
+        self.ITEM_SIZE = ITEM_SIZE
         self.size = ITEM_SIZE
         self.rect = pg.Rect(x, y, ITEM_SIZE, ITEM_SIZE)
         self.image = None
@@ -116,24 +116,22 @@ class Inventory:
         self.add_item("WOOD_TABLE", 1)
         self.add_item("BREAD", 5)
         self.add_item("PILL", 3)
-        self.add_item("AMMO_9MM", 16)
+        self.add_item("AMMO_9MM", 20)
         self.add_item("BOTTLE")
         self.add_item("PICKAXE")
         self.add_item("PISTOL")
         self.add_item("CIGARRETE_UNLUCKY", 5)
+        self.add_item("HAMMER", 1)
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
         for x, row in enumerate(inventory_list):
             for y, item in enumerate(row):
-                if item == None and slot_x == None and slot_y == None:
-                    slot_x, slot_y = x, y
-                if item != None and item.item_id == self.inventory[x][y].item_id:
-                    self.inventory[x][y].item_quantity += item.item_quantity
+                if item == None:
                     continue
-                if item != None and self.inventory[x][y] == None:
-                    print("[INV] - ITEM ADDED ->", item.item_id)
-                self.inventory[slot_x][slot_y] = item
+                else:
+                    print(f"ADDING ITEM: {item.item_id}")
+                    self.add_item(item.item_id, item.item_quantity)
 
     def create_item_frame_inventory(self):
         return [[Item(self.x_start + j * self.ITEM_SIZE, self.y_start + i * self.ITEM_SIZE) for j in range(self.rows)] for i in range(self.columns)]
@@ -226,8 +224,13 @@ class Inventory:
             for item in row:
                 if item == _item:
                     return item
-                    
-
+                
+    def get_item_by_id(self, item_id):
+        for row in self.inventory:
+            for item in row:
+                if item.item_id == item_id:
+                    return item
+                
     def get_item(self) -> Item:
         if not pg.mouse.get_pressed()[0]:
             return
