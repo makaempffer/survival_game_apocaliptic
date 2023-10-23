@@ -78,8 +78,7 @@ class Inventory:
         self.last_equiped = None
         self.create_item_frame_group()
         self.create_inventory()
-        
-        # self.update_item_group()
+        self.update_item_group()
     
     def consume_ammo(self, caliber, shots_fired=1):
         '''Call this function when ever a gun is fired, decreases the
@@ -91,11 +90,13 @@ class Inventory:
         
         
     def get_ammo_by_caliber(self, caliber='9mm'):
-        for item in self.item_group:
-            if item.item_type == 'ammo' and item.caliber == caliber and item.item_quantity > 0:
-                return item
-        print("NO AMMO LEFT")
-        return False
+        for row in self.inventory:
+            for item in row: 
+                if item.item_type == 'ammo': 
+                    if item.caliber == caliber and item.item_quantity > 0:
+                        return item
+            print("NO AMMO LEFT")
+            return False
             
             
     def get_inventory_weight(self):

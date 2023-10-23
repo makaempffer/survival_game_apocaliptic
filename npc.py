@@ -14,9 +14,9 @@ class NPC(pg.sprite.Sprite):
         self.inventory = Inventory()
         self.skills = Skills()
         self.skills.set_skill_level("acurracy", 6)
-        self.combat = Combat(self)
         self.health = Health(self.skills)
         self.health_effects = HealthEffects(self.health, self.inventory)
+        self.combat = Combat(self)
         self.sound_system = SoundSystem()
         self.sound_system.setup_sounds()
         self.size = BLOCK_SIZE
