@@ -8,6 +8,7 @@ from npc_manager import NPCManager
 from block_manager import BlockManager
 from player_manager import PlayerManager
 from narrator_system import Narrator
+from UI import UI
          
 
 class Game:
@@ -32,6 +33,7 @@ class Game:
         self.player.set_narrator(self.narrator)
         self.inventory = self.player.inventory
         self.player.inventory.screen = self.screen
+        self.user_interface = UI(self.screen, self.player)
         print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):
@@ -53,7 +55,8 @@ class Game:
         self.npcManager.render()
         self.player.inventory.render()
         self.player.render_player_related()
-        self.narrator.show_narrator()
+        self.user_interface.draw_components()
+        self.user_interface.render()
 
 
     def check_events(self):

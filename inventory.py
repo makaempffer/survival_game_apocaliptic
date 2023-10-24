@@ -104,7 +104,6 @@ class Inventory:
         for item in self.item_group:
             item_weight = item.weight * item.item_quantity
             weight += item_weight
-        print(f"[INV] - INVENTORY WEIGHT {weight}")
         return weight
         
     def decrease_item_count(self, item, amount=1):

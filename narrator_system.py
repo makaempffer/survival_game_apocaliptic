@@ -26,7 +26,7 @@ class Narrator:
     def show_narrator(self):
         if not self.show:
             return
-        surface = pg.Surface((NARRATOR_WIDTH, NARRATOR_HEIGHT))
+        # surface = pg.Surface((NARRATOR_WIDTH, NARRATOR_HEIGHT))
         # Show frame
         # surface.fill((50, 80, 40))
         

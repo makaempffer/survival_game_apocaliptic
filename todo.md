@@ -1,5 +1,3 @@
-
-
 # TODO
 
 # Create Ambient Sound System
@@ -45,3 +43,4 @@
 - houses, closed areas, industrial areas, + 
 # idea: when the player feels ready can decide to advance to the next world, to find stronger, harder challenges (map regen, enemy scales)
 # DO THE LOG BAR! BRO
+# change tileset or make it maybe?

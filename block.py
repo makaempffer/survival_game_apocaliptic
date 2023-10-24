@@ -24,6 +24,8 @@ class Block(pg.sprite.Sprite):
     def reload_image(self, block_name: str):
         path = "./assets/blocks/" + block_name.lower() + ".png"
         self.image = pg.image.load(path)
+        # ADDING OR MOVING THIS GIVES A NIGHT EFFECT!!! TODO
+        # self.image.set_alpha(50)
 
     def update(self):
         self.harvestable_logic()
