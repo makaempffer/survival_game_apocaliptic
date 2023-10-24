@@ -9,7 +9,7 @@ class PlayerManager:
         self.player = self.get_player()
     
     def createPlayer(self):
-        player = Player(self.menu)
+        player = Player(self.menu, self.screen)
         self.group.add(player)
     
     def update(self, delta_time):

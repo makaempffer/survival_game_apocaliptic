@@ -6,7 +6,7 @@ class UIComponent(pg.sprite.Sprite):
         super().__init__()
         self.scale = None
         
-    def create_component(self, image_path, x, y, scale=None):
+    def create_component(self, image_path, x, y, scale=None, rotated=False):
         self.image = pg.image.load(image_path)
         if scale: self.image = pg.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
@@ -40,7 +40,7 @@ class UI(pg.sprite.Sprite):
         self.create_ui_component_data("Weight Icon", "./assets/UI/Inventory and Stats/Weight Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE)
         self.create_ui_component_data("HP Icon", "./assets/UI/Inventory and Stats/HP Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE * 2)
         self.create_ui_component_data("Armor Icon", "./assets/UI/Inventory and Stats/Armor Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE * 3)
-        self.create_ui_component_data("Main UI", "./assets/UI/HUD/CHARACTER HUD/Main UI.png", WIDTH - 200, HEIGHT - 250, 250)
+        self.create_ui_component_data("Main UI", "./assets/UI/HUD/CHARACTER HUD/Main UI.png", WIDTH - 300, HEIGHT - 350, 350)
         
     def add_component(self, component):
         self.components.add(component)
@@ -48,11 +48,11 @@ class UI(pg.sprite.Sprite):
     def draw_components(self):
         self.components.draw(self.screen)
         
-    def render(self):
-        self.render_text()
+    def render_text(self):
+        self.setup_text()
         self.logger.render_log()
         
-    def render_text(self):
+    def setup_text(self):
         self.render_text_at(self.player.inventory.get_inventory_weight(), UI_MARGIN, HEIGHT - ICON_SIZE, UI_FONT_COLOR)
         self.render_text_at(self.player.health.get_health(), UI_MARGIN, HEIGHT - ICON_SIZE * 2, UI_FONT_COLOR)
         self.render_text_at(self.player.health_effects.get_armor_rating(),UI_MARGIN, HEIGHT - ICON_SIZE * 3, UI_FONT_COLOR)
@@ -69,17 +69,17 @@ class Logger:
         messages go up, scrolling'''
         self.stack = []
         self.screen = screen
-        self.max_messages = 10
+        self.max_messages = MAX_LOGS
         
     def add_log(self, log: str):
         if len(self.stack) > MAX_LOGS:
             self.stack.pop()
-        self.stack.append(log)
+        self.stack.insert(0, log)
+        
     
     def render_log(self):
         for index, log in enumerate(self.stack):
-            print(log)
             text = FONT.render(str(log), True, UI_FONT_COLOR)
             x = LOG_START_X + LOG_SPACING
-            y = LOG_START_Y + LOG_SPACING + index * FONT_SIZE
+            y = LOG_START_Y - LOG_SPACING - index * FONT_SIZE
             self.screen.blit(text, (x, y))

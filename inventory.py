@@ -98,7 +98,6 @@ class Inventory:
             print("NO AMMO LEFT")
             return False
             
-            
     def get_inventory_weight(self):
         weight = 0
         for item in self.item_group:

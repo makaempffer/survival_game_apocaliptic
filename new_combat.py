@@ -1,13 +1,13 @@
 from settings import *
 from functions import calculate_damage, apply_resistance
 from random import randint
-
 # TODO ADD MODIFIERS ON LIMB HEALTH: EX -> arm_r 
 # How do I get the gun? 
 # The equiped gun is stored in: HealthEffects - equiped_list
 # IDEA: Make a function that returns the first gun in the list
 class Combat:
-    def __init__(self, user):
+    def __init__(self, user, logger=None):
+        self.logger = logger
         self.user = user
         self.attacker = None
         self.show_hp = False
@@ -21,6 +21,10 @@ class Combat:
         if self.attacker:
             attack_sucess = self.attack_distance(self.attacker)
             if not attack_sucess: self.attack_melee(self.attacker)
+    
+    def add_to_logger(self, text):
+        if self.logger:
+            self.logger.add_log(text)
             
         
     def attack_objective(self):
@@ -77,8 +81,10 @@ class Combat:
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)
+            self.add_to_logger(f"You shot from {self.user.position} at {target_user.position}.")
             print(f"[COMBAT - TARGET DISTANCE {distance} {self.user.position} / {target_user.position}")
             if distance > gun_range:
+                self.add_to_logger("Bullets won't reach with this gun.")
                 print("Target too far, gun range too short")
                 return False
             attack_success = self.hit_chance()

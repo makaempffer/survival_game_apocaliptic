@@ -7,17 +7,20 @@ from health_effects import HealthEffects
 from skills import Skills
 from new_combat import Combat
 from settings import *
+from UI import UI
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, menu, narrator = None):
+    def __init__(self, menu, screen, narrator = None,):
         super().__init__()
+        self.screen = screen
         self.inventory = Inventory()
         self.skills = Skills()
         self.skills.set_skill_level("accuracy", 9)
         self.health = Health(self.skills)
         self.health.setup_organs()
         self.health_effects = HealthEffects(self.health, self.inventory)
-        self.combat = Combat(self)
+        self.user_interface = UI(self.screen, self)
+        self.combat = Combat(self, self.user_interface.logger)
         self.inventory.setup_starting_items()
         self.sound_system = SoundSystem()
         self.sound_system.setup_sounds()
@@ -178,6 +181,8 @@ class Player(pg.sprite.Sprite):
     def render_player_related(self):
         self.health_effects.render_slots()
         self.combat.render_enemy_hp()
+        self.user_interface.draw_components()
+        self.user_interface.render_text()
 
     def movement(self, delta_time):
         self.counter_timer()
