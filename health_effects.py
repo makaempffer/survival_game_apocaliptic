@@ -34,7 +34,7 @@ class HealthEffects:
         self.inventory.get_inventory_weight()
         ###
         for x in range(slots_amount):
-            slot = Item(self.inventory.x_start - 64 + (x * 12), self.inventory.y_start, "ITEM_FRAME")
+            slot = Item(self.inventory.x_start - 72 + (x * ITEM_SIZE), self.inventory.y_start, "ITEM_FRAME")
             self.equiped_items.add(slot)
             self.equiped_list.append(slot)
             

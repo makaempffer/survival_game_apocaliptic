@@ -40,7 +40,7 @@ class UI(pg.sprite.Sprite):
         self.create_ui_component_data("Weight Icon", "./assets/UI/Inventory and Stats/Weight Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE)
         self.create_ui_component_data("HP Icon", "./assets/UI/Inventory and Stats/HP Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE * 2)
         self.create_ui_component_data("Armor Icon", "./assets/UI/Inventory and Stats/Armor Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE * 3)
-        self.create_ui_component_data("Main UI", "./assets/UI/HUD/CHARACTER HUD/Main UI.png", WIDTH - 300, HEIGHT - 350, 350)
+        self.create_ui_component_data("Main UI", "./assets/UI/UI_Display/UI_Bloody_1.png", WIDTH - UI_SIZE_X, 0)
         
     def add_component(self, component):
         self.components.add(component)
@@ -70,6 +70,8 @@ class Logger:
         self.stack = []
         self.screen = screen
         self.max_messages = MAX_LOGS
+        self.add_log("HELLO WORL THIS A FUCKIN TEST")
+        self.add_log("Hello brothesrs this a testing shit")
         
     def add_log(self, log: str):
         if len(self.stack) > MAX_LOGS:

@@ -4,7 +4,7 @@ from random import randint
 class World:
     def __init__(self, sizeX, sizeY):
         self.map = []
-        self.sizeX = sizeX
+        self.sizeX = sizeX 
         self.sizeY = sizeY
         self.mapData = []
         self.cols = 0

@@ -2,7 +2,7 @@
     "items": [
         {
             "item_id": "ITEM_FRAME",
-            "file_path": "./assets/icons/item_frame_icon.png"
+            "file_path": "./assets/items/item_frame.png"
         },
         {
             "item_id": "BANDAGE",
@@ -19,7 +19,7 @@
             "stackable": true,
             "consumable": true,
             "placeable": false,
-            "file_path": "./assets/icons/pill_icon.png",
+            "file_path": "./assets/items/pill.png",
             "equipable": false,
             "item_type": "analgesic",
             "amount": 10,
@@ -30,7 +30,7 @@
             "stackable": true,
             "consumable": false,
             "placeable": false,
-            "file_path": "./assets/icons/wood_icon.png",
+            "file_path": "./assets/items/wood.png",
             "equipable": false,
             "item_type": "resource",
             "weight": 1
@@ -60,7 +60,7 @@
             "stackable": true,
             "consumable": true,
             "placeable": false,
-            "file_path": "./assets/icons/bread_icon.png",
+            "file_path": "./assets/items/bread.png",
             "equipable": false,
             "item_type": "food",
             "amount": 5,
@@ -92,7 +92,7 @@
             "stackable": false,
             "consumable": false,
             "placeable": false,
-            "file_path": "./assets/icons/pistol_icon.png",
+            "file_path": "./assets/items/pistol.png",
             "equipable": true,
             "item_type": "gun",
             "caliber": "9mm",
@@ -106,17 +106,17 @@
             "stackable": true,
             "consumable": false,
             "placeable": false,
-            "file_path": "./assets/icons/bullet_icon.png",
+            "file_path": "./assets/items/bullet_9mm.png",
             "equipable": false,
             "item_type": "ammo",
             "caliber": "9mm",
             "weight": 0.1
         },
         {
-            "item_id": "CIGARRETE_UNLUCKY",
+            "item_id": "CIGARRETE_MALROBO",
             "stackable": true,
             "consumable": true,
-            "file_path": "./assets/icons/cigarrete_unlucky.png",
+            "file_path": "./assets/items/cigarrete_malrobo.png",
             "item_type": "drug",
             "amount": 15,
             "adictive": true,

@@ -36,11 +36,6 @@ class NPC(pg.sprite.Sprite):
         self.cooldown = randint(100, 500)
         self.start_timer = False
         self.get_type()
-        self.inventory.add_item("BANDAGE", 1)
-        self.inventory.add_item("AMMO_9MM", 20)
-        self.inventory.add_item("PISTOL", 1)
-        self.inventory.add_item("CIGARRETE_UNLUCKY", 3)
-        self.health_effects.equip_item(self.inventory.get_item_by_id("PISTOL"))
         self.max_hp = self.health.get_health()
                 
     def show_health_bar(self, screen):

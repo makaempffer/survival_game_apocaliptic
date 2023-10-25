@@ -46,7 +46,7 @@ class Item(pg.sprite.Sprite):
         if pg.get_init(): 
             id = self.item_id            
             if id == "ITEM_FRAME":
-                self.image = pg.image.load("./assets/icons/item_frame_icon.png").convert_alpha()
+                self.image = pg.image.load("./assets/items/item_frame.png").convert_alpha()
                 return
             if self.item_id in _dict:
                 for key, value in _dict[id].items():
@@ -62,11 +62,11 @@ class Item(pg.sprite.Sprite):
 
 class Inventory:
     def __init__(self, screen=None) -> None:
-        self.rows = 10
-        self.columns = 6
+        self.rows = 4
+        self.columns = 8
         self.ITEM_SIZE = ITEM_SIZE
-        self.x_start = WIDTH - self.ITEM_SIZE * self.rows - 4 # 4 offset from the end
-        self.y_start = 0 + ITEM_SIZE
+        self.x_start = WIDTH - self.ITEM_SIZE * self.rows # 4 offset from the end
+        self.y_start = 0
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
         self.screen = screen
@@ -110,17 +110,12 @@ class Inventory:
         item.item_quantity -= amount
 
     def setup_starting_items(self):
-        self.add_item("BANDAGE", 3)
-        self.add_item("IRON_BAR", 5)
-        self.add_item("WOOD_TABLE", 1)
         self.add_item("BREAD", 5)
         self.add_item("PILL", 3)
         self.add_item("AMMO_9MM", 20)
-        self.add_item("BOTTLE")
-        self.add_item("PICKAXE")
         self.add_item("PISTOL")
-        self.add_item("CIGARRETE_UNLUCKY", 5)
-        self.add_item("HAMMER", 1)
+        self.add_item("CIGARRETE_MALROBO", 5)
+
 
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None

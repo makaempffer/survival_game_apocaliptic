@@ -10,8 +10,8 @@ class Block(pg.sprite.Sprite):
         self.is_resource = False
         self.resource_amount = 0
         self.value = value
-        self.path = "./assets/blocks/water.png"
-        self.image = pg.image.load("./assets/blocks/water.png")
+        self.path = "./assets/blocks/dirt_1.png"
+        self.image = pg.image.load("./assets/blocks/dirt_1.png")
         self.type = block_type
         self.data = []
         self.radiation_level = 0
@@ -22,7 +22,8 @@ class Block(pg.sprite.Sprite):
         # TODO FIX - Blocks not setting the according type.
 
     def reload_image(self, block_name: str):
-        path = "./assets/blocks/" + block_name.lower() + ".png"
+        choice = randint(1, 2)
+        path = "./assets/blocks/" + block_name.lower() + "_"+ str(choice) +".png"
         self.image = pg.image.load(path)
         # ADDING OR MOVING THIS GIVES A NIGHT EFFECT!!! TODO
         # self.image.set_alpha(50)
@@ -65,9 +66,9 @@ class Block(pg.sprite.Sprite):
             return
         #getting and setting the image for the block according to the perlin value
         if self.value >= 0.4 and self.value <= 1:
-            self.type = "SAND"
+            self.type = "DIRT"
         if self.value >= 0.3 and self.value <= 0.4: 
-            self.type = "SAND"
+            self.type = "DIRT"
         if self.value >= -0.2 and self.value <= 0.3: 
             self.type = "DIRT"
             self.radiation_level = 5

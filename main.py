@@ -9,8 +9,6 @@ from block_manager import BlockManager
 from player_manager import PlayerManager
 from narrator_system import Narrator
 
-         
-
 class Game:
     def __init__(self):
         pg.init()
@@ -53,13 +51,10 @@ class Game:
         self.block_manager.render()
         self.playerManager.render()
         self.npcManager.render()
-        self.player.inventory.render()
         self.player.render_player_related()
+        self.player.inventory.render()
 
-    
-
-
-
+     
     def check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):

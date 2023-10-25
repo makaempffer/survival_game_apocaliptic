@@ -179,9 +179,9 @@ class Player(pg.sprite.Sprite):
             return False
         
     def render_player_related(self):
+        self.user_interface.draw_components()
         self.health_effects.render_slots()
         self.combat.render_enemy_hp()
-        self.user_interface.draw_components()
         self.user_interface.render_text()
 
     def movement(self, delta_time):
