@@ -150,7 +150,7 @@ class PopMenu:
         for index, item in enumerate(options):
             
            # print(item)
-            rect = pg.Rect(self.posX + 5, self.posY +
+            rect = pg.Rect(self.posX + 5, self.posY + 2 +
                            (index*menuOptHeight), menuWidth, menuOptHeight)
             self.optionRects.append(rect)
             
@@ -161,10 +161,16 @@ class PopMenu:
                     if self.hovered_index == index: 
                         print("hovered -> " + str(self.hovered_index))
                         font_color = (255, 0, 0)
+            
+            
+            
         
             text = FONT.render(item, True, font_color)
             
             self.screen.blit(text, rect)
+            rect.y -= 6
+            rect.width = 48
+            pg.draw.line(self.screen, (233, 43, 18), rect.bottomleft, rect.bottomright)
             
     def get_hovered_index(self):
         print("RUNNING HOVER")
