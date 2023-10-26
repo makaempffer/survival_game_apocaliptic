@@ -187,6 +187,8 @@ class Player(pg.sprite.Sprite):
 
     def movement(self, delta_time):
         self.counter_timer()
+        if self.lastCommand and self.menu.opened:
+            self.lastCommand = None
         if not self.lastCommand:
             self.lastCommand = self.menu.getAction()
         action = self.menu.getAction()

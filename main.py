@@ -12,7 +12,7 @@ from narrator_system import Narrator
 class Game:
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT)) # SIZE CAN BE CORRECTED BY SUBSTRACTING 16 TO WIDTH, UI HAS TO BE MOVED.
         self.world = World(WIDTH, HEIGHT)
         self.popMenu = None
         self.block_manager = BlockManager(self.screen, self.world.mapData)

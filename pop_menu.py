@@ -117,6 +117,8 @@ class PopMenu:
             self.optionRects = []
 
     def getAction(self):
+
+            
         if self.selectedAction != None:
             selectedAction = self.options[self.selectedAction]
             self.previous_action = selectedAction
@@ -181,10 +183,12 @@ class PopMenu:
     
             
     def getSelectedOption(self, event):
+
         mouse_pos = pg.mouse.get_pos()
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
             for index, rect in enumerate(self.optionRects):
                 if rect.collidepoint(mouse_pos):
+                    print("INDEX ", index)
                     self.selectedAction = index
                     self.select_sound.set_volume(0.02)
                     self.select_sound.play()
@@ -200,6 +204,7 @@ class PopMenu:
         
                 
     def update(self):
+        
         self.interactionUpdate()
         self.getAction()
         self.get_hovered_index()
