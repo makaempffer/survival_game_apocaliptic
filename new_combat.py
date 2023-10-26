@@ -22,9 +22,9 @@ class Combat:
             attack_sucess = self.attack_distance(self.attacker)
             if not attack_sucess: self.attack_melee(self.attacker)
     
-    def add_to_logger(self, text):
+    def add_to_logger(self, text, font_color: tuple = LOG_FONT_COLOR):
         if self.logger:
-            self.logger.add_log(text)
+            self.logger.add_log(text, font_color)
             
         
     def attack_objective(self):
@@ -81,7 +81,7 @@ class Combat:
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)
-            self.add_to_logger(f"You shot from {self.user.position} at {target_user.position}.")
+            self.add_to_logger(f"You shot from {self.user.position} at {target_user.position}.", (0, 255, 0))
             print(f"[COMBAT - TARGET DISTANCE {distance} {self.user.position} / {target_user.position}")
             if distance > gun_range:
                 self.add_to_logger("Bullets won't reach with this gun.")

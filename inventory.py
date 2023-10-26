@@ -85,7 +85,6 @@ class Inventory:
         ammo quantity by shots fired'''
         ammo = self.get_ammo_by_caliber(caliber)
         if ammo:
-            print(f"SHOTS FIRED {caliber} {shots_fired}")
             self.decrease_item_count(ammo, shots_fired)
         
         
@@ -95,7 +94,6 @@ class Inventory:
                 if item.item_type == 'ammo': 
                     if item.caliber == caliber and item.item_quantity > 0:
                         return item
-            print("NO AMMO LEFT")
             return False
             
     def get_inventory_weight(self):
@@ -226,7 +224,7 @@ class Inventory:
                     return item
                 
     def get_item(self) -> Item:
-        if not pg.mouse.get_pressed()[0]:
+        if not pg.mouse.get_pressed()[0] or not self.is_open:
             return
         mouse_x, mouse_y = pg.mouse.get_pos()
         for row in self.inventory:
@@ -260,10 +258,7 @@ class Inventory:
         self.check_empty()
 
     def open(self):
-        if self.is_open:
-            self.is_open = False
-        else:
-            self.is_open = True
+        self.is_open = not self.is_open
 
     def update_item_group(self):
         for row in self.inventory:

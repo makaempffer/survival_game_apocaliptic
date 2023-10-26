@@ -15,6 +15,7 @@ class UIComponent(pg.sprite.Sprite):
 class UI(pg.sprite.Sprite):
     def __init__(self, screen, player):
         super().__init__()
+        self.show = True
         self.screen = screen
         self.player = player
         self.logger = Logger(self.screen)
@@ -27,7 +28,7 @@ class UI(pg.sprite.Sprite):
         '''Logs a message to the logger to display.'''
         self.logger.add_log(text)
         
-    def create_ui_component_data(self, id, path, x, y, scale=None):
+    def create_ui_component_data(self, id: str, path: str, x: int, y: int, scale: int=None):
         self.icon_data[id] = [path, x, y, scale]
     
     def process_component_data(self):
@@ -37,27 +38,40 @@ class UI(pg.sprite.Sprite):
             self.add_component(component)
             
     def setup(self):
-        self.create_ui_component_data("Weight Icon", "./assets/UI/Inventory and Stats/Weight Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE)
-        self.create_ui_component_data("HP Icon", "./assets/UI/Inventory and Stats/HP Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE * 2)
-        self.create_ui_component_data("Armor Icon", "./assets/UI/Inventory and Stats/Armor Icon.png", UI_MARGIN, HEIGHT - ICON_SIZE * 3)
-        self.create_ui_component_data("Main UI", "./assets/UI/UI_Display/UI_Bloody_1.png", WIDTH - UI_SIZE_X, 0)
-        
+        self.create_ui_component_data("Main UI", "./assets/UI/UI_Display/UI_Bloody_1.png", WIDTH - UI_SIZE_X, HEIGHT - 192)
+        self.create_ui_component_data("HP Icon", "./assets/UI_ICONS/heart.png", (WIDTH - UI_SIZE_X + ICON_SIZE * 1 + ICON_SPACING) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y)
+        self.create_ui_component_data("Weight Icon", "./assets/UI_ICONS/weight.png", (WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 2) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y)
+        self.create_ui_component_data("Armor Icon", "./assets/UI_ICONS/armor.png", (WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 3) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y)
+        self.create_ui_component_data("Radioactive", "./assets/UI_ICONS/radioactive.png", WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 4 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y)
+        self.create_ui_component_data("Chicken", "./assets/UI_ICONS/chicken.png", WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 5 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y)
+        self.create_ui_component_data("Water", "./assets/UI_ICONS/water.png", WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 6 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y)
+    
+    
     def add_component(self, component):
         self.components.add(component)
         
     def draw_components(self):
+        if not self.show:
+            return
         self.components.draw(self.screen)
         
     def render_text(self):
+        if not self.show:
+            return
         self.setup_text()
         self.logger.render_log()
         
     def setup_text(self):
-        self.render_text_at(self.player.inventory.get_inventory_weight(), UI_MARGIN, HEIGHT - ICON_SIZE, UI_FONT_COLOR)
-        self.render_text_at(self.player.health.get_health(), UI_MARGIN, HEIGHT - ICON_SIZE * 2, UI_FONT_COLOR)
-        self.render_text_at(self.player.health_effects.get_armor_rating(),UI_MARGIN, HEIGHT - ICON_SIZE * 3, UI_FONT_COLOR)
-        
-    def render_text_at(self, text, x, y, color=(255, 255, 255), offset_start: bool = True):
+        self.render_text_at(self.player.health.get_health(), (WIDTH - UI_SIZE_X + ICON_SIZE * 1 + ICON_SPACING) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(self.player.inventory.get_inventory_weight(), (WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 2) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(self.player.health_effects.get_armor_rating(),(WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 3) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(self.player.health_effects.current_radiation, WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 4 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(self.player.health.get_hunger(), WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 5 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(self.player.health.get_thirst(), WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 6 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+    
+    def render_text_at(self, text: str, x: int, y: int, color: tuple=(255, 255, 255), offset_start: bool = True):
+        if isinstance(text, float):
+            text = format_two_decimals(text)
         text = FONT.render(str(text), True, color)
         if offset_start:
             x += ICON_SIZE
@@ -73,15 +87,15 @@ class Logger:
         self.add_log("HELLO WORL THIS A FUCKIN TEST")
         self.add_log("Hello brothesrs this a testing shit")
         
-    def add_log(self, log: str):
+    def add_log(self, log: str, font_color: tuple = LOG_FONT_COLOR):
         if len(self.stack) > MAX_LOGS:
             self.stack.pop()
-        self.stack.insert(0, log)
+        self.stack.insert(0, [log, font_color])
         
     
     def render_log(self):
         for index, log in enumerate(self.stack):
-            text = FONT.render(str(log), True, UI_FONT_COLOR)
+            text = FONT.render(str(log[0]), True, log[1])
             x = LOG_START_X + LOG_SPACING
             y = LOG_START_Y - LOG_SPACING - index * FONT_SIZE
             self.screen.blit(text, (x, y))

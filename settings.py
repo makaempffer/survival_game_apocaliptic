@@ -1,7 +1,7 @@
 import pygame as pg
 from perlin_noise import PerlinNoise
 FPS = 60
-WIDTH, HEIGHT = 1296, 720 # ADDING 16 PIXELS TO X FIXES RENDERING OFFSET
+WIDTH, HEIGHT = 1280 + 16, 720 # ADDING 16 PIXELS TO X FIXES RENDERING OFFSET
 pg.font.init()
 FONT_SIZE = 12
 FONT = pg.font.Font('./fonts/TerminusTTFWindows-4.49.3.ttf', FONT_SIZE)
@@ -23,7 +23,9 @@ WEAPON_DAMAGE_FACTOR = 1
 ORGAN_DRAIN_AMOUNT = 0.1
 
 # UI
-ICON_SIZE = 32
+ICON_SIZE = 24
+ICON_SPACING = 24
+ICON_X_MARGIN = 24
 UI_MARGIN = 16
 UI_FONT_COLOR = (0, 255, 0)
 
@@ -34,5 +36,10 @@ UI_SIZE_Y = 192
 LOG_SPACING = 8
 LOG_MARGIN = 64
 LOG_START_X = WIDTH - UI_SIZE_X
-LOG_START_Y = UI_SIZE_Y - LOG_SPACING#UI SIZE
-MAX_LOGS = 7
+LOG_START_Y = HEIGHT - LOG_SPACING#UI SIZE
+MAX_LOGS = 12
+LOG_FONT_COLOR = (255, 255, 255)
+
+def format_two_decimals(number: float):
+    formatted_number = "{:.2f}".format(number)
+    return formatted_number

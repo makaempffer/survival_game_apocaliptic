@@ -66,8 +66,11 @@ class Game:
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.player.inventory.is_open:#right button mousse
                 self.popMenu.setupMenu()
 
-            if event.type == pg.KEYDOWN and event.key ==pg.K_i:
+            if event.type == pg.KEYDOWN and event.key == pg.K_TAB:
                 self.inventory.open()
+            
+            if event.type == pg.KEYDOWN and event.key == pg.K_l:
+                self.player.user_interface.show = not self.player.user_interface.show
 
             if event.type == pg.KEYDOWN and event.key == pg.K_r:
                 self.world.regenerate_map()
