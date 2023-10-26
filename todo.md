@@ -42,6 +42,7 @@
 # Add new Building class, (change name) this class consistist of pre-constructed places that can be placed (using map generation)
 - houses, closed areas, industrial areas, + 
 # idea: when the player feels ready can decide to advance to the next world, to find stronger, harder challenges (map regen, enemy scales)
-# DO THE LOG BAR! BRO
-# change tileset or make it maybe?
-# Fix inventory is clickable when not show
+# DO THE LOG BAR! BRO STARTED
+# change tileset or make it maybe? DONE
+# Fix inventory is clickable when not show DONE
+# Fix damaging without being close to shot range CURRENT

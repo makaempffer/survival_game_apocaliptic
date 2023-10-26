@@ -28,6 +28,7 @@ class PopMenu:
         self.open_menu_sound = pg.mixer.Sound('./sounds/Open_menu.wav')
         self.select_sound = pg.mixer.Sound('./sounds/Select.wav')
         self.stepped_block = None
+        self.hovered_index = None
 
     def get_selected_block(self):
         return self.selected_block
@@ -124,12 +125,17 @@ class PopMenu:
                 self.savedLocation = self.startingPoint
             print("[DBG]" + selectedAction)
             return selectedAction
+    
+    def get_option_by_index(self, index: int):
+        return self
 
     def showMenu(self, options):
+        print("SHOWMENU")
         menuWidth = 100
         menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
         surfaceMenu.fill((50, 50, 50))
+        mouse_pos = pg.mouse.get_pos()
 
         if abs(self.posX - WIDTH) < menuWidth and self.xCorrection == False:
             self.posX = self.posX - menuWidth
@@ -142,12 +148,38 @@ class PopMenu:
 
         self.screen.blit(surfaceMenu, (self.posX, self.posY))
         for index, item in enumerate(options):
+            
+           # print(item)
             rect = pg.Rect(self.posX + 5, self.posY +
                            (index*menuOptHeight), menuWidth, menuOptHeight)
             self.optionRects.append(rect)
-            text = FONT.render(item, True, (255, 255, 255))
+            
+            font_color = (255, 255, 255)
+            if isinstance(self.hovered_index, int):
+                
+                if rect.collidepoint(mouse_pos):   
+                    if self.hovered_index == index: 
+                        print("hovered -> " + str(self.hovered_index))
+                        font_color = (255, 0, 0)
+        
+            text = FONT.render(item, True, font_color)
+            
             self.screen.blit(text, rect)
-
+            
+    def get_hovered_index(self):
+        print("RUNNING HOVER")
+        print("RUNNGIN IDNEX", self.hovered_index)
+        mouse_pos = pg.mouse.get_pos()
+        for index, rect in enumerate(self.optionRects):
+            if rect.collidepoint(mouse_pos): 
+                    self.hovered_index = index
+                    print(index)
+                    return index
+                
+        return None
+    
+    
+            
     def getSelectedOption(self, event):
         mouseX, mouseY = pg.mouse.get_pos()
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
@@ -158,7 +190,6 @@ class PopMenu:
                         self.select_sound.set_volume(0.02)
                         self.select_sound.play()
                         return index
-    
         
     def get_block(self, x, y):
         """Make this faster"""
@@ -172,3 +203,4 @@ class PopMenu:
     def update(self):
         self.interactionUpdate()
         self.getAction()
+        self.get_hovered_index()
