@@ -170,6 +170,10 @@ class Inventory:
     def get_inventory(self):
         return self.inventory
 
+    def clear_selected(self):
+        for item in self.item_group:
+            item.image.set_alpha(255)
+
     def add_item(self, item_name, quantity=1):
         for row in self.inventory:
             for slot in row:
@@ -234,9 +238,14 @@ class Inventory:
                         if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
                             self.add_to_consumable_stack(item)
                             self.select_item(item)
+                            self.item_selection_effect(item)
                             if item.equipable:
                                 self.last_equiped = item
                             return item
+        self.clear_selected()
+
+    def item_selection_effect(self, item):
+        item.image.set_alpha(100)
 
     def kill_consumed(self):
         self.last_consumed = None
