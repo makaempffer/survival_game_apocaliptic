@@ -126,12 +126,9 @@ class PopMenu:
             print("[DBG]" + selectedAction)
             return selectedAction
     
-    def get_option_by_index(self, index: int):
-        return self
 
     def showMenu(self, options):
-        print("SHOWMENU")
-        menuWidth = 100
+        menuWidth = 72
         menuOptHeight = 20
         surfaceMenu = pg.Surface((menuWidth, len(options)*menuOptHeight))
         surfaceMenu.fill((50, 50, 50))
@@ -159,7 +156,7 @@ class PopMenu:
                 
                 if rect.collidepoint(mouse_pos):   
                     if self.hovered_index == index: 
-                        print("hovered -> " + str(self.hovered_index))
+                        # print("hovered -> " + str(self.hovered_index))
                         font_color = (255, 0, 0)
             
             
@@ -173,13 +170,10 @@ class PopMenu:
             pg.draw.line(self.screen, (233, 43, 18), rect.bottomleft, rect.bottomright)
             
     def get_hovered_index(self):
-        print("RUNNING HOVER")
-        print("RUNNGIN IDNEX", self.hovered_index)
         mouse_pos = pg.mouse.get_pos()
         for index, rect in enumerate(self.optionRects):
             if rect.collidepoint(mouse_pos): 
                     self.hovered_index = index
-                    print(index)
                     return index
                 
         return None
@@ -187,15 +181,14 @@ class PopMenu:
     
             
     def getSelectedOption(self, event):
-        mouseX, mouseY = pg.mouse.get_pos()
+        mouse_pos = pg.mouse.get_pos()
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
             for index, rect in enumerate(self.optionRects):
-                if mouseX >= rect.x and mouseX <= rect.x + 100:  # 100 is menuwidth
-                    if mouseY >= rect.y and mouseY <= rect.y + 20:  # 20 is option height
-                        self.selectedAction = index
-                        self.select_sound.set_volume(0.02)
-                        self.select_sound.play()
-                        return index
+                if rect.collidepoint(mouse_pos):
+                    self.selectedAction = index
+                    self.select_sound.set_volume(0.02)
+                    self.select_sound.play()
+                    return index
         
     def get_block(self, x, y):
         """Make this faster"""

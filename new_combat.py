@@ -37,6 +37,8 @@ class Combat:
         
         if not target.health.check_alive():
             self.loot_body(target)
+            self.add_to_logger(f"{self.target.type.capitalize()} dies!")
+            target.kill()
             self.target = None
             self.user.menu.npc_target = None
             
@@ -47,13 +49,13 @@ class Combat:
                 self.attack_distance(target_user=target)
                 self.show_hp = True
                 self.target = target
-                target.combat.return_attack()
+                self.target.combat.return_attack()
             
             elif command == "melee atk":
                 self.attack_melee(target_user=target)
                 self.show_hp = True
                 self.target = target
-                target.combat.return_attack()
+                self.target.combat.return_attack()
             
     def render_enemy_hp(self):
         if self.target and self.show_hp:
@@ -65,14 +67,14 @@ class Combat:
     def attack_distance(self, target_user):
         gun = self.user.health_effects.get_gun()
         if not gun:
-            print("User has no gun")
+            self.add_to_logger("You don't have a gun.", RED)
             return False
         
-        print(gun.caliber)
+        # print(gun.caliber)
         if not self.user.inventory.get_ammo_by_caliber(gun.caliber):
             if self.user.sound_system:
                 self.user.sound_system.play_sound("pistol_pack")
-                print("NO AMMO")
+                self.add_to_logger("You ran out of ammo!", RED)
                 return
         if self.user.sound_system:   
             self.user.sound_system.play_sound(gun.item_id)
@@ -81,34 +83,49 @@ class Combat:
         if target_user:
             gun_range = gun.range * BLOCK_SIZE # Multiplied to match pixel units
             distance = self.user.position.distance_to(target_user.position)
-            self.add_to_logger(f"You shot from {self.user.position} at {target_user.position}.", (0, 255, 0))
-            print(f"[COMBAT - TARGET DISTANCE {distance} {self.user.position} / {target_user.position}")
+            # print(f"[COMBAT - TARGET DISTANCE {distance} {self.user.position} / {target_user.position}")
             if distance > gun_range:
-                self.add_to_logger("Bullets won't reach with this gun.")
-                print("Target too far, gun range too short")
+                self.add_to_logger("Your target is out of range.", RED)
                 return False
             attack_success = self.hit_chance()
             if attack_success:
                 damage = self.calculate_damage_distance(gun.damage)
                 target_user.combat.receive_distance_damage(damage)
+                if target_user:
+                    self.add_to_logger(f"You hit the {target_user.type.capitalize()} for {damage} damage!", GREEN)
                 # Giving a reference to the attacker
                 target_user.combat.attacker = self.user
                 return True
+            else:
+                self.add_to_logger("You missed!", YELLOW)
     
     def attack_melee(self, target_user):
         if target_user:
             distance = self.user.position.distance_to(target_user.position)
             if distance <= self.user.interaction_reach:
-                print("can melee hit")
+                # print("can melee hit")
                 attack_success = self.hit_chance()
+                
+                    
                 if attack_success:
                     damage = self.calculate_damage_melee()
                     target_user.combat.receive_melee_damage(damage)
+                    self.add_to_logger_npc(f"{self.user.type.capitalize()} hits you for {damage} damage.", target_user, RED)
+                    if target_user:
+                        self.add_to_logger(f"You hit {target_user.type.capitalize()} for {damage} damage!", GREEN)
                     # Giving a reference to the attacker
                     target_user.combat.attacker = self.user
+                else:
+                    self.add_to_logger("You missed!", YELLOW)
+                    self.add_to_logger_npc(f"{self.user.type.capitalize()} misses you!", target_user, YELLOW)
                     
             else:
-                print("Target is too far to melee hit.")
+                self.add_to_logger(f"{target_user.type.capitalize()} is too far to hit.", YELLOW)
+                
+        
+    def add_to_logger_npc(self, text, target, color):
+        if target.type == "player":
+            target.combat.add_to_logger(text, color)
                 
     def receive_distance_damage(self, damage):
         """Calculates the damage acording to the user armor"""

@@ -15,7 +15,7 @@ class Player(pg.sprite.Sprite):
         self.screen = screen
         self.inventory = Inventory()
         self.skills = Skills()
-        self.skills.set_skill_level("accuracy", 9)
+        self.skills.set_skill_level("accuracy", 8)
         self.health = Health(self.skills)
         self.health.setup_organs()
         self.health_effects = HealthEffects(self.health, self.inventory)
@@ -27,6 +27,7 @@ class Player(pg.sprite.Sprite):
         self.friendly = False
         self.position = pg.Vector2(360, 360)
         self.menu = menu
+        self.type = "player"
         self.narrator = narrator
         self.rect = pg.Rect(self.position.x, self.position.y, BLOCK_SIZE, BLOCK_SIZE)
         self.image = pg.image.load("./assets/blocks/character_player.png")

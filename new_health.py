@@ -13,11 +13,11 @@ class Health:
         self.skills = skills
         self.limbs = {
             'head': Limb('head', 50),
-            'torso': Limb('torso'),
-            'arm_right': Limb('arm_right'),
-            'arm_left': Limb('arm_left'),
-            'leg_right': Limb('leg_right'),
-            'leg_left': Limb('leg_left')
+            'torso': Limb('torso', 60),
+            'arm_right': Limb('arm_right', 60),
+            'arm_left': Limb('arm_left', 60),
+            'leg_right': Limb('leg_right', 60),
+            'leg_left': Limb('leg_left', 60)
         }
         self.limb_probabilities = {
             'head': 10 - self.skills.agility,  # Head is harder to hit with higher agility

@@ -19,6 +19,7 @@ class NPCManager():
         for npc in self.npc_group:
             if not npc.health.check_alive():
                 self.npc_group.remove(npc)
+                npc.kill()
 
     def setupNpc(self):
         self.create_spawns()

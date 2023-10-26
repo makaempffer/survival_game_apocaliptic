@@ -67,6 +67,7 @@ class NPC(pg.sprite.Sprite):
         self.move(delta_time)
         self.cooldown_timer()
         self.check_boundaries()
+        
     
     def check_boundaries(self):
         over_shoot = False
@@ -93,6 +94,10 @@ class NPC(pg.sprite.Sprite):
         
     def move(self, delta_time):
         attacker = self.combat.attacker
+        if attacker:
+            distance = self.position.distance_to(attacker.position)
+            if distance <= self.interaction_reach:
+                return
         if attacker and self.can_move:
             self.position = self.position.move_towards(attacker.position, self.speed * delta_time)
             self.rect.x, self.rect.y = self.position.x, self.position.y
@@ -125,6 +130,8 @@ class NPC(pg.sprite.Sprite):
             self.counter += 1
             
         if self.counter >= self.cooldown:
+            print("TIMER REACHERD")
+            self.combat.return_attack()
             self.can_move = True
             self.counter = 0
             self.start_timer = False
