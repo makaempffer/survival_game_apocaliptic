@@ -42,8 +42,8 @@ class HealthEffects:
         if not block:
             return
         if block:
-            print(f"[*] - BLOCK {block.type}")
-            print(f"RADIATION_LEVEL: {block.radiation_level}")
+            #print(f"[*] - BLOCK {block.type}")
+            #print(f"RADIATION_LEVEL: {block.radiation_level}")
             self.environment_radiation = block.radiation_level
             
     def render_slots(self):
