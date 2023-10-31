@@ -91,6 +91,7 @@ class Inventory:
     def get_ammo_by_caliber(self, caliber='9mm'):
         for row in self.inventory:
             for item in row: 
+                if not item: continue
                 if item.item_type == 'ammo': 
                     if item.caliber == caliber and item.item_quantity > 0:
                         return item

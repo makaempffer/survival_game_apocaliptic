@@ -26,6 +26,7 @@ class NPC(pg.sprite.Sprite):
         self.image = pg.image.load(self.path)
         self.type = npc_type
         self.interaction_reach = 12
+        self.range = 100
         self.speed = 0.005
         self.counter = 0
         self.target_reached = False
@@ -96,11 +97,14 @@ class NPC(pg.sprite.Sprite):
         attacker = self.combat.attacker
         if attacker:
             distance = self.position.distance_to(attacker.position)
+            
             if distance <= self.interaction_reach:
                 return
+            
         if attacker and self.can_move:
             self.position = self.position.move_towards(attacker.position, self.speed * delta_time)
             self.rect.x, self.rect.y = self.position.x, self.position.y
+            
             if self.position == attacker.position:
                 self.target_reached = True
                 self.can_move = False
@@ -108,6 +112,7 @@ class NPC(pg.sprite.Sprite):
         else:
             if not self.can_move:
                 return
+            
             if self.position == self.target_pos:
                 self.target_reached = True
                 self.can_move = False
@@ -130,11 +135,18 @@ class NPC(pg.sprite.Sprite):
             self.counter += 1
             
         if self.counter >= self.cooldown:
+            # Fix attack
             print("TIMER REACHERD")
             self.combat.return_attack()
             self.can_move = True
             self.counter = 0
             self.start_timer = False
+    
+    def check_entity_in_range(self, entity):
+        if not entity or self.friendly: return
+        distance_to_entity = self.position.distance_to(entity.position)
+        if distance_to_entity < self.range:
+            self.target_pos = entity.position
             
 
     def getMoveLocation(self):            

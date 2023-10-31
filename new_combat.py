@@ -13,11 +13,12 @@ class Combat:
         self.show_hp = False
         self.target = None
         
-    
     def loot_body(self, target):
         self.user.inventory.add_item_list(target.inventory.inventory)
         
     def return_attack(self):
+        print("RETURNING ATTACK")
+        print(self.attacker)
         if self.attacker:
             attack_sucess = self.attack_distance(self.attacker)
             if not attack_sucess: self.attack_melee(self.attacker)
@@ -49,6 +50,8 @@ class Combat:
                 self.attack_distance(target_user=target)
                 self.show_hp = True
                 self.target = target
+                target.combat.attacker = self.user
+                target.combat.target = self.user
                 self.target.combat.return_attack()
             
             elif command == "melee atk":
@@ -56,6 +59,9 @@ class Combat:
                 self.show_hp = True
                 self.target = target
                 self.target.combat.return_attack()
+                # FIX Attack wthout need of player attacking at npc
+                target.combat.target = self.user
+                target.combat.attacker = self.user
             
     def render_enemy_hp(self):
         if self.target and self.show_hp:

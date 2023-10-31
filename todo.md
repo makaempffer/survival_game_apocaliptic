@@ -46,3 +46,6 @@
 # change tileset or make it maybe? DONE
 # Fix inventory is clickable when not show DONE
 # Fix damaging without being close to shot range CURRENT
+# FIX NPC NOT ATTACKING IF PLAYER DOESNT KEEP ATTACKING
+# Add picking up items to the log, should be ezz.
+

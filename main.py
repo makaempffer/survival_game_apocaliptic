@@ -37,7 +37,7 @@ class Game:
     def update(self):
         self.playerManager.update(self.delta_time)
         self.popMenu.update()
-        self.npcManager.update(self.delta_time)
+        self.npcManager.update(self.delta_time, self.player)
         self.block_manager.update_resource_blocks()
         self.narrator.update()
         self.player.inventory.update()
