@@ -31,7 +31,6 @@ class Game:
         self.player.set_narrator(self.narrator)
         self.inventory = self.player.inventory
         self.player.inventory.screen = self.screen
-
         print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):

@@ -91,7 +91,6 @@ class Logger:
         if len(self.stack) > MAX_LOGS:
             self.stack.pop()
         self.stack.insert(0, [log, font_color])
-        
     
     def render_log(self):
         for index, log in enumerate(self.stack):

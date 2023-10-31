@@ -17,8 +17,8 @@ class Combat:
         self.user.inventory.add_item_list(target.inventory.inventory)
         
     def return_attack(self):
-        print("RETURNING ATTACK")
-        print(self.attacker)
+        #print("RETURNING ATTACK")
+        #print(self.attacker)
         if self.attacker:
             attack_sucess = self.attack_distance(self.attacker)
             if not attack_sucess: self.attack_melee(self.attacker)
@@ -27,7 +27,6 @@ class Combat:
         if self.logger:
             self.logger.add_log(text, font_color)
             
-        
     def attack_objective(self):
         target = self.user.menu.npc_target
 
@@ -38,13 +37,15 @@ class Combat:
         
         if not target.health.check_alive():
             self.loot_body(target)
-            self.add_to_logger(f"{self.target.type.capitalize()} dies!")
+            self.add_to_logger(f"The {self.target.type.capitalize()} has died.")
             target.kill()
             self.target = None
             self.user.menu.npc_target = None
             
         command = self.user.lastCommand
+        
         if command:
+            
             command = command.lower()
             if command == "range atk":
                 self.attack_distance(target_user=target)
@@ -52,13 +53,13 @@ class Combat:
                 self.target = target
                 target.combat.attacker = self.user
                 target.combat.target = self.user
-                self.target.combat.return_attack()
+                #self.target.combat.return_attack()
             
             elif command == "melee atk":
                 self.attack_melee(target_user=target)
                 self.show_hp = True
                 self.target = target
-                self.target.combat.return_attack()
+                #self.target.combat.return_attack()
                 # FIX Attack wthout need of player attacking at npc
                 target.combat.target = self.user
                 target.combat.attacker = self.user
@@ -96,9 +97,10 @@ class Combat:
             attack_success = self.hit_chance()
             if attack_success:
                 damage = self.calculate_damage_distance(gun.damage)
-                target_user.combat.receive_distance_damage(damage)
+                attack_data = target_user.combat.receive_distance_damage(damage)
                 if target_user:
-                    self.add_to_logger(f"You hit the {target_user.type.capitalize()} for {damage} damage!", GREEN)
+                    self.add_to_logger(f"You hit the {target_user.type.capitalize()} for {attack_data[1]} damage!", GREEN)
+                    
                 # Giving a reference to the attacker
                 target_user.combat.attacker = self.user
                 return True
@@ -106,6 +108,15 @@ class Combat:
                 self.add_to_logger("You missed!", YELLOW)
     
     def attack_melee(self, target_user):
+        melee_extra_damage = 0
+        melee_item = self.user.health_effects.get_melee()
+        hemorrhagic = False
+        bleed_roll = False
+        if melee_item: 
+            melee_extra_damage = melee_item.damage
+            hemorrhagic = melee_item.hemorrhagic
+        
+            
         if target_user:
             distance = self.user.position.distance_to(target_user.position)
             if distance <= self.user.interaction_reach:
@@ -114,11 +125,16 @@ class Combat:
                 
                     
                 if attack_success:
-                    damage = self.calculate_damage_melee()
-                    target_user.combat.receive_melee_damage(damage)
-                    self.add_to_logger_npc(f"{self.user.type.capitalize()} hits you for {damage} damage.", target_user, RED)
+                    damage = self.calculate_damage_melee(melee_extra_damage)
+                    attack_data = target_user.combat.receive_melee_damage(damage)
+                    if hemorrhagic:
+                        bleed_roll = attack_data[0].roll_bleed_chance(BLEEDING_CHANCE) # 25% chances to bleed
+                    self.add_to_logger_npc(f"{self.user.type.capitalize()} hits you for {attack_data[1]} damage.", target_user, RED)
                     if target_user:
-                        self.add_to_logger(f"You hit {target_user.type.capitalize()} for {damage} damage!", GREEN)
+                        self.add_to_logger(f"You hit {target_user.type.capitalize()} for {attack_data[1]} damage!", GREEN)
+                    if bleed_roll:
+                        self.add_to_logger(f"{target_user.type.capitalize()}'s {attack_data[0].limb_name} is bleeding!", PURPLE)
+                        self.add_to_logger_npc(f"Your {attack_data[0].limb_name} started bleeding!", target_user, RED)
                     # Giving a reference to the attacker
                     target_user.combat.attacker = self.user
                 else:
@@ -137,14 +153,18 @@ class Combat:
         """Calculates the damage acording to the user armor"""
         armor_rating = self.user.health_effects.get_armor_rating()
         damage_after_res = apply_resistance(damage, armor_rating, RESISTANCE_FACTOR)
-        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}")
-        self.user.health.take_damage_on_calculated_limb(damage_after_res)
+        limb = self.user.health.take_damage_on_calculated_limb(damage_after_res)
+        #print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}")
+        return [limb, damage_after_res]
         
     def receive_melee_damage(self, damage):
-        armor_rating = self.user.health_effects.get_armor_rating() + self.user.skills.strength * 2
+        armor_rating = float(self.user.health_effects.get_armor_rating()) + self.user.skills.strength
+        #print(f"ARMOR RATING {armor_rating}, INIT DAMAGE {damage}")
         damage_after_res = apply_resistance(damage, armor_rating, RESISTANCE_FACTOR)
-        self.user.health.take_damage_on_calculated_limb(damage_after_res)
-        print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}.")
+        #print(f"AFTER DAMAGE {damage_after_res}")
+        limb = self.user.health.take_damage_on_calculated_limb(damage_after_res)
+        #print(f"[COMBAT] - DAMAGE RECEIVED {damage_after_res} HP: {self.user.health.get_health()}.")
+        return [limb, damage_after_res]
         
     def calculate_damage_distance(self, weapon_damage) -> float:
         random_number = randint(0, 3)
@@ -152,23 +172,16 @@ class Combat:
         damage = calculate_damage(weapon_damage + random_number, accuracy, WEAPON_DAMAGE_FACTOR)
         return damage
         
-    def calculate_damage_melee(self) -> float:
+    def calculate_damage_melee(self, extra_weapon_damage = 0) -> float:
         random_number = randint(0, 3)
         strength_level = self.user.skills.strength
-        damage = calculate_damage(5 + random_number, strength_level, SKILLS_FACTOR)
+        damage = calculate_damage(5 + random_number + extra_weapon_damage, strength_level, SKILLS_FACTOR)
         return damage
     
     def hit_chance(self):
         accuracy_level = self.user.skills.accuracy + self.user.skills.perception
         random_roll = randint(0, 10)
         if random_roll <= accuracy_level:
-            print("[COMBAT-NEW] - HIT SUCCEED.")
             return True
         else:
-            print("[COMBAT-NEW] - ATTACK MISSED.")
             return False
-    
-        
-        
-    
-    

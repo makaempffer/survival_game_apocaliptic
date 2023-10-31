@@ -68,14 +68,17 @@ class Health:
     def take_damage(self, limb_name: str, damage: float):
         limb = self.get_limb(limb_name)
         limb.take_damage(damage)
+        return limb
         
     def take_damage_on_calculated_limb(self, amount):
         limb = self.calculate_vulnerable_limb()
         limb.take_damage(amount)
+        return limb
         
     def heal_limb(self, limb_name: str, amount: float):
         limb = self.get_limb(limb_name)
         limb.heal(amount)
+        return limb
         
     def update(self):
         for limb in self.limbs.values():
@@ -101,7 +104,6 @@ class Health:
             total_hp += limb.current_hp
         return total_hp
     
-            
     def calculate_vulnerable_limb(self) -> Limb:
         '''Limb selection gets calculated by the agility
         skill level, the higher agility less likely to be hit in 
@@ -117,7 +119,7 @@ class Health:
         for limb, probability in normalized_probabilities.items():
             cumulative_probability += probability
             if random_value <= cumulative_probability:
-                print(f"LIMB -> {limb}")
+                # print(f"LIMB -> {limb}")
                 return self.get_limb(limb)
 
         # Fallback: Return the last limb in case of an issue

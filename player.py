@@ -95,7 +95,7 @@ class Player(pg.sprite.Sprite):
         # TODO CALCULATE AMOUNT SOMEHOW
         total = 1
         action = self.lastCommand
-        print(f"ACTION TO PERFORM - {action}")
+        #print(f"ACTION TO PERFORM - {action}")
         if not action:
             return
         action = action.lower()

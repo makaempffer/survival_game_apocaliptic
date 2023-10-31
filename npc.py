@@ -13,7 +13,8 @@ class NPC(pg.sprite.Sprite):
         super().__init__()
         self.inventory = Inventory()
         self.skills = Skills()
-        self.skills.set_skill_level("acurracy", 6)
+        self.skills.set_skill_level("acurracy", 8)
+        self.skills.set_skill_level("strength", 5)
         self.health = Health(self.skills)
         self.health_effects = HealthEffects(self.health, self.inventory)
         self.combat = Combat(self)
@@ -34,10 +35,13 @@ class NPC(pg.sprite.Sprite):
         self.can_move = True
         self.friendly = False
         self.vision_distance = 30
-        self.cooldown = randint(100, 500)
+        self.cooldown = randint(120, 400) # Time a npc takes to do action
+        self.attack_counter = 0
         self.start_timer = False
         self.get_type()
         self.max_hp = self.health.get_health()
+        self.inventory.add_item("KNIFE")
+        self.health_effects.equip_item(self.inventory.get_item_by_id("KNIFE"))
                 
     def show_health_bar(self, screen):
         hp = self.health.get_health()
@@ -131,22 +135,26 @@ class NPC(pg.sprite.Sprite):
                 self.rect.x, self.rect.y = self.position.x, self.position.y
                 
     def cooldown_timer(self):
+        self.attack_counter += 1
         if self.start_timer:
             self.counter += 1
             
         if self.counter >= self.cooldown:
-            # Fix attack
-            print("TIMER REACHERD")
-            self.combat.return_attack()
             self.can_move = True
             self.counter = 0
             self.start_timer = False
+            
+        if self.attack_counter >= self.cooldown:
+            self.combat.return_attack()
+            self.attack_counter = 0
     
     def check_entity_in_range(self, entity):
         if not entity or self.friendly: return
         distance_to_entity = self.position.distance_to(entity.position)
+        
         if distance_to_entity < self.range:
             self.target_pos = entity.position
+            self.combat.attacker = entity
             
 
     def getMoveLocation(self):            

@@ -109,13 +109,15 @@ class Inventory:
         item.item_quantity -= amount
 
     def setup_starting_items(self):
+        self.add_item("BANDAGE", 3)
         self.add_item("BREAD", 5)
         self.add_item("PILL", 3)
         self.add_item("AMMO_9MM", 20)
         self.add_item("PISTOL")
         self.add_item("CIGARRETE_MALROBO", 5)
-
-
+        self.add_item("KNIFE")
+        self.add_item("SHIRT")
+        
     def add_item_list(self, inventory_list):
         slot_x, slot_y = None, None
         for x, row in enumerate(inventory_list):

@@ -125,7 +125,7 @@ class PopMenu:
             self.selectedAction = None
             if selectedAction == "Walk":
                 self.savedLocation = self.startingPoint
-            print("[DBG]" + selectedAction)
+            #print("[DBG]" + selectedAction)
             return selectedAction
     
 
@@ -188,7 +188,7 @@ class PopMenu:
         if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and self.opened:
             for index, rect in enumerate(self.optionRects):
                 if rect.collidepoint(mouse_pos):
-                    print("INDEX ", index)
+                    #print("INDEX ", index)
                     self.selectedAction = index
                     self.select_sound.set_volume(0.02)
                     self.select_sound.play()
@@ -199,7 +199,7 @@ class PopMenu:
         for block in self.block_manager.blocks:
             if block.rect.collidepoint((x, y)):
                 self.stepped_block = block
-                print(f"BLOCK from get block -> {block.type}")
+                #print(f"BLOCK from get block -> {block.type}")
                 return block
         
                 

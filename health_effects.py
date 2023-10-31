@@ -95,7 +95,7 @@ class HealthEffects:
                
     def physical_updates(self):
         self.organs_update()
-        self.basic_update()   
+        self.basic_update()
     
     def reset_equiped_list(self):
         self.equiped_list.clear() 
@@ -113,9 +113,18 @@ class HealthEffects:
             self.equiped_index += 1
             
     def get_gun(self) -> Item:
+        """Returns equiped ranged weapon if exist else return False"""
         for item in self.equiped_list:
             if item.item_type == "gun":
                 return item
+        return False
+
+    def get_melee(self) -> Item:
+        """Returns equiped melee weapon if exist else return False"""
+        for item in self.equiped_list:
+            if item.item_type == "melee":
+                return item
+            
         return False
 
     def get_armor_rating(self) -> float:
@@ -126,7 +135,6 @@ class HealthEffects:
         return armor
             
     def consume_item_effect(self, item):
-        
         if item.item_type:
             print(f"[HEALTH-EFFECTS] -> ITEM: {item}")
             if item.item_type == "hemostat":

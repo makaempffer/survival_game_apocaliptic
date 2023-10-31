@@ -9,10 +9,10 @@
             "stackable": true,
             "consumable": true,
             "placeable": false,
-            "file_path": "./assets/icons/bandage_icon.png",
+            "file_path": "./assets/items/bandage.png",
             "equipable": false,
             "item_type": "hemostat",
-            "weight": 0.4
+            "weight": 0.1
         },
         {
             "item_id": "PILL",
@@ -97,8 +97,8 @@
             "item_type": "gun",
             "caliber": "9mm",
             "damage": 32,
-            "range": 10,
-            "weight": 2.5,
+            "range": 8,
+            "weight": 1.3,
             "sound": "./sounds/guns/9mm_single.wav"
         },
         {
@@ -130,6 +130,27 @@
             "weight": 1.5,
             "equipable": true,
             "item_type": "tool"
+        },
+        {
+            "item_id": "KNIFE",
+            "stackable": false,
+            "consumable": false,
+            "equipable": true,
+            "file_path": "./assets/items/knife.png",
+            "weight": 0.6,
+            "item_type": "melee",
+            "hemorrhagic": true,
+            "damage": 7
+        },
+        {
+            "item_id": "SHIRT",
+            "stackable": false,
+            "consumable": false,
+            "equipable": true,
+            "file_path": "./assets/items/shirt.png",
+            "weight": 0.3,
+            "item_type": "clothing",
+            "armor": 7
         }
     ]
 }
