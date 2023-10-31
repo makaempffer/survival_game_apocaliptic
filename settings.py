@@ -43,6 +43,3 @@ LOG_START_Y = HEIGHT - LOG_SPACING#UI SIZE
 MAX_LOGS = 12
 LOG_FONT_COLOR = (255, 255, 255)
 
-def format_two_decimals(number: float):
-    formatted_number = "{:.2f}".format(number)
-    return formatted_number

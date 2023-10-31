@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+from functions import *
 
 class UIComponent(pg.sprite.Sprite):
     def __init__(self):
@@ -84,8 +85,7 @@ class Logger:
         self.stack = []
         self.screen = screen
         self.max_messages = MAX_LOGS
-        self.add_log("HELLO WORL THIS A FUCKIN TEST")
-        self.add_log("Hello brothesrs this a testing shit")
+        self.add_log("HELLO")
         
     def add_log(self, log: str, font_color: tuple = LOG_FONT_COLOR):
         if len(self.stack) > MAX_LOGS:

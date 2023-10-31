@@ -12,3 +12,8 @@ def calculate_damage(initial_damage, skill_level, factor):
    damage = initial_damage + (skill_level * factor)
    damage = max(damage, 0)
    return damage
+
+def format_two_decimals(number: float):
+   """FORMATS TO 1 JUST BECAUSE"""
+   formatted_number = "{:.1f}".format(number)
+   return formatted_number
