@@ -104,6 +104,9 @@ class HealthEffects:
             print("[HEALTH-EFFECTS] - EQUIPABLE LIST RESET")
             
     def equip_item(self, item):
+        for _item in self.equiped_list:
+            if item.item_id == _item.item_id:
+                return
         self.reset_equiped_list()
         if self.equiped_index >= len(self.equiped_items):
             self.equiped_index = 0

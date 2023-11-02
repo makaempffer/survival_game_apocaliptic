@@ -61,14 +61,16 @@ class Item(pg.sprite.Sprite):
     
 
 class Inventory:
-    def __init__(self, screen=None) -> None:
+    def __init__(self, screen=None, logger = None) -> None:
         self.rows = 4
         self.columns = 8
+        self.logger = logger
         self.ITEM_SIZE = ITEM_SIZE
         self.x_start = WIDTH - self.ITEM_SIZE * self.rows # 4 offset from the end
         self.y_start = 0
         self.item_frame_group = pg.sprite.Group()
         self.item_group = pg.sprite.Group()
+        self.delete_stack = []
         self.screen = screen
         self.inventory = None
         self.is_open = False
@@ -79,6 +81,10 @@ class Inventory:
         self.create_item_frame_group()
         self.create_inventory()
         self.update_item_group()
+        
+    def add_to_logger(self, text, color):
+        if self.logger:
+            self.logger.add_log(text, color)
     
     def consume_ammo(self, caliber, shots_fired=1):
         '''Call this function when ever a gun is fired, decreases the
@@ -142,6 +148,7 @@ class Inventory:
     def update_item_player_effects(self):
         """All item-player related update-calls here."""
         self.consume_stack()
+        self.delete_items_on_stack()
 
     def create_item_frame_group(self):
         frames = self.create_item_frame_inventory()
@@ -184,6 +191,7 @@ class Inventory:
                     if slot.item_id == item_name and slot.stackable:
                         slot.item_quantity += quantity
                         print(f"[INV] - ADDED QUANTITY {quantity} TO {slot.item_id}")
+                        self.add_to_logger(f"You added {quantity} of {slot.item_id} to your inventory.", LOG_FONT_COLOR)
                         return
                     
         for x, row in enumerate(self.inventory):
@@ -191,6 +199,7 @@ class Inventory:
                 if slot == None:
                     item = Item(0, 0, item_name)
                     item.item_quantity = quantity
+                    self.add_to_logger(f"You added {quantity} of {item.item_id} to your inventory.", LOG_FONT_COLOR)
                     print("[INV] - FILLED CLOSEST EMPTY SLOT.")
                     item.rect.x = self.x_start + x * ITEM_SIZE
                     item.rect.y = self.y_start + y * ITEM_SIZE 
@@ -204,7 +213,18 @@ class Inventory:
         if item.consumable and item not in self.consumable_stack:
             print(f"[INV] - APPENDED CONSUMABLE {item} TO STACK.")
             self.consumable_stack.append(item)
-
+            
+    def add_to_delete_stack(self, item):
+        if item not in self.delete_stack:
+            self.delete_stack.append(item)
+            
+    def delete_items_on_stack(self):
+        if len(self.delete_stack) < 1:
+            return
+        item = self.delete_stack.pop()
+        self.decrease_item_count(item)
+        self.add_to_logger(f"You dropped {item.item_id}.", YELLOW)
+         
     def consume_stack(self):
         if len(self.consumable_stack) < 1:
             return
@@ -229,22 +249,32 @@ class Inventory:
             for item in row:
                 if item.item_id == item_id:
                     return item
-                
-    def get_item(self) -> Item:
-        if not pg.mouse.get_pressed()[0] or not self.is_open:
+
+    def delete_selected_item(self):
+        if not pg.mouse.get_pressed()[2] or not self.is_open:
             return
-        mouse_x, mouse_y = pg.mouse.get_pos()
+        mouse_pos = pg.mouse.get_pos()
         for row in self.inventory:
             for item in row:
                 if item != None:
-                    if mouse_x >= item.rect.x and mouse_x <= item.rect.x + ITEM_SIZE:
-                        if mouse_y >= item.rect.y and mouse_y <= item.rect.y + ITEM_SIZE:
-                            self.add_to_consumable_stack(item)
-                            self.select_item(item)
-                            self.item_selection_effect(item)
-                            if item.equipable:
-                                self.last_equiped = item
-                            return item
+                    if item.rect.collidepoint(mouse_pos):
+                        self.add_to_delete_stack(item)
+                        
+    def get_item(self) -> Item:
+        if not pg.mouse.get_pressed()[0] or not self.is_open:
+            return
+        mouse_pos = pg.mouse.get_pos()
+        for row in self.inventory:
+            for item in row:
+                if item != None:
+                    if item.rect.collidepoint(mouse_pos):
+                        self.add_to_consumable_stack(item)
+                        self.select_item(item)
+                        self.item_selection_effect(item)
+                        if item.equipable:
+                            self.last_equiped = item
+                        return item
+
         self.clear_selected()
 
     def item_selection_effect(self, item):
@@ -268,6 +298,7 @@ class Inventory:
         self.update_sprites_positions()
         self.get_item()
         self.check_empty()
+        self.delete_selected_item()
 
     def open(self):
         self.is_open = not self.is_open

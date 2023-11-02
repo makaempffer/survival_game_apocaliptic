@@ -20,6 +20,7 @@ class Player(pg.sprite.Sprite):
         self.health.setup_organs()
         self.health_effects = HealthEffects(self.health, self.inventory)
         self.user_interface = UI(self.screen, self)
+        self.inventory.logger = self.user_interface.logger
         self.combat = Combat(self, self.user_interface.logger)
         self.inventory.setup_starting_items()
         self.sound_system = SoundSystem()
