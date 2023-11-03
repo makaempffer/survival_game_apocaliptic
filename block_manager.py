@@ -1,5 +1,6 @@
 from settings import *
 from block import Block
+from stash import Stash
 class BlockManager:
     def __init__(self, screen, mapData):
         self.group = pg.sprite.Group()
@@ -8,10 +9,13 @@ class BlockManager:
         self.mapData = mapData
         self.coordinatesGroup = []
         self.resource_blocks = []
+        self.stashes = []
         self.generate_map()
         
     def render(self):
         self.group.draw(self.screen)
+        for stash in self.stashes:
+            stash.render_update_stash()
 
     def update_resource_blocks(self):
         for block in self.resource_blocks:
@@ -19,6 +23,9 @@ class BlockManager:
 
     def insert_item_block(self, x, y, item):
         block = Block(x//BLOCK_SIZE, y//BLOCK_SIZE, None, item.item_id)
+        if item.item_type == "stash":
+            block.stash = Stash(self.screen)
+            self.stashes.append(block.stash)
         print(f"[BLOCK] - TYPE {block.type}")
         self.group.add(block)
 

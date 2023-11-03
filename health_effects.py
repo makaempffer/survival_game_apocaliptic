@@ -10,7 +10,8 @@ class HealthEffects:
     """Class that applies all the corresponding effects to the user,
     bleeding, broken bones, etc.
     ## Requires a health object reference."""
-    def __init__(self, user_health_ref, inventory_ref):
+    def __init__(self, user_health_ref, inventory_ref, sound_system=None):
+        self.sound_system = sound_system
         self.health = user_health_ref
         self.inventory = inventory_ref
         self.stomach_size = 50
@@ -144,6 +145,7 @@ class HealthEffects:
                 bleeding_limb = self.health.get_bleeding_limb()
                 if bleeding_limb:
                     bleeding_limb.stop_bleed()
+                    self.sound_system.play_sound("bandage")
                     print("[HEALTH-EFFECTS] - HEMOSTAT APPLIED.")
                     return
                 
@@ -166,4 +168,5 @@ class HealthEffects:
             elif item.item_type == "drug":
                 print(f"[HEALTH-EFFECTS] - CONSUMED DRUG {item.item_id}")
                 self.current_radiation -= item.amount
-                
+                if item.sub_type == "cigarette":
+                    self.sound_system.play_sound("smoke")

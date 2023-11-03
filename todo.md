@@ -51,3 +51,4 @@
 # Every time you consume an adicting item there is a chance you become addicted
 # Particle effects system for bleeding, punching?, walking?, headshoted, smoking
 # Enemy attacks not on a clock but frame counter FIX
+# Do the ritual? class to add progress to the gameplay

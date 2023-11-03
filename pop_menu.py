@@ -29,6 +29,7 @@ class PopMenu:
         self.select_sound = pg.mixer.Sound('./sounds/Select.wav')
         self.stepped_block = None
         self.hovered_index = None
+        self.selected_stash = None
 
     def get_selected_block(self):
         return self.selected_block
@@ -58,19 +59,27 @@ class PopMenu:
         return options
 
     def getMenuOptions(self):
+        selected_item = None
         self.open_menu_sound.set_volume(0.02)
         self.open_menu_sound.play()
         mouseX, mouseY = pg.mouse.get_pos()
+        mouse_pos = pg.mouse.get_pos()
         self.startingPoint = [mouseX, mouseY]
         options = []
         # print(mouseX//10, mouseY//10)
         for index, block in enumerate(self.mapData):
-            if mouseX//BLOCK_SIZE == block[0] and mouseY//BLOCK_SIZE == block[1]:
+            if self.block_manager.blocks[index].rect.collidepoint(mouse_pos):
                 self.selected = block[3]
                 # TODO Make get_block_index()
                 self.selected_block = self.block_manager.blocks[index]
                 self.posX, self.posY = mouseX, mouseY
                 self.blockIndex = index
+            
+            #if mouseX//BLOCK_SIZE == block[0] and mouseY//BLOCK_SIZE == block[1]:
+        for block in self.block_manager.group:
+            if block.rect.collidepoint(mouse_pos):
+                selected_item = block
+                self.selected_stash = block
 
         if self.selected == "DIRT":
             options = ["Walk", "Place"]
@@ -91,7 +100,13 @@ class PopMenu:
         elif self.selected.upper() == "WOOD_TABLE":
             options = ["Craft"]
             self.options = options
-
+            
+        if selected_item:
+            
+            if selected_item.type.upper() == "CHEST":
+                options = ["Open Stash"]
+                self.options = options
+        
         options += self.get_npc_options()
 
         return options
@@ -195,7 +210,6 @@ class PopMenu:
                     return index
         
     def get_block(self, x, y):
-        """Make this faster"""
         for block in self.block_manager.blocks:
             if block.rect.collidepoint((x, y)):
                 self.stepped_block = block

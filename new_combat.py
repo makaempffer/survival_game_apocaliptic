@@ -133,6 +133,8 @@ class Combat:
                     if target_user:
                         self.add_to_logger(f"You hit {target_user.type.capitalize()} for {attack_data[1]} damage!", GREEN)
                     if bleed_roll:
+                        if self.user.sound_system:
+                            self.user.sound_system.play_sound("knife_cut")
                         self.add_to_logger(f"{target_user.type.capitalize()}'s {attack_data[0].limb_name} is bleeding!", PURPLE)
                         self.add_to_logger_npc(f"Your {attack_data[0].limb_name} started bleeding!", target_user, RED)
                     # Giving a reference to the attacker

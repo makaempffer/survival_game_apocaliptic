@@ -85,7 +85,6 @@ class Logger:
         self.stack = []
         self.screen = screen
         self.max_messages = MAX_LOGS
-        self.add_log("HELLO")
         
     def add_log(self, log: str, font_color: tuple = LOG_FONT_COLOR):
         if len(self.stack) > MAX_LOGS:

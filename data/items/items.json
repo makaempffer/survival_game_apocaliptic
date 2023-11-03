@@ -118,6 +118,7 @@
             "consumable": true,
             "file_path": "./assets/items/cigarrete_malrobo.png",
             "item_type": "drug",
+            "sub_type": "cigarette",
             "amount": 15,
             "adictive": true,
             "weight": 0.1
@@ -151,6 +152,25 @@
             "weight": 0.3,
             "item_type": "clothing",
             "armor": 7
+        },
+        {
+            "item_id": "LIGHTER",
+            "stackable": true,
+            "consumable": false,
+            "equipable": false,
+            "file_path": "./assets/items/lighter.png",
+            "weight": 0.02,
+            "item_type": "fire_starter"
+        },
+        {
+            "item_id": "CHEST",
+            "stackable": false,
+            "consumable": false,
+            "equipable": false,
+            "file_path": "./assets/items/chest.png",
+            "weight": 0.5,
+            "item_type": "stash",
+            "placeable": true
         }
     ]
 }

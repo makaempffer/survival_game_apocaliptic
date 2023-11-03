@@ -15,6 +15,7 @@ class Block(pg.sprite.Sprite):
         self.type = block_type
         self.data = []
         self.radiation_level = 0
+        self.stash = None
         self.get_image()
         self.setup_resources()
         self.reload_image(self.type)
@@ -22,9 +23,13 @@ class Block(pg.sprite.Sprite):
         # TODO FIX - Blocks not setting the according type.
 
     def reload_image(self, block_name: str):
-        choice = randint(1, 2)
-        path = "./assets/blocks/" + block_name.lower() + "_"+ str(choice) +".png"
-        self.image = pg.image.load(path)
+        try:
+            choice = randint(1, 2)
+            path = "./assets/blocks/" + block_name.lower() + "_"+ str(choice) +".png"
+            self.image = pg.image.load(path)
+        except:
+            path = "./assets/blocks/" + block_name.lower()+".png"
+            self.image = pg.image.load(path)
         # ADDING OR MOVING THIS GIVES A NIGHT EFFECT!!! TODO
         # self.image.set_alpha(50)
 

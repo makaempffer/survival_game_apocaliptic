@@ -35,7 +35,7 @@ class NPC(pg.sprite.Sprite):
         self.can_move = True
         self.friendly = False
         self.vision_distance = 30
-        self.cooldown = randint(120, 400) # Time a npc takes to do action
+        self.cooldown = randint(120, 400) # Time an npc takes to do action
         self.attack_counter = 0
         self.start_timer = False
         self.get_type()

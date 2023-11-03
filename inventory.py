@@ -41,7 +41,6 @@ class Item(pg.sprite.Sprite):
         self.item_id = item_id
         self.create_from_dict(item_dict)
 
-    
     def create_from_dict(self, _dict):
         if pg.get_init(): 
             id = self.item_id            
@@ -57,8 +56,6 @@ class Item(pg.sprite.Sprite):
         if self.file_path:
             self.image = pg.image.load(self.file_path).convert_alpha()
             print("[ITEM] - IMAGE LOADED.")
-
-    
 
 class Inventory:
     def __init__(self, screen=None, logger = None) -> None:
@@ -78,7 +75,9 @@ class Inventory:
         self.last_consumed = None
         self.selected_item = None
         self.last_equiped = None
-        self.create_item_frame_group()
+        self.transfer_target = None
+        self.is_stash = False
+        self.transfer_mode = False
         self.create_inventory()
         self.update_item_group()
         
@@ -93,7 +92,6 @@ class Inventory:
         if ammo:
             self.decrease_item_count(ammo, shots_fired)
         
-        
     def get_ammo_by_caliber(self, caliber='9mm'):
         for row in self.inventory:
             for item in row: 
@@ -102,6 +100,12 @@ class Inventory:
                     if item.caliber == caliber and item.item_quantity > 0:
                         return item
             return False
+        
+    def setup_stash(self):
+        if self.is_stash:
+            self.x_start, self.y_start = 0, 0
+        self.create_item_frame_group()
+            
             
     def get_inventory_weight(self):
         weight = 0
@@ -115,6 +119,7 @@ class Inventory:
         item.item_quantity -= amount
 
     def setup_starting_items(self):
+        self.create_item_frame_group()
         self.add_item("BANDAGE", 3)
         self.add_item("BREAD", 5)
         self.add_item("PILL", 3)
@@ -123,9 +128,23 @@ class Inventory:
         self.add_item("CIGARRETE_MALROBO", 5)
         self.add_item("KNIFE")
         self.add_item("SHIRT")
+        self.add_item("CHEST")
+        self.add_item("CHEST")
+        
+    def set_transfer_target(self, target):
+        if not target: return
+        self.transfer_target = target
+        
+    def transfer_item(self, item):
+        print(item.item_id, self.transfer_target)
+        if self.transfer_target and self.transfer_target.inventory.is_open and not self.is_stash:
+            self.transfer_target.inventory.add_item(item.item_id)
+            self.decrease_item_count(item)
+        else:
+            self.transfer_target.inventory.add_item(item.item_id)
+            self.decrease_item_count(item)
         
     def add_item_list(self, inventory_list):
-        slot_x, slot_y = None, None
         for x, row in enumerate(inventory_list):
             for y, item in enumerate(row):
                 if item == None:
@@ -149,6 +168,7 @@ class Inventory:
         """All item-player related update-calls here."""
         self.consume_stack()
         self.delete_items_on_stack()
+        
 
     def create_item_frame_group(self):
         frames = self.create_item_frame_inventory()
@@ -276,6 +296,17 @@ class Inventory:
                         return item
 
         self.clear_selected()
+        
+    def get_transfered_item(self):
+        if self.transfer_mode:                
+            if not pg.mouse.get_pressed()[0] or not self.is_open:
+                return
+            mouse_pos = pg.mouse.get_pos()
+            for row in self.inventory:
+                for item in row:
+                    if item != None:
+                        if item.rect.collidepoint(mouse_pos):
+                            self.transfer_item(item)
 
     def item_selection_effect(self, item):
         item.image.set_alpha(100)
@@ -296,9 +327,11 @@ class Inventory:
     def update(self):
         self.update_item_group()
         self.update_sprites_positions()
-        self.get_item()
         self.check_empty()
-        self.delete_selected_item()
+        self.get_transfered_item()
+        if not self.transfer_mode:
+            self.get_item()
+            self.delete_selected_item()
 
     def open(self):
         self.is_open = not self.is_open

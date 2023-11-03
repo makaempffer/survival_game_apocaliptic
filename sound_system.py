@@ -40,8 +40,6 @@ class SoundSystem:
                 sound_path = value['sound']
                 self.add_sound(key, sound_path, 1)
                 
-       
-    
     def setup_sounds(self):
         self.add_sound("walk", './sounds/walk.mp3', 0.1)
         self.add_sound("wood_chop", "./sounds/Wood_chop.wav", 0.9)
@@ -50,6 +48,10 @@ class SoundSystem:
         self.add_sound("pistol_pack", './sounds/guns/pistol_pack.wav', 4)
         self.add_sound("pistol_rack", './sounds/guns/pistol_rack.wav', 4)
         self.add_sound("pistol_dry_fire", './sounds/guns/pistol_dry_fire.wav', 4)
+        self.add_sound("knife_cut", "./sounds/knife_cut.wav", 1)
+        self.add_sound("bandage", "./sounds/bandage.mp3", 0.4)
+        self.add_sound("footstep_gravel", "./sounds/footstep_gravel.wav", 1)
+        self.add_sound("smoke", "./sounds/cigarette_smoke.mp3", 0.3)
         print("[SOUND-SYS] - SETUP SOUNDS.")
     
     def stop_sound(self, sound_name: str):

@@ -18,13 +18,13 @@ class Player(pg.sprite.Sprite):
         self.skills.set_skill_level("accuracy", 8)
         self.health = Health(self.skills)
         self.health.setup_organs()
-        self.health_effects = HealthEffects(self.health, self.inventory)
+        self.sound_system = SoundSystem()
+        self.sound_system.setup_sounds()
+        self.health_effects = HealthEffects(self.health, self.inventory, self.sound_system)
         self.user_interface = UI(self.screen, self)
         self.inventory.logger = self.user_interface.logger
         self.combat = Combat(self, self.user_interface.logger)
         self.inventory.setup_starting_items()
-        self.sound_system = SoundSystem()
-        self.sound_system.setup_sounds()
         self.friendly = False
         self.position = pg.Vector2(360, 360)
         self.menu = menu
@@ -37,6 +37,7 @@ class Player(pg.sprite.Sprite):
         self.interaction_reach = BLOCK_SIZE
         self.cooldown = 3
         self.doAction = True
+        self.is_walking = False
         self.isWalking = False
         self.triggered = False
         self.combat_triggered = False
@@ -52,6 +53,10 @@ class Player(pg.sprite.Sprite):
         self.menu.get_block(self.position.x, self.position.y)
         self.health_effects.physical_updates()
         self.health_effects.set_environment_radiation(self.menu.stepped_block)
+        
+        # Walking effect
+        if self.is_walking:
+            self.sound_system.play_sound("footstep_gravel")
     
     def show_health_bar(self):
         hp = self.health.get_health()
@@ -115,6 +120,17 @@ class Player(pg.sprite.Sprite):
             self.inventory.decrease_item_count(self.inventory.selected_item)
             print(f"[PLYR] - ITEM {self.inventory.selected_item} PLACED.")
             self.inventory.selected_item = None
+            
+        elif action == "open stash":
+            self.lastCommand = None
+            self.menu.selected_stash.stash.open_stash()
+            if self.menu.selected_stash.stash.inventory.is_open:
+                #self.menu.selected_stash.stash.inventory.transfer_target = self.inventory
+                self.menu.selected_stash.stash.inventory.set_transfer_target(self)
+                self.inventory.transfer_target = self.menu.selected_stash.stash
+                self.inventory.transfer_mode = True
+            else:
+                self.inventory.transfer_mode = False
 
     def block_resource_update(self, block):
         if block.get_resource_amount() <= 0:
@@ -137,10 +153,15 @@ class Player(pg.sprite.Sprite):
         if target == None:
             self.sound_system.fadeout_sound("walk")
             self.triggered = False
-
+            
+    def check_alive(self):
+        if not self.health.check_alive:
+            self.kill()
+            
     def update(self, delta_time):
         self.movement(delta_time)
         self.health.update()
+        self.check_alive()
     
     def timer_event(self, event):
         if event.type == self.timer:
@@ -160,6 +181,8 @@ class Player(pg.sprite.Sprite):
         if not item:
             return
         self.health_effects.consume_item_effect(item)
+        if item.consumable:
+            self.user_interface.logger.add_log(f"You consumed {item.item_id.lower()}.", PURPLE)
         self.inventory.kill_consumed()
         # Get the most damaged part and heal it some amount.
 
@@ -199,8 +222,11 @@ class Player(pg.sprite.Sprite):
         if self.lastCommand == "Walk" and self.menu.savedLocation:
             target_pos = pg.Vector2(self.menu.savedLocation[0], self.menu.savedLocation[1])
             if self.position == target_pos:
+                self.is_walking = False
                 self.lastCommand = None
                 return
+            else:
+                self.is_walking = True
                 
             if target_pos:
                 self.position = self.position.move_towards(target_pos, self.speed * delta_time)
