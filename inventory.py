@@ -78,6 +78,7 @@ class Inventory:
         self.transfer_target = None
         self.is_stash = False
         self.transfer_mode = False
+        self.clicked = False
         self.create_inventory()
         self.update_item_group()
         
@@ -131,19 +132,6 @@ class Inventory:
         self.add_item("CHEST")
         self.add_item("CHEST")
         
-    def set_transfer_target(self, target):
-        if not target: return
-        self.transfer_target = target
-        
-    def transfer_item(self, item):
-        print(item.item_id, self.transfer_target)
-        if self.transfer_target and self.transfer_target.inventory.is_open and not self.is_stash:
-            self.transfer_target.inventory.add_item(item.item_id)
-            self.decrease_item_count(item)
-        else:
-            self.transfer_target.inventory.add_item(item.item_id)
-            self.decrease_item_count(item)
-        
     def add_item_list(self, inventory_list):
         for x, row in enumerate(inventory_list):
             for y, item in enumerate(row):
@@ -168,7 +156,8 @@ class Inventory:
         """All item-player related update-calls here."""
         self.consume_stack()
         self.delete_items_on_stack()
-        
+        if self.clicked:
+            self.clicked = False
 
     def create_item_frame_group(self):
         frames = self.create_item_frame_inventory()
@@ -178,7 +167,7 @@ class Inventory:
                     self.item_frame_group.add(item)
 
     def get_sprites(self):
-        print("[INV] - GETTING ITEMS.")
+        #print("[INV] - GETTING ITEMS.")
         item_list = []
         for x, row in enumerate(self.inventory):
             for y, item in enumerate(row): 
@@ -210,7 +199,7 @@ class Inventory:
                 if slot != None:
                     if slot.item_id == item_name and slot.stackable:
                         slot.item_quantity += quantity
-                        print(f"[INV] - ADDED QUANTITY {quantity} TO {slot.item_id}")
+                        #print(f"[INV] - ADDED QUANTITY {quantity} TO {slot.item_id}")
                         self.add_to_logger(f"You added {quantity} of {slot.item_id} to your inventory.", LOG_FONT_COLOR)
                         return
                     
@@ -220,7 +209,7 @@ class Inventory:
                     item = Item(0, 0, item_name)
                     item.item_quantity = quantity
                     self.add_to_logger(f"You added {quantity} of {item.item_id} to your inventory.", LOG_FONT_COLOR)
-                    print("[INV] - FILLED CLOSEST EMPTY SLOT.")
+                    #print("[INV] - FILLED CLOSEST EMPTY SLOT.")
                     item.rect.x = self.x_start + x * ITEM_SIZE
                     item.rect.y = self.y_start + y * ITEM_SIZE 
                     #slot = item
@@ -307,6 +296,23 @@ class Inventory:
                     if item != None:
                         if item.rect.collidepoint(mouse_pos):
                             self.transfer_item(item)
+                            
+
+    def set_transfer_target(self, target):
+        if not target: return
+        self.transfer_target = target
+        
+    def transfer_item(self, item):
+        print(item.item_id, self.transfer_target)
+        if self.clicked: return
+        if self.transfer_target and self.transfer_target.inventory.is_open and not self.is_stash and self.clicked == False:
+            self.transfer_target.inventory.add_item(item.item_id)
+            self.decrease_item_count(item)
+            self.clicked = True
+        else:
+            self.transfer_target.inventory.add_item(item.item_id)
+            self.decrease_item_count(item)
+            self.clicked = True
 
     def item_selection_effect(self, item):
         item.image.set_alpha(100)
@@ -320,7 +326,7 @@ class Inventory:
                 if item == None or item.item_id == "EMPTY":
                     continue
                 if item.item_quantity <= 0:
-                    print(f"[INV] - DELETING ITEM -> {item.item_id}")
+                    #print(f"[INV] - DELETING ITEM -> {item.item_id}")
                     self.item_group.remove(item)
                     self.inventory[x][y] = None
 
@@ -341,7 +347,7 @@ class Inventory:
                 for item in row:
                     if item != None and not self.item_group.has(item):
                         self.item_group.add(item)
-                        print("[INV] - ITEM: {", item.item_id, "} APPENDED")
+                        #print("[INV] - ITEM: {", item.item_id, "} APPENDED")
 
     def render_item_text(self):
         self.item_group.update(self.screen)

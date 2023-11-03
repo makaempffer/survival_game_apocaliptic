@@ -51,7 +51,7 @@ class SoundSystem:
         self.add_sound("knife_cut", "./sounds/knife_cut.wav", 1)
         self.add_sound("bandage", "./sounds/bandage.mp3", 0.4)
         self.add_sound("footstep_gravel", "./sounds/footstep_gravel.wav", 1)
-        self.add_sound("smoke", "./sounds/cigarette_smoke.mp3", 0.3)
+        self.add_sound("smoke", "./sounds/cigarette_smoke.mp3", 0.2)
         print("[SOUND-SYS] - SETUP SOUNDS.")
     
     def stop_sound(self, sound_name: str):

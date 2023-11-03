@@ -12,6 +12,8 @@ class Stash(pg.sprite.Sprite):
         self.inventory.is_open = not self.inventory.is_open
         print("Stash open", self.inventory.is_open)
         
-    def render_update_stash(self):
+    def render_stash(self):
         self.inventory.render()
+        
+    def update_stash(self):
         self.inventory.update()

@@ -20,8 +20,16 @@ class Game:
         self.isRunning = True
         self.clock = pg.time.Clock()
         self.delta_time = 1
+        self.counter = 0
+        self.max_ticks = 100
         self.playerManager = None
         self.newGame()
+    
+    def timed_updates(self):
+        self.counter += 1
+        if self.counter >= self.max_ticks:
+            self.block_manager.update_click_for_stash()
+            self.counter = 0
 
     def newGame(self):
         self.popMenu = PopMenu(self.block_manager.mapData, self.block_manager, self.npcManager.npc_group, self.screen)
@@ -38,6 +46,7 @@ class Game:
         self.popMenu.update()
         self.npcManager.update(self.delta_time, self.player)
         self.block_manager.update_resource_blocks()
+        self.timed_updates()
         self.narrator.update()
         self.player.inventory.update()
         self.delta_time = self.clock.tick(FPS)

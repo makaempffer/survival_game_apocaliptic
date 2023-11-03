@@ -15,7 +15,13 @@ class BlockManager:
     def render(self):
         self.group.draw(self.screen)
         for stash in self.stashes:
-            stash.render_update_stash()
+            stash.render_stash()
+            stash.update_stash()
+        
+    def update_click_for_stash(self):
+        for stash in self.stashes:
+            if stash.inventory.clicked:
+                stash.inventory.clicked = False
 
     def update_resource_blocks(self):
         for block in self.resource_blocks:
