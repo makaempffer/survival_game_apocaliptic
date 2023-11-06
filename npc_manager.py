@@ -49,8 +49,9 @@ class NPCManager():
         if len(self.map) > 1:
             for x, row in enumerate(self.map):
                 for y, col in enumerate(row):
-                    if x == 45 and y == 40:
-                        self.spawn_npc(x, y, "trader")
+                    if x == 0 and y == 0:
+                        print("SPAWNING TRADER")
+                        self.spawn_npc(20, 10, "trader")
                         continue
                     if self.map[x][y] >= -0.4 and self.map[x][y] <= -0.3:
                         choice = randrange(0, 10)

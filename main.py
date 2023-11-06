@@ -85,7 +85,6 @@ class Game:
                 self.world.regenerate_map()
                 self.block_manager.generate_map()
                 
-                
             # MENU STUFF
             self.popMenu.getSelectedOption(event)
             
