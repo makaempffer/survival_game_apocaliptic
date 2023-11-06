@@ -3,7 +3,7 @@ import pygame as pg
 from settings import *
 from functions import *
 from world import World
-from pop_menu import PopMenu
+from menu import PopMenu
 from npc_manager import NPCManager
 from block_manager import BlockManager
 from player_manager import PlayerManager
@@ -28,6 +28,7 @@ class Game:
     def timed_updates(self):
         self.counter += 1
         if self.counter >= self.max_ticks:
+            """Functions to call on tick cooldown."""
             self.block_manager.update_click_for_stash()
             self.counter = 0
 
@@ -71,7 +72,7 @@ class Game:
                 sys.exit()
 
             self.playerManager.update_player_events(event)
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3 and not self.player.inventory.is_open:#right button mousse
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:#right button mousse
                 self.popMenu.setupMenu()
 
             if event.type == pg.KEYDOWN and event.key == pg.K_TAB:

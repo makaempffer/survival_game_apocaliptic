@@ -50,7 +50,7 @@ class SoundSystem:
         self.add_sound("pistol_dry_fire", './sounds/guns/pistol_dry_fire.wav', 4)
         self.add_sound("knife_cut", "./sounds/knife_cut.wav", 1)
         self.add_sound("bandage", "./sounds/bandage.mp3", 0.4)
-        self.add_sound("footstep_gravel", "./sounds/footstep_gravel.wav", 1)
+        self.add_sound("footstep_gravel", "./sounds/footstep_gravel.wav", 0.7)
         self.add_sound("smoke", "./sounds/cigarette_smoke.mp3", 0.2)
         print("[SOUND-SYS] - SETUP SOUNDS.")
     

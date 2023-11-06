@@ -18,6 +18,7 @@ class World:
         self.view()
 
     def createMap(self, seed=1):
+        self.map.clear()
         noise = PerlinNoise(octaves=7, seed=seed)
         xpix, ypix = HEIGHT//BLOCK_SIZE, WIDTH//BLOCK_SIZE
         self.rows, self.cols = (self.sizeX//BLOCK_SIZE, self.sizeY//BLOCK_SIZE)
@@ -25,6 +26,7 @@ class World:
         self.map = arr
     
     def view(self):
+        self.mapData.clear()
         print("[WORLD] - CREATING WORLD...")
         if len(self.map) > 1:
             for x, row in enumerate(self.map):

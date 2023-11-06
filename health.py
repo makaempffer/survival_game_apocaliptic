@@ -7,7 +7,7 @@ class Health:
     '''Npcs don't have organs!, #only call setup organs on player.
     (Might lead to code erros.)'''
     def __init__(self, skills):
-        self.true_hp = 100
+        self.true_hp = MAX_TRUE_HP
         self.alive = True
         self.organs = None
         self.skills = skills
@@ -42,6 +42,21 @@ class Health:
             'leg_right': 20,
             'leg_left': 20,
             }
+        
+    def get_max_hp_limbs(self):
+        max_hp = 0
+        for limb in self.limbs.values():
+            max_hp += limb.MAX_HP
+        return max_hp
+        
+    def heal_random_limb(self, amount):
+        limb = self.get_random_limb()
+        limb.heal(amount)
+        
+    def get_random_limb(self):
+        keys = list(self.limbs.keys())
+        random_key = random.choice(keys)
+        return self.limbs[random_key]
         
     def get_bleeding_limb(self):
         for limb in self.limbs.values():

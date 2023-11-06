@@ -63,10 +63,10 @@ class UI(pg.sprite.Sprite):
         self.logger.render_log()
         
     def setup_text(self):
-        self.render_text_at(self.player.health.get_health(), (WIDTH - UI_SIZE_X + ICON_SIZE * 1 + ICON_SPACING) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(f"{format_two_decimals(self.player.health.get_health())}/{int(self.player.health.true_hp)}", (WIDTH - UI_SIZE_X + ICON_SIZE * 1 + ICON_SPACING) - ICON_X_MARGIN - 24, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
         self.render_text_at(self.player.inventory.get_inventory_weight(), (WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 2) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
         self.render_text_at(self.player.health_effects.get_armor_rating(),(WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 3) - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
-        self.render_text_at(self.player.health_effects.current_radiation, WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 4 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
+        self.render_text_at(f"{format_two_decimals(self.player.health_effects.current_radiation)}/{int(self.player.health_effects.radiation_shield)}", WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 4 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
         self.render_text_at(self.player.health.get_hunger(), WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 5 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
         self.render_text_at(self.player.health.get_thirst(), WIDTH - UI_SIZE_X + (ICON_SIZE + ICON_SPACING) * 6 - ICON_X_MARGIN, HEIGHT - UI_SIZE_Y, UI_FONT_COLOR)
     

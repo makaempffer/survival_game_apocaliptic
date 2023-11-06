@@ -1,0 +1,34 @@
+{
+    "recipes": [
+        {
+            "product": "cigarette_malrobo",
+            "amount": 2,
+            "station": null,
+            "input": ["tobacco", 3, "paper", 1]
+        },
+        {
+            "product": "ammo_9mm",
+            "amount": 2,
+            "station": "assembly station", 
+            "input": ["bullet_casing", 1, "black_powder", 2, "bullet_tip_9mm", 1]
+        },
+        {
+            "product": "bullet_casing",
+            "amount": 3,
+            "station": "forge",
+            "input": ["copper_ingot", 1]
+        },
+        {
+            "product": "copper_ingot",
+            "amount": 1,
+            "station": "foundry",
+            "input": ["copper_ore", 2]
+        },
+        {
+            "product": "bullet_tip_9mm",
+            "amount": 3,
+            "station": "forge",
+            "input": ["copper_ingot", 1]
+        }
+    ]
+}

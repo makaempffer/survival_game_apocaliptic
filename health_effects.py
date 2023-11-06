@@ -20,6 +20,7 @@ class HealthEffects:
         self.equiped_index = 0
         self.environment_radiation = 0
         self.current_radiation = 0
+        self.radiation_shield = 0
         self.radiation_resistance = 10 # SHOULD BE INCREASED BY SKILLS AND EQUIPABLE ITEMS.
         ## EQUIPABLE SLOTS
         self.equiped_items = Group()
@@ -35,7 +36,7 @@ class HealthEffects:
         self.inventory.get_inventory_weight()
         ###
         for x in range(slots_amount):
-            slot = Item(self.inventory.x_start - 72 + (x * ITEM_SIZE), self.inventory.y_start, "ITEM_FRAME")
+            slot = Item(self.inventory.x_start - (ITEM_SIZE * slots_amount) + (x * ITEM_SIZE), self.inventory.y_start, "ITEM_FRAME")
             self.equiped_items.add(slot)
             self.equiped_list.append(slot)
             
@@ -47,18 +48,29 @@ class HealthEffects:
             #print(f"RADIATION_LEVEL: {block.radiation_level}")
             self.environment_radiation = block.radiation_level
             
+            
     def render_slots(self):
         self.equiped_items.draw(self.inventory.screen)
         
     def radiation_effect(self):
-        taken_radiation = apply_resistance(self.environment_radiation, self.radiation_resistance, RESISTANCE_FACTOR)
-        if self.environment_radiation > self.radiation_resistance:
-            self.current_radiation += taken_radiation
+        taken_radiation = apply_resistance(self.environment_radiation, self.radiation_resistance, RADIATION_RES_FACTOR)
+        if self.environment_radiation > self.radiation_resistance and self.radiation_shield <= 0:
+            self.current_radiation += taken_radiation * RADIATION_EFFECT_FACTOR
+        elif self.environment_radiation > self.radiation_resistance and self.radiation_shield > 0:
+            self.radiation_shield -= taken_radiation
+            
         if self.current_radiation >= 1:
-            self.health.take_true_damage(taken_radiation)
-            print(f"[HEALTH] - TRUE HP {self.health.true_hp}")
+            self.health.take_true_damage(self.current_radiation*RADIATION_DMG_MULTIPLIER)
+            print(f"[HEALTH] - TRUE HP {self.health.true_hp}, RAD SHIELD {self.radiation_shield}")
+            
         elif self.current_radiation < 0:
+            self.radiation_shield += abs(self.current_radiation)
             self.current_radiation = 0
+            
+            
+        if self.current_radiation > 0 and self.environment_radiation <= self.radiation_resistance:
+            self.current_radiation -= 0.02
+                
     
     def overcumbered_effect(self):
         if self.inventory.get_inventory_weight() > self.max_weight:
@@ -73,12 +85,19 @@ class HealthEffects:
     def withdrawal_effect(self):
         pass
 
-    
     def needs_effect(self):
-        if self.health.get_hunger() <= 0 or self.health.get_thirst() <= 0:
+        hunger, thirst = self.health.get_hunger(), self.health.get_thirst()
+        if hunger <= 0 or thirst <= 0:
             # Example: self.state_icons.show("bleed")
             # Following code is what ever happens as consecuence.
             self.health.take_true_damage(0.1)
+            
+        liver, stomach = self.health.get_organ("liver"), self.health.get_organ("stomach")
+        if hunger >= stomach.MAX_CAPACITY // 2 and thirst >= liver.MAX_CAPACITY // 2 and self.health.true_hp < MAX_TRUE_HP:
+            self.health.true_hp += HP_RECOVERY_AMOUNT
+        
+        if self.health.true_hp >= MAX_TRUE_HP and self.health.get_health() < self.health.get_max_hp_limbs():
+            self.health.heal_random_limb(HP_RECOVERY_AMOUNT)
             
     def basic_update(self):
         ### DISPLAY STATUS ICONS HERE!! encumbered, bleeding, etc.
@@ -167,6 +186,14 @@ class HealthEffects:
                 
             elif item.item_type == "drug":
                 print(f"[HEALTH-EFFECTS] - CONSUMED DRUG {item.item_id}")
-                self.current_radiation -= item.amount
-                if item.sub_type == "cigarette":
+                # PLACEHOLDER EFFECT
+                
+                if item.sub_type == "cigarette" and self.inventory.has_item_type('fire_starter'):
+                    self.current_radiation -= item.amount
                     self.sound_system.play_sound("smoke")
+                    
+                elif item.sub_type == "cigarette" and not self.inventory.has_item_type('fire_starter'):
+                    self.inventory.add_to_logger("Wish I a had a lighter...", PURPLE)
+                    return False
+        return True   
+        

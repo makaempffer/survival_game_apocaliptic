@@ -100,7 +100,19 @@ class Inventory:
                 if item.item_type == 'ammo': 
                     if item.caliber == caliber and item.item_quantity > 0:
                         return item
-            return False
+        return False
+        
+    def has_item_type(self, type: str = 'fire_starter', decrease_count: bool = True) -> bool:
+        '''Return True if there is {type} of item in inventory.'''
+        for row in self.inventory:
+            for item in row: 
+                if not item: continue
+                if item.item_type == type: 
+                    if item.item_quantity > 0:
+                        if decrease_count:
+                            self.decrease_item_count(item)
+                        return True
+        return False
         
     def setup_stash(self):
         if self.is_stash:
@@ -131,6 +143,7 @@ class Inventory:
         self.add_item("SHIRT")
         self.add_item("CHEST")
         self.add_item("CHEST")
+        self.add_item("LIGHTER")
         
     def add_item_list(self, inventory_list):
         for x, row in enumerate(inventory_list):

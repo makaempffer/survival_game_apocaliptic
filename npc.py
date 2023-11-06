@@ -1,8 +1,8 @@
 from settings import *
 from random import randint, choice
-from new_health import Health
+from health import Health
 from inventory import Inventory
-from new_combat import Combat
+from combat import Combat
 from skills import Skills
 from health_effects import HealthEffects
 from functions import mapFromTo

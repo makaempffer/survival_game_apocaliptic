@@ -1,11 +1,11 @@
 import pygame as pg
 from functions import *
-from new_health import Health
+from health import Health
 from inventory import Inventory
 from sound_system import SoundSystem
 from health_effects import HealthEffects
 from skills import Skills
-from new_combat import Combat
+from combat import Combat
 from settings import *
 from UI import UI
 
@@ -34,7 +34,7 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load("./assets/blocks/character_player.png")
         self.lastCommand = ""
         self.counter = 0
-        self.interaction_reach = BLOCK_SIZE
+        self.interaction_reach = BLOCK_SIZE + 5
         self.cooldown = 3
         self.doAction = True
         self.is_walking = False
@@ -61,12 +61,6 @@ class Player(pg.sprite.Sprite):
     def show_health_bar(self):
         hp = self.health.get_health()
         pg.draw.line(self.inventory.screen, (255, 0, 0), (self.rect.x, self.rect.y), (self.rect.x + mapFromTo(hp, 0, self.MAX_HP, 0, BLOCK_SIZE), self.rect.y))
-
-    def get_stats_text(self):
-        """Returns player stats on presentable format"""
-        message = "HUNGER: " + str(round(self.health.get_hunger(), 2)) + " THIRST: " + str(round(self.health.get_thirst(), 2)) + " RADS: " + str(round(self.health_effects.current_radiation, 2))
-        self.narrator.set_constant_text(("HP: " + str(round(self.health.get_health(), 2))), " ACTION: " + self.last_action)
-        self.narrator.append_message(message)
         
     def set_narrator(self, narrator):
         self.narrator = narrator
@@ -83,7 +77,6 @@ class Player(pg.sprite.Sprite):
             print("[PLAYER] - BLOCK TOO FAR.")
             return False
         
-        self.set_current_action("Gathering...")
         block.gather_resource(amount)
         self.block_resource_update(block)
         self.inventory.add_item(gathered_material, amount)
@@ -101,6 +94,8 @@ class Player(pg.sprite.Sprite):
         # TODO CALCULATE AMOUNT SOMEHOW
         total = 1
         action = self.lastCommand
+        if action != "walk":
+            self.is_walking = False
         #print(f"ACTION TO PERFORM - {action}")
         if not action:
             return
@@ -123,6 +118,9 @@ class Player(pg.sprite.Sprite):
             
         elif action == "open stash":
             self.lastCommand = None
+            distance = self.position.distance_to(self.menu.startingPoint)
+            if distance > self.interaction_reach: return
+            
             self.menu.selected_stash.stash.open_stash()
             if self.menu.selected_stash.stash.inventory.is_open:
                 #self.menu.selected_stash.stash.inventory.transfer_target = self.inventory
@@ -132,10 +130,18 @@ class Player(pg.sprite.Sprite):
             else:
                 self.inventory.transfer_mode = False
 
+    def stash_logic(self):
+        pass
+    """if self.menu.selected_stash:
+                if not self.menu.selected_stash: return
+                if self.position.distance_to(self.menu.selected_stash.position) > self.interaction_reach:
+                    if self.menu.selected_stash.stash.inventory:           
+                        if self.menu.selected_stash.stash.inventory.is_open:
+                            self.menu.selected_stash.stash.open_stash()"""
+
     def block_resource_update(self, block):
         if block.get_resource_amount() <= 0:
             self.lastCommand = None
-            self.set_current_action("Idle.")
 
     def set_current_action(self, action):
         if self.last_action != action:
@@ -144,7 +150,6 @@ class Player(pg.sprite.Sprite):
     def walk(self, target):
         if self.health.alive and self.isWalking == True and self.triggered == False and self.combat_triggered == False:
             self.sound_system.play_sound("walk")
-            self.set_current_action("Walking...")
             self.triggered = True
 
         if self.combat_triggered == True or self.health.alive == False:
@@ -155,13 +160,14 @@ class Player(pg.sprite.Sprite):
             self.triggered = False
             
     def check_alive(self):
-        if not self.health.check_alive:
+        if self.health.check_alive == False:
             self.kill()
             
     def update(self, delta_time):
         self.movement(delta_time)
         self.health.update()
         self.check_alive()
+        self.stash_logic()
     
     def timer_event(self, event):
         if event.type == self.timer:
@@ -180,16 +186,16 @@ class Player(pg.sprite.Sprite):
         item = self.inventory.last_consumed
         if not item:
             return
-        self.health_effects.consume_item_effect(item)
-        if item.consumable:
+        
+        if item.consumable and self.health_effects.consume_item_effect(item):
             self.user_interface.logger.add_log(f"You consumed {item.item_id.lower()}.", PURPLE)
         self.inventory.kill_consumed()
+            
         # Get the most damaged part and heal it some amount.
 
     def update_on_timer(self):
         """Function calls to run every time the timer is met."""
         self.update_time_effects()
-        self.get_stats_text()
         self.combat.player_combat_logic()
         self.inventory.update_item_player_effects()
         self.get_consumed_item()
@@ -230,7 +236,8 @@ class Player(pg.sprite.Sprite):
                 
             if target_pos:
                 self.position = self.position.move_towards(target_pos, self.speed * delta_time)
-                self.rect.x, self.rect.y = self.position.x, self.position.y
+                self.rect.center = self.position
+                #self.rect.x, self.rect.y = self.position.x, self.position.y
             self.doAction = False   
 
         
