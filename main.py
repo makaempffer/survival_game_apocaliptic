@@ -8,6 +8,7 @@ from npc_manager import NPCManager
 from block_manager import BlockManager
 from player_manager import PlayerManager
 from narrator_system import Narrator
+from director import Director
 
 class Game:
     def __init__(self):
@@ -40,9 +41,11 @@ class Game:
         self.player.set_narrator(self.narrator)
         self.inventory = self.player.inventory
         self.player.inventory.screen = self.screen
+        self.director = Director(npc_manager=self.npcManager, block_manager=self.block_manager)
         print("[ENGINE] - VARIABLES CREATED")
 
     def update(self):
+        self.director.update()
         self.playerManager.update(self.delta_time)
         self.popMenu.update()
         self.npcManager.update(self.delta_time, self.player)
@@ -62,6 +65,7 @@ class Game:
         self.npcManager.render()
         self.player.render_player_related()
         self.player.inventory.render()
+        self.director.render_clock()
 
      
     def check_events(self):

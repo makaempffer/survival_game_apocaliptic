@@ -17,6 +17,11 @@ class BlockManager:
         for stash in self.stashes:
             stash.render_stash()
             stash.update_stash()
+            
+    def set_world_alpha(self, alpha):
+        print(f"[B-MNGR] - WORLD ALPHA SET ALPHA {alpha}")
+        for block in self.blocks:
+            block.image.set_alpha(alpha)
         
     def update_click_for_stash(self):
         for stash in self.stashes:

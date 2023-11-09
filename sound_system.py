@@ -13,7 +13,7 @@ class SoundSystem:
     def __init__(self):
         self.sounds = {}
         self.time_ms = 2000
-        self.load_item_sounds_from_dict(item_dict)
+        #self.load_item_sounds_from_dict(item_dict)
 
     def add_sound(self, sound_name: str, path: str, volume=0.5):
         """Add a sound and give it a name"""
@@ -24,15 +24,19 @@ class SoundSystem:
     
     def get_sound(self, sound_name: str) -> pg.mixer.Sound:
         if sound_name in self.sounds:
-            return self.sounds.get(sound_name) 
+            return self.sounds.get(sound_name)
+        else:
+            return False
         
     def play_sound(self, sound_name, max_time=0, loops=0):
         sound = self.get_sound(sound_name)
-        sound.play(loops, max_time, self.time_ms)
+        if sound:
+            sound.play(loops, max_time, self.time_ms)
     
     def fadeout_sound(self, sound_name, time_ms=2000):
         sound = self.get_sound(sound_name)
-        sound.fadeout(time_ms)
+        if sound:
+            sound.fadeout(time_ms)
         
     def load_item_sounds_from_dict(self, sounds_dict: dict):
         for key, value in sounds_dict.items():
@@ -48,11 +52,13 @@ class SoundSystem:
         self.add_sound("pistol_pack", './sounds/guns/pistol_pack.wav', 4)
         self.add_sound("pistol_rack", './sounds/guns/pistol_rack.wav', 4)
         self.add_sound("pistol_dry_fire", './sounds/guns/pistol_dry_fire.wav', 4)
-        self.add_sound("knife_cut", "./sounds/knife_cut.wav", 1)
         self.add_sound("bandage", "./sounds/bandage.mp3", 0.4)
         self.add_sound("footstep_gravel", "./sounds/footstep_gravel.wav", 0.7)
         self.add_sound("smoke", "./sounds/cigarette_smoke.mp3", 0.2)
         print("[SOUND-SYS] - SETUP SOUNDS.")
+    
+    def load_enemy_npc_sounds(self):
+        self.add_sound("knife_cut", "./sounds/knife_cut.wav", 1)
     
     def stop_sound(self, sound_name: str):
         sound = self.sounds.get(sound_name)

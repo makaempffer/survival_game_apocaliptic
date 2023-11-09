@@ -1,5 +1,5 @@
 from settings import *
-from random import randrange
+from random import randrange,randint, choice
 from npc import NPC
 class NPCManager():
     def __init__(self, screen, width=WIDTH, height=HEIGHT):
@@ -23,7 +23,7 @@ class NPCManager():
 
     def setupNpc(self):
         self.create_spawns()
-        self.spawn()
+        #self.spawn()
     
     def update(self, delta_time, player):
         for npc in self.npc_group:
@@ -31,8 +31,9 @@ class NPCManager():
             npc.check_entity_in_range(player)
         self.remove_dead_npc()
 
-    def spawn_npc(self,x, y,type="zombie"):
-        self.npc_group.add(NPC(x, y, type))
+    def spawn_npc(self,x, y,type="zombie", difficulty=1):
+        print("ENTERED", x, y)
+        self.npc_group.add(NPC(x, y, type, difficulty))
 
     def render(self):
         self.npc_group.draw(self.screen)
@@ -58,4 +59,55 @@ class NPCManager():
                         if choice > 8:
                             self.spawn_npc(x, y, "zombie") 
             print("[NPC-M] - NPC SPAWN DONE")
+            
+    def random_point_near_edges(self, screen_width, screen_height, min_distance_to_center=50):
+        center_x = screen_width // 2
+        center_y = screen_height // 2
 
+        # Calculate the allowable range for enemy spawn near the edges
+        x_range = screen_width - 2 * min_distance_to_center
+        y_range = screen_height - 2 * min_distance_to_center
+
+        if x_range <= 0 or y_range <= 0:
+            raise ValueError("Screen dimensions are too small for the specified minimum distance to the center.")
+
+        # Randomly choose to spawn near the horizontal or vertical edge
+        spawn_near_horizontal_edge = randint(0, 1)
+
+        if spawn_near_horizontal_edge:
+            x = randint(0, screen_width)
+            if x < center_x:
+                x -= min_distance_to_center
+            else:
+                x += min_distance_to_center
+            y = randint(min_distance_to_center, screen_height - min_distance_to_center)
+        else:
+            y = randint(0, screen_height)
+            if y < center_y:
+                y -= min_distance_to_center
+            else:
+                y += min_distance_to_center
+            x = randint(min_distance_to_center, screen_width - min_distance_to_center)
+            
+        position = pg.Vector2(x, y)
+        choices = [(0,0), (WIDTH, 0), (0, HEIGHT), (WIDTH, HEIGHT)]
+        if position.distance_to((WIDTH//2, HEIGHT//2)) < WIDTH//3:
+            pos_x, pos_y = choice(choices)
+            pos_x += EDGE_SPAWN_OFFSET
+            if y < HEIGHT//2:
+                pos_y += EDGE_SPAWN_OFFSET
+            else:
+                pos_x += EDGE_SPAWN_OFFSET
+            
+            return pos_x, pos_y
+
+        return x, y
+
+            
+    def spawn_enemies(self, difficulty):
+        print("SPAWNING ENEMIES!!!!!!!!")
+        amount = randrange(MIN_SPAWN_AMOUNT, MAX_SPAWN_AMOUNT)
+        for i in range(amount):
+            x, y = self.random_point_near_edges(WIDTH, HEIGHT, EDGE_SPAWN_MARGIN)
+            print("FIRST", x, y)
+            self.spawn_npc(x, y, "zombie", difficulty)

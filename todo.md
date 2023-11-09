@@ -53,3 +53,13 @@
 # Enemy attacks not on a clock but frame counter FIX
 # Do the ritual? class to add progress to the gameplay
 # Add crafting system
+# Add game director that handles with time as dictator, the spawn of enemies, time of the day,
+- # events as rain, storm, blood moons.
+# Do simple particle system
+# Fix enemies only spawning on one side
+# Only load needed sounds on npcs
+# Clock is the game loop
+# Waves come at the player with time getting stronger like 7 days to die but faster and more constant but the player can defend and survive until there are way too many enemies or not strong enought
+gives enought time for player to farm and craft
+# every x time an agressive npc sees the player dicted by the director, randomly chosen and timing, gives an visual effect
+# this gives the constant tension on higher level with low cantity but high cality and strong enemies.
