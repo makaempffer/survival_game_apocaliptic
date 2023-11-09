@@ -5,6 +5,7 @@ class Director:
     def __init__(self, npc_manager, block_manager) -> None:
         self.counter = 0
         self.cycle = 1
+        self.reversed_counter = False
         self.clock = Clock()
         self.run_clock = True
         self.npc_manager = npc_manager
@@ -29,6 +30,7 @@ class Director:
     def render_clock(self):
         self.clock.render_clock(self.screen)
     
+    
     def tick(self):
         if self.run_clock:
             self.counter += 1
@@ -41,14 +43,23 @@ class Director:
             self.last_cycle = self.cycle           
         
     def counter_logic(self):
-        if self.counter >= CYCLE_DURATION:
+        if self.counter >= CYCLE_DURATION and not self.reversed_counter:
             self.counter = 1
             self.cycle += 1
+        elif self.counter >= CYCLE_DURATION and self.reversed_counter:
+            self.counter = 1
+            self.cycle -= 1
+        
+        if self.cycle >= MAX_CYCLE:
+            self.reversed_counter = True
+        elif self.cycle < 1:
+            self.reversed_counter = False
             
     def world_day_time(self, bypass: bool):
         if self.cycle % DAYTIME_INTERVAL == 0 or bypass:
             print("[DIR] - DAYTIME CHANGED.")
-            alpha_level = mapFromTo(self.cycle, 1, 1000, 100, 255)
+            alpha_level = mapFromTo(self.cycle, 1, MAX_CYCLE, MIN_DAY_ALPHA, MAX_DAY_ALPHA)
+            # alpha_level = mapFromTo(self.clock.get_hour(), 1, DAY_HOURS, MIN_DAY_ALPHA, MAX_DAY_ALPHA) Could work
             self.block_manager.set_world_alpha(alpha_level)
         
     def difficulty_logic(self):
@@ -75,6 +86,9 @@ class Clock:
         self.minute:int = 0
         self.hour:int = 0
         self.day:int = 0
+        
+    def get_hour(self):
+        return self.hour
         
     def increase_minute(self):
         self.minute += 1

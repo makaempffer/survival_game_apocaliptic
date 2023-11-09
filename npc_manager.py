@@ -32,8 +32,8 @@ class NPCManager():
         self.remove_dead_npc()
 
     def spawn_npc(self,x, y,type="zombie", difficulty=1):
-        print("ENTERED", x, y)
-        self.npc_group.add(NPC(x, y, type, difficulty))
+        if len(self.npc_group) < ENTITY_SPAWN_LIMIT:
+            self.npc_group.add(NPC(x, y, type, difficulty))
 
     def render(self):
         self.npc_group.draw(self.screen)
@@ -105,9 +105,7 @@ class NPCManager():
 
             
     def spawn_enemies(self, difficulty):
-        print("SPAWNING ENEMIES!!!!!!!!")
         amount = randrange(MIN_SPAWN_AMOUNT, MAX_SPAWN_AMOUNT)
         for i in range(amount):
             x, y = self.random_point_near_edges(WIDTH, HEIGHT, EDGE_SPAWN_MARGIN)
-            print("FIRST", x, y)
             self.spawn_npc(x, y, "zombie", difficulty)
