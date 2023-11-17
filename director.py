@@ -1,5 +1,6 @@
 from settings import *
 from functions import *
+import pygame as pg
     
 class Director:
     def __init__(self, npc_manager, block_manager) -> None:

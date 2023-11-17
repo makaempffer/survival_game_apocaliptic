@@ -1,5 +1,5 @@
 from settings import *
-
+import pygame as pg
 
 class PopMenu:
     def __init__(self, mapdata, block_manager, npcGroup, screen):

@@ -1,5 +1,6 @@
 from settings import *
 from random import randint
+import pygame as pg
 
 class Block(pg.sprite.Sprite):
     def __init__(self, posX, posY, value, block_type="dirt"):

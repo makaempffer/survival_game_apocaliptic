@@ -19,7 +19,7 @@ class SoundSystem:
         """Add a sound and give it a name"""
         sound = pg.mixer.Sound(path)
         sound.set_volume(volume)
-        self.sounds[sound_name] = sound
+        self.sounds[sound_name.lower()] = sound
         print(f"[SOUND-SYS] - ADDED SOUND -> {sound_name}")
     
     def get_sound(self, sound_name: str) -> pg.mixer.Sound:
@@ -39,10 +39,11 @@ class SoundSystem:
         if sound:
             sound.fadeout(time_ms)
         
-    def load_item_sounds_from_dict(self, sounds_dict: dict):
+    def load_item_sounds_from_dict(self, sounds_dict: dict = item_dict):
         for key, value in sounds_dict.items():
             if 'sound' in value:
                 sound_path = value['sound']
+                print("ADDDED >>>>", key, sound_path)
                 self.add_sound(key, sound_path, 1)
                 
     def setup_sounds(self):
@@ -50,7 +51,7 @@ class SoundSystem:
         self.add_sound("wood_chop", "./sounds/Wood_chop.wav", 0.9)
         self.add_sound("chop_over", "./sounds/Chop_over.wav", 0.5)
         self.add_sound("pistol_reload", './sounds/guns/pistol_reload.wav', 4)
-        self.add_sound("pistol", './sounds/guns/9mm_single.wav', 4)
+        #self.add_sound("pistol", './sounds/guns/9mm_single.wav', 4)
         self.add_sound("pistol_pack", './sounds/guns/pistol_pack.wav', 4)
         self.add_sound("pistol_rack", './sounds/guns/pistol_rack.wav', 4)
         self.add_sound("pistol_dry_fire", './sounds/guns/pistol_dry_fire.wav', 4)

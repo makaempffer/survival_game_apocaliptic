@@ -1,10 +1,10 @@
-import pygame as pg
+from pygame import font
 from perlin_noise import PerlinNoise
 FPS = 60
 WIDTH, HEIGHT = 1280 + 16, 720 # ADDING 16 PIXELS TO X FIXES RENDERING OFFSET
-pg.font.init()
+font.init()
 FONT_SIZE = 12
-FONT = pg.font.Font('./fonts/TerminusTTFWindows-4.49.3.ttf', FONT_SIZE)
+FONT = font.Font('./fonts/TerminusTTFWindows-4.49.3.ttf', FONT_SIZE)
 #FONT = pg.font.Font('freesansbold.ttf', 12) #default use font
 RED = 255, 0, 0
 GREEN = 0, 255, 0
@@ -58,7 +58,7 @@ DIFFICULTY_INCREASE_INTERVAL = 30
 DAY_HOURS = 24
 MIN_SPAWN_AMOUNT = 1
 MAX_SPAWN_AMOUNT = 3
-ENTITY_SPAWN_LIMIT = 25
+ENTITY_SPAWN_LIMIT = 25 # MAX NUMBER OF ENTITIES AT ONCE.
 EDGE_SPAWN_MARGIN = 5
 EDGE_SPAWN_OFFSET = BLOCK_SIZE * 3
 DAYTIME_INTERVAL = 10

@@ -7,6 +7,7 @@ from skills import Skills
 from health_effects import HealthEffects
 from functions import mapFromTo
 from sound_system import SoundSystem
+import pygame as pg
 
 class NPC(pg.sprite.Sprite):
     def __init__(self, x, y, npc_type, difficulty):

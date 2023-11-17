@@ -1,5 +1,6 @@
 from settings import *
 from block import Block
+import pygame as pg
 from stash import Stash
 class BlockManager:
     def __init__(self, screen, mapData):

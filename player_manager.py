@@ -1,5 +1,6 @@
 from settings import *
 from player import Player
+import pygame as pg
 class PlayerManager:
     def __init__(self, screen, menu):
         self.group = pg.sprite.Group()

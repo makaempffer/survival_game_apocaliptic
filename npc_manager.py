@@ -1,6 +1,8 @@
 from settings import *
 from random import randrange,randint, choice
 from npc import NPC
+import pygame as pg
+
 class NPCManager():
     def __init__(self, screen, width=WIDTH, height=HEIGHT):
         self.npc_group = pg.sprite.Group()
