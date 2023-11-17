@@ -30,6 +30,7 @@ class SoundSystem:
         
     def play_sound(self, sound_name, max_time=0, loops=0):
         sound = self.get_sound(sound_name)
+        print(f"PLAYING {sound_name}")
         if sound:
             sound.play(loops, max_time, self.time_ms)
     
@@ -49,6 +50,7 @@ class SoundSystem:
         self.add_sound("wood_chop", "./sounds/Wood_chop.wav", 0.9)
         self.add_sound("chop_over", "./sounds/Chop_over.wav", 0.5)
         self.add_sound("pistol_reload", './sounds/guns/pistol_reload.wav', 4)
+        self.add_sound("pistol", './sounds/guns/9mm_single.wav', 4)
         self.add_sound("pistol_pack", './sounds/guns/pistol_pack.wav', 4)
         self.add_sound("pistol_rack", './sounds/guns/pistol_rack.wav', 4)
         self.add_sound("pistol_dry_fire", './sounds/guns/pistol_dry_fire.wav', 4)

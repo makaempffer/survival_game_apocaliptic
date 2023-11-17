@@ -84,7 +84,7 @@ class Combat:
                 self.add_to_logger("You ran out of ammo!", RED)
                 return
         if self.user.sound_system:   
-            self.user.sound_system.play_sound(gun.item_id)
+            self.user.sound_system.play_sound(gun.item_id.lower())
         self.user.inventory.consume_ammo(gun.caliber)
             
         if target_user:

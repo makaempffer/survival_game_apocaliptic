@@ -61,7 +61,6 @@ class HealthEffects:
             
         if self.current_radiation >= 1:
             self.health.take_true_damage(self.current_radiation*RADIATION_DMG_MULTIPLIER)
-            print(f"[HEALTH] - TRUE HP {self.health.true_hp}, RAD SHIELD {self.radiation_shield}")
             
         elif self.current_radiation < 0:
             self.radiation_shield += abs(self.current_radiation)

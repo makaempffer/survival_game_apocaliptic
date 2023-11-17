@@ -139,7 +139,8 @@ class NPC(pg.sprite.Sprite):
                 
             if self.target_pos:
                 self.position = self.position.move_towards(self.target_pos, self.speed * delta_time)
-        if self.position.distance_to(self.target_pos) > 100:
+        if self.target_pos:
+            if self.position.distance_to(self.target_pos) > 100:
                 self.target_pos = None
         self.rect.center = self.position
                 
