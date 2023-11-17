@@ -43,7 +43,7 @@ class SoundSystem:
         for key, value in sounds_dict.items():
             if 'sound' in value:
                 sound_path = value['sound']
-                print("ADDDED >>>>", key, sound_path)
+                #print("ADDDED >>>>", key, sound_path)
                 self.add_sound(key, sound_path, 1)
                 
     def setup_sounds(self):
