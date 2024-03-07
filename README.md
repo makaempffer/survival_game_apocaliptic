@@ -1,1 +1,2 @@
-# terrain_perlin_gen
+# Survival post apoliptic Game
+Player skills, inventory, map interactions, entities interactions.
